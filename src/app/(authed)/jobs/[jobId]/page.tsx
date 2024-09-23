@@ -1,3 +1,4 @@
+"use client";
 import { Clock, HandCoins, Heart, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import { jobAnnouncements } from "~/__mocks__/job-announcements";
@@ -8,9 +9,10 @@ function JobDetailPage({ params }: { params: { jobId: string } }) {
   const { companyImage, companyName, title, description, createdAt } =
     jobAnnouncements[parseInt(params.jobId) - 1];
   const jobCreatedAt = dayjs(createdAt).fromNow();
+
   return (
     <>
-      <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 mt-4">
+      <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 pt-32">
         <div className="flex gap-4 justify-between items-center">
           <div className="relative rounded-xl w-32 h-32">
             <Image

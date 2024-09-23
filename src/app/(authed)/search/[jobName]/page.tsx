@@ -6,7 +6,7 @@ import { jobAnnouncements } from "~/__mocks__/job-announcements";
 function SearchResultPage({ params }: { params: { jobName: string } }) {
   const resultsCount = jobAnnouncements.length;
   return (
-    <div className="container mx-auto max-w-5xl mt-10 px-4 mb-10">
+    <div className="container mx-auto max-w-5xl mt-10 px-4 mb-10 pt-32">
       <SearchSection initialSearch={params.jobName} />
       <div className="mt-4">
         <h5>{resultsCount} งานสำหรับ</h5>
