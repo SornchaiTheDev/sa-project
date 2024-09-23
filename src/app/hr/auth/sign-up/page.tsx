@@ -20,8 +20,8 @@ function HRSignUpPage() {
         <ChevronLeft size="1rem" />
         <span>กลับ</span>
       </Link>
-      <div className="flex flex-col justify-center items-center h-full">
-        <div className="max-w-[400px]">
+      <div className="flex flex-col justify-center items-center h-full px-0 md:px-20">
+        <div className="w-full">
           <h5 className="text-xl text-center font-medium">ลงทะเบียน</h5>
           <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
           <RadioGroup
@@ -43,7 +43,7 @@ function HRSignUpPage() {
             <div className="mt-4 space-y-2">
               <Label className="text-sm">ชื่อบริษัท</Label>
               <Input
-                className="bg-zinc-100"
+                className="bg-zinc-100 h-12"
                 placeholder="Company's name"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
