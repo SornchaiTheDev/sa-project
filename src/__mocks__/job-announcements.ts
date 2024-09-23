@@ -1,3 +1,4 @@
+import { JobLogo } from "~/configs/assets";
 import { JobAnnouncement } from "~/types/jobAnnouncement";
 
 export const jobAnnouncements: JobAnnouncement[] = [
@@ -82,6 +83,16 @@ export const jobAnnouncements: JobAnnouncement[] = [
     title: "HR Manager",
     positions: [{ name: "HR Manager", amount: 1 }],
     description: "LinkedIn is hiring an HR manager.",
+    createdAt: "2024-09-23",
+  },
+  {
+    id: "9",
+    companyName: "บริษัท ยิบอินซอยและบริษัทในเครือ/บริษัท ยิบอินซอย จำกัด",
+    companyImage: JobLogo,
+    title: "Software Developer , Programmer , Backend developer",
+    positions: [{ name: "Software Developer", amount: 1 }],
+    description:
+      "พัฒนา Web Application และ Support การใช้งานตามที่ได้รับมอบหมายพัฒนาระบบออกแบบ CSS หรือ TailwindCSS และ Support การใช้งานของ User ตามที่ได้รับมอบหมายติดต่อประสานงานระหว่าง User และ Programmer ภายในทีม",
     createdAt: "2024-09-23",
   },
 ];
