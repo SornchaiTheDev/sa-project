@@ -11,8 +11,11 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 
-export default function SearchSection() {
-  const [search, setSearch] = useState("");
+interface Props {
+  initialSearch?: string;
+}
+export default function SearchSection({ initialSearch }: Props) {
+  const [search, setSearch] = useState<string>(initialSearch || "");
 
   return (
     <>
@@ -24,6 +27,7 @@ export default function SearchSection() {
         <Input
           placeholder="ค้นหาตำแหน่งงาน"
           className="border-primary border pl-8 h-12"
+          value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
