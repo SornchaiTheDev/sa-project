@@ -1,6 +1,7 @@
 "use client";
 import { Search, Settings2 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -14,8 +15,15 @@ import {
 interface Props {
   initialSearch?: string;
 }
+
 export default function SearchSection({ initialSearch }: Props) {
   const [search, setSearch] = useState<string>(initialSearch || "");
+
+  const router = useRouter();
+  const handleOnSearch = (e: FormEvent) => {
+    e.preventDefault();
+    router.push(`/search/${search}`);
+  };
 
   return (
     <>
@@ -24,12 +32,14 @@ export default function SearchSection({ initialSearch }: Props) {
           className="absolute top-1/2 -translate-y-1/2 left-2"
           size="1rem"
         />
-        <Input
-          placeholder="ค้นหาตำแหน่งงาน"
-          className="border-primary border pl-8 h-12"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <form onSubmit={handleOnSearch}>
+          <Input
+            placeholder="ค้นหาตำแหน่งงาน"
+            className="border-primary border pl-8 h-12"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </form>
       </div>
       <div className="flex gap-2 mt-2 flex-wrap">
         <Select>
