@@ -1,23 +1,16 @@
-import {
-  CircleEllipsis,
-  Clock,
-  HandCoins,
-  Heart,
-  MapPin,
-  Users,
-} from "lucide-react";
+import { Clock, HandCoins, Heart, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import { jobAnnouncements } from "~/__mocks__/job-announcements";
 import { Button } from "~/components/ui/button";
 import dayjs from "~/lib/dayjs";
 
-function JobDetailPage() {
+function JobDetailPage({ params }: { params: { jobId: string } }) {
   const { companyImage, companyName, title, description, createdAt } =
-    jobAnnouncements[8];
+    jobAnnouncements[parseInt(params.jobId) - 1];
   const jobCreatedAt = dayjs(createdAt).fromNow();
   return (
     <>
-      <div className="container mx-auto max-w-5xl px-4 space-y-2 pb-20">
+      <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 mt-4">
         <div className="flex gap-4 justify-between items-center">
           <div className="relative rounded-xl w-32 h-32">
             <Image
@@ -27,18 +20,20 @@ function JobDetailPage() {
               alt="job logo"
             />
           </div>
-          <h5>{companyName}</h5>
-          <Button variant="ghost" size="icon" className="w-10 h-10">
-            <CircleEllipsis />
-          </Button>
+          {/* <h5>{companyName}</h5> */}
+          {/* <Button variant="ghost" size="icon" className="w-10 h-10"> */}
+          {/*   <CircleEllipsis /> */}
+          {/* </Button> */}
         </div>
         <div className="flex justify-between">
-          <h5 className="text-xl">{title}</h5>
+          <div>
+            <h5 className="text-2xl">{title}</h5>
+            <h6 className="font-light">{companyName}</h6>
+          </div>
           <Button size="icon" variant="ghost">
             <Heart />
           </Button>
         </div>
-        <h6 className="text-sm">{companyName}</h6>
         <div className="flex gap-2 items-center">
           <MapPin size="1rem" />
           <h6 className="text-sm">กรุงเทพมหานคร</h6>
