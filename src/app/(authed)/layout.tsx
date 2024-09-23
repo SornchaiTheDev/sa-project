@@ -5,7 +5,7 @@ function AuthedLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <Navbar />
-      {children}
+      <div className="mt-24">{children}</div>
     </>
   );
 }
