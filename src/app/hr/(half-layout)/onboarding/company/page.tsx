@@ -19,7 +19,7 @@ function HRSignUpPage() {
 
   const handleNext = () => {
     if (selected === "already-has") {
-      router.push("");
+      router.push("verify");
     } else if (selected === "not-yet") {
       router.push("company/create");
     }
