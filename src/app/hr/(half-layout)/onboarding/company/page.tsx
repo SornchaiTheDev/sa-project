@@ -2,14 +2,28 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 
+type Selected = "already-has" | "not-yet" | "none";
+
 function HRSignUpPage() {
-  const [selected, setSelected] = useState<string>("none");
+  const [selected, setSelected] = useState<Selected>("none");
   const [companyName, setCompanyName] = useState<string>("");
+
+  const router = useRouter();
+
+  const handleNext = () => {
+    if (selected === "already-has") {
+      router.push("");
+    } else if (selected === "not-yet") {
+      router.push("company/create");
+    }
+  };
 
   return (
     <>
@@ -29,7 +43,7 @@ function HRSignUpPage() {
           className="flex gap-20 mt-2"
           defaultValue="none"
           value={selected}
-          onValueChange={setSelected}
+          onValueChange={(v: Selected) => setSelected(v)}
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="already-has" id="already-has" />
@@ -51,13 +65,14 @@ function HRSignUpPage() {
             />
           </div>
         )}
-        <Link
-          href="../auth/sign-in/"
+        <Button
+          onClick={handleNext}
+          variant="ghost"
           className="flex gap-2 items-center float-end mt-10 hover:text-zinc-500 self-end"
         >
           <span>ถัดไป</span>
           <ChevronRight size="1rem" />
-        </Link>
+        </Button>
       </div>
     </>
   );
