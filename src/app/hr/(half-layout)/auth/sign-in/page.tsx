@@ -13,7 +13,7 @@ function HRSignInPage() {
         <Input placeholder="ชื่อผู้ใช้" className="bg-zinc-100 h-12" />
         <Label className="text-sm">รหัสผ่าน</Label>
         <Input placeholder="รหัสผ่าน" className="bg-zinc-100 h-12" />
-        <Button className="w-full mt-2">เข้าสู่ระบบ</Button>
+        <Button className="w-full mt-2 h-10">เข้าสู่ระบบ</Button>
       </div>
       <h6 className="text-sm text-zinc-700 mt-2">
         ฉันยังไ่ม่มีบัญชี{" "}
