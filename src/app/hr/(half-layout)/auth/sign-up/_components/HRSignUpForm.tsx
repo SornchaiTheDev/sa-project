@@ -34,7 +34,7 @@ function HRSignUpForm() {
   const handleOnSubmit = (data: HRSignUpSchema) => {
     setIsSubmitting(true);
     setTimeout(() => setIsSubmitting(false), 1000);
-    router.push("/hr/auth/user-info");
+    router.push("/hr/onboarding/user-info");
   };
 
   return (
