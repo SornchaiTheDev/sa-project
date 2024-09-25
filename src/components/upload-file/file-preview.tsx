@@ -34,8 +34,8 @@ function FilePreview({ file, onRemove, onUploaded }: Props) {
         <div className="w-14 h-14 flex justify-center items-center bg-zinc-100 rounded-lg">
           {isImage ? <FileImage size="1.25rem" /> : <File size="1.25rem" />}
         </div>
-        <div className="leading-3">
-          <h6 className="max-w-56 truncate text-lg">{name}</h6>
+        <div className="leading-tight">
+          <h6 className="max-w-56 truncate">{name}</h6>
           <span className="text-xs">{fileSizeCalc(size)}</span>
         </div>
       </div>
