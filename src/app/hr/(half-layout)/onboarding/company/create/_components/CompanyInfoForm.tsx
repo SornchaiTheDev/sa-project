@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
+import UploadFile from "~/components/upload-file";
 
 const jobCategories: { name: string; id: string }[] = [
   {
@@ -148,11 +149,13 @@ function CompanyInfoForm() {
               <FormLabel className="font-normal">
                 อัปโหลดหนังสือยื่นคำร้อง
               </FormLabel>
-              <Input
-                className="h-12 bg-zinc-100"
-                type="file"
-                placeholder="เบอร์ติดต่อ"
-                {...field}
+              <UploadFile
+                maxFiles={1}
+                onChange={(files) => console.log(files)}
+                accept={{
+                  "image/*": [".png", ".jpg", ".jpeg"],
+                  "application/pdf": [".pdf"],
+                }}
               />
               <FormMessage />
             </FormItem>
