@@ -7,7 +7,7 @@ import { Input } from "~/components/ui/input";
 function HRSignInPage() {
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <div className="w-[400px]">
+      <div className="w-full max-w-[400px]">
         <h3 className="text-xl font-medium text-center">เข้าสู่ระบบ</h3>
         <div className="flex flex-col gap-2 mt-4">
           <Label className="text-sm">ชื่อผู้ใช้</Label>
