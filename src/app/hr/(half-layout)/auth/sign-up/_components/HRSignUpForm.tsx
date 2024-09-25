@@ -20,10 +20,10 @@ function HRSignUpForm() {
   const form = useForm<HRSignUpSchema>({
     resolver: zodResolver(hrSignUpSchema),
     defaultValues: {
-      email: "",
-      username: "",
-      password: "",
-      confirmPassword: "",
+      email: "sornchai.som@ku.th",
+      username: "SornchaiTheDev",
+      password: "password",
+      confirmPassword: "password",
     },
   });
 

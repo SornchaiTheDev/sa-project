@@ -6,10 +6,10 @@ import { KULogo } from "~/configs/assets";
 function NisitSignInPage() {
   const router = useRouter();
   const handleSignIn = () => {
-    router.push("/auth/onboarding");
+    router.push("/onboarding");
   };
   return (
-    <>
+    <div className="flex flex-col items-center justify-center h-screen">
       <h2 className="text-lg font-medium text-center">เข้าสู่ระบบ</h2>
       <button
         onClick={handleSignIn}
@@ -18,7 +18,7 @@ function NisitSignInPage() {
         <Image src={KULogo} width={36} height={36} alt="KU Logo" />
         เข้าสู่ระบบด้วย KU-All Login
       </button>
-    </>
+    </div>
   );
 }
 

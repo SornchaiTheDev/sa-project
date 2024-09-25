@@ -4,7 +4,7 @@ import { ChevronLeft } from "lucide-react";
 
 function CreateCompany() {
   return (
-    <>
+    <div className="">
       <Link
         href="../company"
         className="flex gap-2 items-center hover:text-zinc-500 top-4 left-4 absolute"
@@ -19,7 +19,7 @@ function CreateCompany() {
         <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
         <CompanyInfoForm />
       </div>
-    </>
+    </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { KUView } from "~/configs/assets";
 function HalfImageLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <div className="w-1/2 items-center pt-20 pb-10 px-8 md:px-20">
+      <div className="w-1/2 px-8 md:px-20">
         {children}
       </div>
       <div className="fixed top-0 bottom-0 right-0 w-1/2">

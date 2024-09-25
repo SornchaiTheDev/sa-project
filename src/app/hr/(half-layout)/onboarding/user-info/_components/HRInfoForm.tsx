@@ -19,10 +19,10 @@ function HRInfoForm() {
   const form = useForm<HRInfo>({
     resolver: zodResolver(hrInfo),
     defaultValues: {
-      prefix: "",
-      firstName: "",
-      lastName: "",
-      phone: "",
+      prefix: "นาย",
+      firstName: "ศรชัย",
+      lastName: "สมสกุล",
+      phone: "0987654321",
     },
   });
 
@@ -44,7 +44,7 @@ function HRInfoForm() {
           name="prefix"
           render={({ field }) => (
             <FormItem className="mb-4">
-              <FormLabel className="font-normal">อีเมล</FormLabel>
+              <FormLabel className="font-normal">คำนำหน้า</FormLabel>
               <Input
                 className="h-12 bg-zinc-100"
                 {...field}
@@ -79,7 +79,6 @@ function HRInfoForm() {
                 className="h-12 bg-zinc-100"
                 {...field}
                 placeholder="นามสกุล"
-                type="password"
               />
               <FormMessage />
             </FormItem>
@@ -93,7 +92,6 @@ function HRInfoForm() {
               <FormLabel className="font-normal">เบอร์ติดต่อ</FormLabel>
               <Input
                 className="h-12 bg-zinc-100"
-                type="password"
                 placeholder="เบอร์ติดต่อ"
                 {...field}
               />
