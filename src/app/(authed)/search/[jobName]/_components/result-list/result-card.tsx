@@ -19,7 +19,7 @@ export default function ResultCard({
   return (
     <Link
       href={`/jobs/${id}`}
-      className="rounded-lg overflow-hidden mt-4 border block"
+      className="rounded-lg overflow-hidden mt-4 border block bg-zinc-50 border-primary"
     >
       <div className="p-4 space-y-2">
         <div className="flex justify-between">
