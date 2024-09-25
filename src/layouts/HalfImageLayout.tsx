@@ -4,15 +4,17 @@ import { KUView } from "~/configs/assets";
 
 function HalfImageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col lg:flex-row h-screen">
-      <div className="flex-1 flex flex-col justify-center items-center h-full px-8 md:px-20">
+    <>
+      <div className="w-1/2 items-center pt-20 pb-10 px-8 md:px-20">
         {children}
       </div>
-      <div className="flex-1 relative">
-        <div className="bg-black/20 backdrop-blur-sm absolute inset-0 z-10"></div>
-        <Image src={KUView} fill className="object-cover" alt="" />
+      <div className="fixed top-0 bottom-0 right-0 w-1/2">
+        <div className="relative h-full">
+          <div className="bg-black/20 backdrop-blur-sm absolute inset-0 z-10"></div>
+          <Image src={KUView} fill className="object-cover" alt="" />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
