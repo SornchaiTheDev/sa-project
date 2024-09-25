@@ -9,7 +9,7 @@ export const companyInfo = z
     name: z.string().min(1, "กรุณากรอกชื่อบริษัท"),
     taxId: z.string().optional(),
     category: z.string().min(1, "กรุณาเลือกหมวดบริษัท"),
-    bookUrl: z.string().url().optional(),
+    bookUrl: z.array(z.string()).optional(),
   })
   .refine((data) => data.type !== "none", {
     message: "กรุณาเลือกประเภทบริษัท",
@@ -17,15 +17,17 @@ export const companyInfo = z
   })
   .refine(
     ({ type, taxId }) => {
-      if (type === "government" && !taxId) return false;
+      if (type === "government" && taxId?.length === 0) return false;
+      return true;
     },
     { message: "กรุณากรอกเลขที่หนังสือ", path: ["taxId"] },
   )
   .refine(
     ({ type, bookUrl }) => {
-      if (type === "government" && !bookUrl) return false;
+      if (type === "government" && bookUrl?.length === 0) return false;
+      return true;
     },
-    { message: "กรุณากรอก URL หนังสือ", path: ["bookUrl"] },
+    { message: "กรุณาอัพโหลดหนังสือยื่นคำร้อง", path: ["bookUrl"] },
   );
 
 export type CompanyInfo = z.infer<typeof companyInfo>;

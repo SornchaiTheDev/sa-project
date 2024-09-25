@@ -45,7 +45,7 @@ function CompanyInfoForm() {
       name: "",
       taxId: "",
       category: "",
-      bookUrl: "",
+      bookUrl: [],
     },
   });
 
@@ -141,28 +141,31 @@ function CompanyInfoForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="bookUrl"
-          render={({ field }) => (
-            <FormItem className="mb-4">
-              <FormLabel className="font-normal">
-                อัปโหลดหนังสือยื่นคำร้อง
-              </FormLabel>
-              <UploadFile
-                maxFiles={1}
-                onChange={(files) => console.log(files)}
-                accept={{
-                  "image/*": [".png", ".jpg", ".jpeg"],
-                  "application/pdf": [".pdf"],
-                }}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
+        {form.watch("type") === "government" && (
+          <FormField
+            control={form.control}
+            name="bookUrl"
+            render={({ field: { onChange } }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">
+                  อัปโหลดหนังสือยื่นคำร้อง
+                </FormLabel>
+                <UploadFile
+                  maxFiles={1}
+                  onChange={onChange}
+                  accept={{
+                    "image/*": [".png", ".jpg", ".jpeg"],
+                    "application/pdf": [".pdf"],
+                  }}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <Button
-          disabled={isSubmitting}
+          disabled={isSubmitting || !form.formState.isValid}
           isLoading={isSubmitting}
           className="w-full mt-2 h-10"
         >

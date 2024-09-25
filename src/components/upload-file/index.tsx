@@ -3,7 +3,7 @@ import { Ban, FileUp } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { cn } from "~/lib/utils";
 import FilePreview from "./file-preview";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { v7 as uuid } from "uuid";
 
 interface FilePreview {
@@ -19,6 +19,11 @@ interface Props {
   maxSize?: number;
 }
 
+interface UploadedFile {
+  id: string;
+  url: string;
+}
+
 function UploadFile({
   accept,
   onChange,
@@ -27,10 +32,11 @@ function UploadFile({
   maxSize,
 }: Props) {
   const [files, setFiles] = useState<FilePreview[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const handleOnRemove = (id: string) => {
     setFiles((prev) => prev.filter((file) => file.id !== id));
+    setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
   };
 
   const addFiles = (files: File[]) => {
@@ -43,11 +49,13 @@ function UploadFile({
     ]);
   };
 
-  const onUploaded = useCallback((file: string) => {
-    setUploadedFiles((prev) => [...prev, file]);
+  const onUploaded = useCallback((id: string, url: string) => {
+    setUploadedFiles((prev) => [...prev, { id, url }]);
   }, []);
 
-  console.log(uploadedFiles);
+  useEffect(() => {
+    onChange(uploadedFiles.map(({ url }) => url));
+  }, [uploadedFiles, onChange]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
@@ -88,7 +96,7 @@ function UploadFile({
           <FilePreview
             key={id}
             onRemove={() => handleOnRemove(id)}
-            onUploaded={onUploaded}
+            onUploaded={(url) => onUploaded(id, url)}
             {...{ file }}
           />
         ))}
