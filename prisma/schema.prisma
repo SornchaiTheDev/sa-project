@@ -1,0 +1,22 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("POSTGRES_PRISMA_URL")
+    directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Student {
+    STU_Username       String  @id @unique @db.VarChar(50)
+    STU_Title          String  @db.VarChar(50)
+    STU_First_Name     String  @db.VarChar(100)
+    STU_Last_Name      String  @db.VarChar(100)
+    STU_Email_Google   String  @unique @db.VarChar(50)
+    STU_Is_Active      Int     @default(1)
+    STU_Activity_Hours Int?
+    STU_Phone_Number   String? @db.VarChar(10)
+    STU_Description    String?
+    STU_GPAX           Float?
+}
