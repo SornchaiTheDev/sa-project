@@ -1,5 +1,4 @@
 import { ChevronsDown, Clock, HandCoins, UsersRound } from "lucide-react";
-import Image from "next/image";
 import React from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import CandidateCard from "./_components/CandidateCard";
+import FilterSection from "./_components/FilterSection";
 
 function AnnouncementDetailPage() {
   return (
@@ -47,29 +47,19 @@ function AnnouncementDetailPage() {
           <ChevronsDown size="0.9rem" />
           อ่านข้อมูลเพิ่มเติม
         </button>
-        <div className="mt-4 flex gap-4 items-center">
-          <h5>10 ผู้สมัคร</h5>
-          <Select>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="ตำแหน่ง" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="full-time">Full-time</SelectItem>
-              <SelectItem value="part-time">Part-time</SelectItem>
-              <SelectItem value="internship">Internship</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="ghost" className="text-primary">
-            ผู้สมัครทั้งหมด
-          </Button>
-          <Button variant="ghost">ดำเนินการสัมภาษณ์</Button>
-          <Button variant="ghost">ดำเนินการรับเข้าทำงาน</Button>
-        </div>
+        <FilterSection />
         <div className="mt-6 space-y-4">
-          <CandidateCard />
-          <CandidateCard />
-          <CandidateCard />
-          <CandidateCard />
+          {Array.from({ length: 10 }).map((_, index) => (
+            <CandidateCard
+              key={index}
+              image="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg/220px-Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg"
+              name="นางสาววิมุดากร กิจเตชะพานิช"
+              faculty="วิทยาศาสตร์"
+              major="วิทยาการคอมพิวเตอร์"
+              gpax={3.81}
+              status="interview-accepted"
+            />
+          ))}
         </div>
       </div>
     </>
