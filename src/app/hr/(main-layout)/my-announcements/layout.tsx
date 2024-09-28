@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import AnnouncementLink from "./_components/AnnouncementLink";
 
 export default function MyAnnouncementLayout({
   children,
@@ -27,15 +28,19 @@ export default function MyAnnouncementLayout({
             <SearchIcon />
           </Button>
         </div>
-        <div className="mt-6 space-y-3 h-full overflow-hidden">
+        <div className="mt-6 h-full overflow-hidden">
           {Array.from({ length: 10 }, (_, i) => (
-            <Link key={i} className="text-lg block truncate" href="#">
-              Software Development, Web development
-            </Link>
+            <AnnouncementLink
+              key={i}
+              href={`my-announcements/${i.toString()}`}
+            />
           ))}
         </div>
       </div>
-      <div className="ml-[300px] p-2 pt-0">{children}</div>
+
+      <div className="h-full rounded-lg bg-zinc-100 p-4 m-2 mt-0 ml-[308px]">
+        {children}
+      </div>
     </>
   );
 }
