@@ -1,13 +1,5 @@
 import { ChevronsDown, Clock, HandCoins, UsersRound } from "lucide-react";
 import React from "react";
-import { Button } from "~/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import CandidateCard from "./_components/CandidateCard";
 import FilterSection from "./_components/FilterSection";
@@ -20,7 +12,7 @@ function AnnouncementDetailPage() {
         <button className="text-xs">แก้ไข</button>
       </div>
       <div className="flex gap-2 items-center mt-2">
-        <Switch />
+        <Switch checked />
         <div className="w-2 h-2 rounded-full bg-primary"></div>
         <p className="text-xs text-primary">เปิดรับสมัคร</p>
       </div>
@@ -41,7 +33,7 @@ function AnnouncementDetailPage() {
         <ul className="list-disc list-inside pl-2">
           <li>มีความรู้ด้าน Database และการเขียน Web Application</li>
           <li>มีความรู้ด้าน PHP,ReactJS , NodeJS,CSS,TailwindCSS</li>
-          <li>ติดต่อประสานงานระหว่าง User และ Programmer ภายในที</li>
+          <li>ติดต่อประสานงานระหว่าง User และ Programmer ภายในทีม</li>
         </ul>
         <button className="text-primary text-sm flex items-center gap-1 mt-2">
           <ChevronsDown size="0.9rem" />
