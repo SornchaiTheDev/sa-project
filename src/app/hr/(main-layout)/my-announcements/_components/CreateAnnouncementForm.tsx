@@ -66,7 +66,7 @@ function CreateAnnouncementForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleOnSubmit)}>
+      <form onSubmit={form.handleSubmit(handleOnSubmit)} className="flex flex-col">
         <FormField
           control={form.control}
           name="name"
@@ -225,7 +225,7 @@ function CreateAnnouncementForm() {
             <div className="border-b-2 border-primary my-2"></div>
           </div>
         ))}
-        <Button className="float-right w-36 mt-8">ประกาศ</Button>
+        <Button className="w-36 mt-8 self-end">ประกาศ</Button>
       </form>
     </Form>
   );
