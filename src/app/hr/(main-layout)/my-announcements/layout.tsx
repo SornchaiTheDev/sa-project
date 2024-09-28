@@ -1,5 +1,4 @@
 import { CirclePlus, SearchIcon } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -38,7 +37,7 @@ export default function MyAnnouncementLayout({
         </div>
       </div>
 
-      <div className="h-full rounded-lg bg-zinc-100 p-4 m-2 mt-0 ml-[308px]">
+      <div className="rounded-lg bg-zinc-100 p-4 m-2 mt-0 ml-[308px]">
         {children}
       </div>
     </>
