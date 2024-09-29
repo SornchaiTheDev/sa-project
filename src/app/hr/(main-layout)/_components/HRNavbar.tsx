@@ -31,7 +31,7 @@ function HRNavbar() {
             href={`hr/${href}`}
             className={cn(
               "hover:text-zinc-800",
-              pathname.includes(href) && "text-primary font-medium",
+              pathname?.includes(href) && "text-primary font-medium",
             )}
           >
             {label}
