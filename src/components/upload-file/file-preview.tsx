@@ -1,7 +1,6 @@
 import { FileImage, File, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { fileSizeCalc } from "~/lib";
-import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 
 interface Props {
@@ -29,7 +28,7 @@ function FilePreview({ file, onRemove, onUploaded }: Props) {
   }, [progress, onUploaded, name]);
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex justify-between items-center flex-row gap-4">
       <div className="flex items-center flex-1 gap-2">
         <div className="w-14 h-14 flex justify-center items-center bg-zinc-100 rounded-lg">
           {isImage ? <FileImage size="1.25rem" /> : <File size="1.25rem" />}
@@ -38,15 +37,6 @@ function FilePreview({ file, onRemove, onUploaded }: Props) {
           <h6 className="max-w-56 truncate">{name}</h6>
           <span className="text-xs">{fileSizeCalc(size)}</span>
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        {!isUploaded && (
-          <>
-            <h6 className="text-sm">กำลังอัพโหลด</h6>
-            <Progress value={progress} className="w-[200px]" />
-            <h6 className="text-sm">{progress} %</h6>
-          </>
-        )}
       </div>
       {isUploaded && (
         <Button
@@ -57,6 +47,12 @@ function FilePreview({ file, onRemove, onUploaded }: Props) {
         >
           <X size="1rem" />
         </Button>
+      )}
+      {!isUploaded && (
+        <div className="flex justify-between items-center gap-4">
+          <h6 className="text-sm">กำลังอัพโหลด</h6>
+          <h6 className="text-sm">{progress} %</h6>
+        </div>
       )}
     </div>
   );
