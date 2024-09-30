@@ -24,6 +24,7 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import UploadFile from "~/components/upload-file";
+import { useRouter } from "next/navigation";
 
 const jobCategories: { name: string; id: string }[] = [
   {
@@ -49,10 +50,13 @@ function CompanyInfoForm() {
     },
   });
 
+  const router = useRouter();
+
   const handleOnSubmit = () => {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
+      router.push("/hr");
     }, 2000);
   };
 
