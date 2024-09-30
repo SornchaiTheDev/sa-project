@@ -12,7 +12,8 @@ export const userInfo = z.object({
   phone: z
     .string()
     .min(9, "เบอร์ติดต่อต้องมีอย่างน้อย 9 หลัก")
-    .max(10, "เบอร์ติดต่อต้องมีไม่เกิน 10 หลัก"),
+    .max(10, "เบอร์ติดต่อต้องมีไม่เกิน 10 หลัก")
+    .regex(/^[0-9]{9,10}$/, "กรุณากรอกเบอร์ติดต่อให้ถูกต้อง"),
 });
 
 export type UserInfo = z.infer<typeof userInfo>;
