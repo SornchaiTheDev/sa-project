@@ -105,12 +105,12 @@ function CompanyInfoForm() {
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">
-                  เลขหนังสือคำร้องหรือหมายเลขทะเบียนนิติบุคคล
+                  เลขประจำตัวผู้เสียภาษี
                 </FormLabel>
                 <Input
                   className="h-12 bg-zinc-100"
                   {...field}
-                  placeholder="เลขหนังสือคำร้องหรือหมายเลขทะเบียนนิติบุคคล"
+                  placeholder="กรุณากรอกเลขประจำตัวผู้เสียภาษี"
                 />
                 <FormMessage />
               </FormItem>
@@ -125,7 +125,7 @@ function CompanyInfoForm() {
               <FormLabel className="font-normal">ประเภทบริษัท</FormLabel>
               <Select onValueChange={onChange} value={value}>
                 <SelectTrigger className="h-12 bg-zinc-100">
-                  <SelectValue placeholder="โปรดเลือก" />
+                  <SelectValue placeholder="โปรดเลือกหมวดหมู่ของหน่วยงาน" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
