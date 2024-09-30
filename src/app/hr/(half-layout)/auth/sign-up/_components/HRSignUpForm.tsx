@@ -15,6 +15,7 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PasswordRequirements from "./PasswordRequirements";
 
 function HRSignUpForm() {
   const form = useForm<HRSignUpSchema>({
@@ -82,7 +83,7 @@ function HRSignUpForm() {
                 placeholder="รหัสผ่าน"
                 type="password"
               />
-              <FormMessage />
+              <PasswordRequirements password={form.watch("password")} />
             </FormItem>
           )}
         />
