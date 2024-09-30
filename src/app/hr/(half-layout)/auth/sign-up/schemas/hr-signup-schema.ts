@@ -9,14 +9,10 @@ export const hrSignUpSchema = z
       .max(20, "ชื่อผู้ใช้ยาวได้มากสุด 20 ตัวอักษร"),
     password: z
       .string()
-      .min(8, "รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร")
       .regex(
-        /"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
       ),
-    confirmPassword: z
-      .string()
-      .min(8, "รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร")
-      .max(100),
+    confirmPassword: z.string(),
   })
   .refine((val) => val.confirmPassword === val.password, {
     message: "รหัสผ่านไม่ตรงกัน",
