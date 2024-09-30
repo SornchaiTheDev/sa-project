@@ -13,7 +13,7 @@ interface Requirement {
 
 const requirements: Requirement[] = [
   {
-    description: "รหัสมีความยาว 8 - 50 ตัวอักษร",
+    description: "รหัสมีความยาว 8 - 24 ตัวอักษร",
     isValid: (val: string) => val.length >= 8 && val.length < 24,
   },
   {
