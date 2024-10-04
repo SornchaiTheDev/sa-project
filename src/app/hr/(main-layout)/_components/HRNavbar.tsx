@@ -20,7 +20,7 @@ function HRNavbar() {
   const pathname = usePathname();
 
   return (
-    <div className="bg-white px-4 py-2 flex justify-between items-center border-b border-zinc-200">
+    <div className="fixed top-0 left-0 right-0 bg-white px-4 py-2 flex justify-between items-center border-b border-zinc-200 z-40">
       <Link href="/">
         <Image src={KULogo} alt="KU Logo" width={48} height={48} />
       </Link>
@@ -31,7 +31,7 @@ function HRNavbar() {
             href={`hr/${href}`}
             className={cn(
               "hover:text-zinc-800",
-              pathname.includes(href) && "text-primary font-medium",
+              pathname?.includes(href) && "text-primary font-medium",
             )}
           >
             {label}
