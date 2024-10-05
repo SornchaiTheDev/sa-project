@@ -6,7 +6,6 @@ export class ApprovedCompanyRepository {
     try {
       const text = `
         INSERT INTO "APPROVED_COMPANY" (
-          "Company_ID",
           "Company_Name",
           "Company_Address",
           "Tax_ID",
@@ -14,7 +13,6 @@ export class ApprovedCompanyRepository {
         ) VALUES ($1, $2, $3, $4, $5)
       `;
       const values = [
-        approvedCompany.id,
         approvedCompany.name,
         approvedCompany.address,
         approvedCompany.taxId,

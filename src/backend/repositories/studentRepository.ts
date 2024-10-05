@@ -6,7 +6,6 @@ export class StudentRepository {
     try {
       const text = `
         INSERT INTO STUDENT (
-          "STU_Username",
           "STU_Title",
           "STU_First_Name",
           "STU_Last_Name",
@@ -20,7 +19,6 @@ export class StudentRepository {
       `;
       
       const values = [
-        student.username,
         student.title,
         student.firstName,
         student.lastName,
