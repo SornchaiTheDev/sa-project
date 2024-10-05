@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -63,7 +64,7 @@ function VerifyPage() {
     router.push("/hr/onboarding/waiting");
   };
   return (
-    <>
+    <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
       <h5 className="text-2xl font-medium">ตรวจสอบข้อมูล</h5>
       <div className="flex justify-between items-center mt-8">
         <h6 className="text-lg font-medium">ข้อมูลส่วนตัว</h6>
@@ -116,7 +117,7 @@ function VerifyPage() {
       >
         บันทึกข้อมูล
       </Button>
-    </>
+    </motion.div>
   );
 }
 

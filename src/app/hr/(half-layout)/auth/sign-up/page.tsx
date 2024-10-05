@@ -2,6 +2,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import HRSignUpForm from "./_components/HRSignUpForm";
+import AlreadySignUp from "./_components/AlreadySignUp";
 
 function SignUpPage() {
   return (
@@ -13,16 +14,8 @@ function SignUpPage() {
         <ChevronLeft size="1rem" />
         <span>กลับ</span>
       </Link>
-      <div className="w-full">
-        <h5 className="text-xl text-center font-medium">ลงทะเบียนผู้ใช้</h5>
-        <HRSignUpForm />
-      </div>
-      <h6 className="text-sm text-zinc-700 mt-2">
-        ฉันมีบัญชีอยู่แล้ว{" "}
-        <Link href="/hr/auth/sign-in" className="text-zinc-900 font-medium">
-          เข้าสู่ระบบ
-        </Link>
-      </h6>
+      <HRSignUpForm />
+      <AlreadySignUp />
     </div>
   );
 }

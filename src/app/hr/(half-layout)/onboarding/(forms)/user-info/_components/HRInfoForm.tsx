@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 function HRInfoForm() {
   const form = useForm<HRInfo>({
@@ -45,85 +46,105 @@ function HRInfoForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleOnSubmit)}>
-        <FormField
-          control={form.control}
-          name="prefix"
-          render={({ field: { value, onChange } }) => (
-            <FormItem className="mb-4">
-              <FormLabel className="font-normal">คำนำหน้า</FormLabel>
-              <Select value={value} onValueChange={onChange}>
-                <SelectTrigger className="w-full h-12 bg-zinc-100">
-                  <SelectValue placeholder="คำนำหน้า" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none" disabled>
-                    โปรดเลือกคำนำหน้า
-                  </SelectItem>
-                  <SelectItem value="นาย">นาย</SelectItem>
-                  <SelectItem value="นางสาว">นางสาว</SelectItem>
-                  <SelectItem value="นาง">นาง</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="firstName"
-          render={({ field }) => (
-            <FormItem className="mb-4">
-              <FormLabel className="font-normal">ชื่อ</FormLabel>
-              <Input
-                className="h-12 bg-zinc-100"
-                {...field}
-                placeholder="ชื่อ"
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="lastName"
-          render={({ field }) => (
-            <FormItem className="mb-4">
-              <FormLabel className="font-normal">นามสกุล</FormLabel>
-              <Input
-                className="h-12 bg-zinc-100"
-                {...field}
-                placeholder="นามสกุล"
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem className="mb-4">
-              <FormLabel className="font-normal">เบอร์ติดต่อ</FormLabel>
-              <Input
-                className="h-12 bg-zinc-100"
-                placeholder="เบอร์ติดต่อ"
-                {...field}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          variant="ghost"
-          className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
+    <>
+      <motion.h4
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-2xl font-medium mb-10"
+      >
+        ลงทะเบียนผู้ใช้
+      </motion.h4>
+      <motion.div
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+      >
+        <p className="text-sm text-zinc-400">ขั้นตอนที่ 1 / 2</p>
+        <h5 className="text-xl font-medium mb-4">ข้อมูลผู้ใช้</h5>
+      </motion.div>
+      <Form {...form}>
+        <motion.form
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          onSubmit={form.handleSubmit(handleOnSubmit)}
         >
-          <span>ถัดไป</span>
-          <ChevronRight size="1rem" />
-        </Button>
-      </form>
-    </Form>
+          <FormField
+            control={form.control}
+            name="prefix"
+            render={({ field: { value, onChange } }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">คำนำหน้า</FormLabel>
+                <Select value={value} onValueChange={onChange}>
+                  <SelectTrigger className="w-full h-12 bg-zinc-100">
+                    <SelectValue placeholder="คำนำหน้า" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none" disabled>
+                      โปรดเลือกคำนำหน้า
+                    </SelectItem>
+                    <SelectItem value="นาย">นาย</SelectItem>
+                    <SelectItem value="นางสาว">นางสาว</SelectItem>
+                    <SelectItem value="นาง">นาง</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">ชื่อ</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  {...field}
+                  placeholder="ชื่อ"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">นามสกุล</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  {...field}
+                  placeholder="นามสกุล"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">เบอร์ติดต่อ</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  placeholder="เบอร์ติดต่อ"
+                  {...field}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            variant="ghost"
+            className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
+          >
+            <span>ถัดไป</span>
+            <ChevronRight size="1rem" />
+          </Button>
+        </motion.form>
+      </Form>
+    </>
   );
 }
 

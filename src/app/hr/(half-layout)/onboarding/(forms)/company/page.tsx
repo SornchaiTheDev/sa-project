@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,7 +35,11 @@ function HRSignUpPage() {
         <ChevronLeft size="1rem" />
         <span>กลับ</span>
       </Link>
-      <div className="w-full flex flex-col">
+      <motion.div
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="w-full flex flex-col"
+      >
         <h4 className="text-2xl font-medium mb-10">ลงทะเบียนผู้ใช้</h4>
         <p className="text-sm text-zinc-800">ขั้นตอนที่ 2 / 2</p>
         <h5 className="text-xl font-medium">ข้อมูลบริษัท</h5>
@@ -54,17 +59,23 @@ function HRSignUpPage() {
             <Label htmlFor="not-yet">ยังไม่มี</Label>
           </div>
         </RadioGroup>
-        {selected === "already-has" && (
-          <div className="mt-4 space-y-2">
-            <Label className="text-sm">ชื่อบริษัท</Label>
-            <Input
-              className="bg-zinc-100 h-12"
-              placeholder="Company's name"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-            />
-          </div>
-        )}
+        <AnimatePresence>
+          {selected === "already-has" && (
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="mt-4 space-y-2"
+            >
+              <Label className="text-sm">ชื่อบริษัท</Label>
+              <Input
+                className="bg-zinc-100 h-12"
+                placeholder="Company's name"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
         <Button
           onClick={handleNext}
           variant="ghost"
@@ -73,7 +84,7 @@ function HRSignUpPage() {
           <span>ถัดไป</span>
           <ChevronRight size="1rem" />
         </Button>
-      </div>
+      </motion.div>
     </>
   );
 }

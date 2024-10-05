@@ -12,13 +12,7 @@ function CreateCompany() {
         <ChevronLeft size="1rem" />
         <span>กลับ</span>
       </Link>
-      <div className="w-full">
-        <h4 className="text-2xl font-medium mb-10">ลงทะเบียนบริษัท</h4>
-        <h5 className="text-xl font-medium mb-4">เกี่ยวกับบริษัท</h5>
-
-        <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
-        <CompanyInfoForm />
-      </div>
+      <CompanyInfoForm />
     </>
   );
 }
