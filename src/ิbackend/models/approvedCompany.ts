@@ -1,4 +1,4 @@
-import { ApprovedCompany } from "../types/approvedCompany";
+import { ApprovedCompany } from "../../types/approvedCompany";
 
 export class ApproveCompanyModel implements ApprovedCompany {
   constructor(

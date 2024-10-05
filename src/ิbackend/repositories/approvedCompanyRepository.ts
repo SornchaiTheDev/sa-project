@@ -1,5 +1,5 @@
-import { query } from "../lib/db";
-import { ApprovedCompany } from "../types/approvedCompany";
+import { query } from "../../lib/db";
+import { ApprovedCompany } from "../../types/approvedCompany";
 
 export class ApprovedCompanyRepository {
   public async create(approvedCompany: ApprovedCompany): Promise<void> {
