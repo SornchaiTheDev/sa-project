@@ -12,9 +12,9 @@ interface Menu {
 
 const menus: Menu[] = [
   { label: "ประกาศงานของฉัน", href: "my-announcements" },
-  { label: "ประเมินนิสิต", href: "evaluate" },
+  { label: "ประเมินนิสิต", href: "evaluates" },
   { label: "สถิติ", href: "statistics" },
-  { label: "ประวิติการรับสมัครงาน", href: "history" },
+  { label: "ประวิติการรับสมัครงาน", href: "histories" },
 ];
 function HRNavbar() {
   const pathname = usePathname();
