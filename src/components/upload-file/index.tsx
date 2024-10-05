@@ -96,8 +96,8 @@ function UploadFile({
           <FilePreview
             key={id}
             onRemove={() => handleOnRemove(id)}
-            onUploaded={(url) => onUploaded(id, url)}
-            {...{ file }}
+            onUploaded={onUploaded}
+            {...{ file, id }}
           />
         ))}
       </div>
