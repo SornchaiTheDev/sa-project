@@ -41,7 +41,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function BarChart() {
+function Chart() {
   return (
     <ChartContainer config={chartConfig} className="min-h-32 w-7/12">
       <ComposedChart accessibilityLayer data={chartData}>
@@ -59,4 +59,4 @@ function BarChart() {
   );
 }
 
-export default BarChart;
+export default Chart;
