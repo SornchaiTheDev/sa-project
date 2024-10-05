@@ -1,4 +1,4 @@
-import { ApprovedCompany } from "../types/approvedCompany";
+import { ApprovedCompany } from "../../types/approvedCompany";
 
 export const createApprovedCompany = async (approvedCompany: ApprovedCompany): Promise<void> => {
   try {
