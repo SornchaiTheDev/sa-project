@@ -5,13 +5,14 @@ export const hrSignUpSchema = z
     email: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
     username: z
       .string()
-      .min(3, "ชื่อผู้ใช้ต้องยาวอย่างน้อย 3 ตัวอักษร")
-      .max(20, "ชื่อผู้ใช้ยาวได้มากสุด 20 ตัวอักษร"),
-    password: z.string().min(8, "รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร").max(100),
-    confirmPassword: z
+      .min(1, "ชื่อผู้ใช้ต้องยาวอย่างน้อย 1 ตัวอักษร")
+      .max(30, "ชื่อผู้ใช้ต้องยาวไม่เกิน 30 ตัวอักษร"),
+    password: z
       .string()
-      .min(8, "รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร")
-      .max(100),
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      ),
+    confirmPassword: z.string(),
   })
   .refine((val) => val.confirmPassword === val.password, {
     message: "รหัสผ่านไม่ตรงกัน",

@@ -14,12 +14,20 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { ChevronRight } from "lucide-react";
 
 function HRInfoForm() {
   const form = useForm<HRInfo>({
     resolver: zodResolver(hrInfo),
     defaultValues: {
-      prefix: "นาย",
+      prefix: "none",
       firstName: "ศรชัย",
       lastName: "สมสกุล",
       phone: "0987654321",
@@ -42,14 +50,22 @@ function HRInfoForm() {
         <FormField
           control={form.control}
           name="prefix"
-          render={({ field }) => (
+          render={({ field: { value, onChange } }) => (
             <FormItem className="mb-4">
               <FormLabel className="font-normal">คำนำหน้า</FormLabel>
-              <Input
-                className="h-12 bg-zinc-100"
-                {...field}
-                placeholder="อีเมล"
-              />
+              <Select value={value} onValueChange={onChange}>
+                <SelectTrigger className="w-full h-12 bg-zinc-100">
+                  <SelectValue placeholder="คำนำหน้า" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none" disabled>
+                    โปรดเลือกคำนำหน้า
+                  </SelectItem>
+                  <SelectItem value="นาย">นาย</SelectItem>
+                  <SelectItem value="นางสาว">นางสาว</SelectItem>
+                  <SelectItem value="นาง">นาง</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -100,11 +116,11 @@ function HRInfoForm() {
           )}
         />
         <Button
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          className="w-full mt-2 h-10"
+          variant="ghost"
+          className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
         >
-          บันทึกข้อมูล
+          <span>ถัดไป</span>
+          <ChevronRight size="1rem" />
         </Button>
       </form>
     </Form>

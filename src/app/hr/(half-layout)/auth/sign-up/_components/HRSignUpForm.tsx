@@ -12,9 +12,10 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PasswordRequirements from "./PasswordRequirements";
+import { ChevronRight } from "lucide-react";
 
 function HRSignUpForm() {
   const form = useForm<HRSignUpSchema>({
@@ -82,7 +83,7 @@ function HRSignUpForm() {
                 placeholder="รหัสผ่าน"
                 type="password"
               />
-              <FormMessage />
+              <PasswordRequirements password={form.watch("password")} />
             </FormItem>
           )}
         />
@@ -103,19 +104,13 @@ function HRSignUpForm() {
           )}
         />
         <Button
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          className="w-full mt-2 h-10"
+          variant="ghost"
+          className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
         >
-          ลงทะเบียน
+          <span>ถัดไป</span>
+          <ChevronRight size="1rem" />
         </Button>
       </form>
-      <h6 className="text-sm text-zinc-700 mt-2">
-        ฉันมีบัญชีอยู่แล้ว{" "}
-        <Link href="/hr/auth/sign-in" className="text-zinc-900 font-medium">
-          เข้าสู่ระบบ
-        </Link>
-      </h6>
     </Form>
   );
 }

@@ -15,13 +15,20 @@ import dayjs from "~/lib/dayjs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 function UserInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<UserInfo>({
     resolver: zodResolver(userInfo),
     defaultValues: {
-      prefix: "นาย",
+      prefix: "none",
       firstName: "ศรชัย",
       lastName: "สมสกุล",
       email: "sornchai.som@ku.th",
@@ -62,10 +69,22 @@ function UserInfoForm() {
           <FormField
             control={form.control}
             name="prefix"
-            render={({ field }) => (
+            render={({ field: { value, onChange } }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">คำนำหน้า</FormLabel>
-                <Input className="h-12" {...field} placeholder="คำนำหน้า" />
+                <Select value={value} onValueChange={onChange}>
+                  <SelectTrigger className="w-full h-12">
+                    <SelectValue placeholder="คำนำหน้า" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none" disabled>
+                      โปรดเลือกคำนำหน้า
+                    </SelectItem>
+                    <SelectItem value="นาย">นาย</SelectItem>
+                    <SelectItem value="นางสาว">นางสาว</SelectItem>
+                    <SelectItem value="นาง">นาง</SelectItem>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}

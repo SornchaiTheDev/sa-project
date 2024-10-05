@@ -6,7 +6,7 @@ function UserInfoPage() {
     <>
       <h4 className="text-2xl font-medium mb-10">ลงทะเบียนผู้ใช้</h4>
       <div>
-        <p className="text-sm text-zinc-800">ขั้นตอนที่ 1 / 2</p>
+        <p className="text-sm text-zinc-400">ขั้นตอนที่ 1 / 2</p>
         <h5 className="text-xl font-medium mb-4">ข้อมูลผู้ใช้</h5>
       </div>
       <HRInfoForm />
