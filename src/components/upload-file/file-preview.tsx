@@ -5,11 +5,12 @@ import { Button } from "../ui/button";
 
 interface Props {
   file: File;
+  id: string;
   onRemove: () => void;
-  onUploaded: (url: string) => void;
+  onUploaded: (id: string, url: string) => void;
 }
 
-function FilePreview({ file, onRemove, onUploaded }: Props) {
+function FilePreview({ file, id, onRemove, onUploaded }: Props) {
   const { name, type, size } = file;
   const isImage = type.startsWith("image");
   const [progress, setProgress] = useState(0);
@@ -23,9 +24,9 @@ function FilePreview({ file, onRemove, onUploaded }: Props) {
 
   useEffect(() => {
     if (progress >= 100) {
-      onUploaded(name);
+      onUploaded(id, name);
     }
-  }, [progress, onUploaded, name]);
+  }, [progress, onUploaded, id, name]);
 
   return (
     <div className="flex justify-between items-center flex-row gap-4">
