@@ -7,8 +7,9 @@ export class ApproveCompanyModel implements ApprovedCompany {
     private _address: ApprovedCompany["address"],
     private _taxId: ApprovedCompany["taxId"],
     private _requestedFile: ApprovedCompany["requestedFile"],
+    private _companyImage: ApprovedCompany["companyImage"],
     private _isActive: ApprovedCompany["isActive"]
-  ) { }
+  ) {}
 
   public get id(): ApprovedCompany["id"] {
     return this._id;
@@ -28,6 +29,10 @@ export class ApproveCompanyModel implements ApprovedCompany {
 
   public get requestedFile(): ApprovedCompany["requestedFile"] {
     return this._requestedFile;
+  }
+
+  public get companyImage(): ApprovedCompany["companyImage"] {
+    return this._companyImage;
   }
 
   public get isActive(): ApprovedCompany["isActive"] {
