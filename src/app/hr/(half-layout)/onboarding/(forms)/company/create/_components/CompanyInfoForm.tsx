@@ -56,7 +56,7 @@ function CompanyInfoForm() {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
-      router.push("/hr");
+      router.push("/hr/onboarding/verify");
     }, 2000);
   };
 
@@ -102,25 +102,23 @@ function CompanyInfoForm() {
             </FormItem>
           )}
         />
-        {form.watch("type") === "government" && (
-          <FormField
-            control={form.control}
-            name="taxId"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel className="font-normal">
-                  เลขประจำตัวผู้เสียภาษี
-                </FormLabel>
-                <Input
-                  className="h-12 bg-zinc-100"
-                  {...field}
-                  placeholder="กรุณากรอกเลขประจำตัวผู้เสียภาษี"
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        <FormField
+          control={form.control}
+          name="taxId"
+          render={({ field }) => (
+            <FormItem className="mb-4">
+              <FormLabel className="font-normal">
+                เลขประจำตัวผู้เสียภาษี
+              </FormLabel>
+              <Input
+                className="h-12 bg-zinc-100"
+                {...field}
+                placeholder="กรุณากรอกเลขประจำตัวผู้เสียภาษี"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="category"
@@ -146,34 +144,32 @@ function CompanyInfoForm() {
           )}
         />
 
-        {form.watch("type") === "government" && (
-          <FormField
-            control={form.control}
-            name="bookUrl"
-            render={({ field: { onChange } }) => (
-              <FormItem className="mb-4">
-                <FormLabel className="font-normal">
-                  อัปโหลดหนังสือยื่นคำร้อง
-                </FormLabel>
-                <UploadFile
-                  maxFiles={1}
-                  onChange={onChange}
-                  accept={{
-                    "image/*": [".png", ".jpg", ".jpeg"],
-                    "application/pdf": [".pdf"],
-                  }}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        <FormField
+          control={form.control}
+          name="bookUrl"
+          render={({ field: { onChange } }) => (
+            <FormItem className="mb-4">
+              <FormLabel className="font-normal">
+                อัปโหลดหนังสือยื่นคำร้อง
+              </FormLabel>
+              <UploadFile
+                maxFiles={1}
+                onChange={onChange}
+                accept={{
+                  "image/*": [".png", ".jpg", ".jpeg"],
+                  "application/pdf": [".pdf"],
+                }}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button
           disabled={isSubmitting || !form.formState.isValid}
           isLoading={isSubmitting}
           className="w-full mt-2 h-10"
         >
-          บันทึกข้อมูล
+          ตรวจสอบข้อมูล
         </Button>
       </form>
     </Form>

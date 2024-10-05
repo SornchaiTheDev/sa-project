@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { ChevronRight } from "lucide-react";
 
 function HRInfoForm() {
   const form = useForm<HRInfo>({
@@ -115,11 +116,11 @@ function HRInfoForm() {
           )}
         />
         <Button
-          disabled={isSubmitting}
-          isLoading={isSubmitting}
-          className="w-full mt-2 h-10"
+          variant="ghost"
+          className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
         >
-          บันทึกข้อมูล
+          <span>ถัดไป</span>
+          <ChevronRight size="1rem" />
         </Button>
       </form>
     </Form>
