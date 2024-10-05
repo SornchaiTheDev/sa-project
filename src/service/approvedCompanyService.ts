@@ -1,5 +1,5 @@
 import { ApprovedCompany } from "../types/approvedCompany";
-import { ApprovedCompanyRepository } from "../ิbackend/repositories/approvedCompanyRepository";
+import { ApprovedCompanyRepository } from "../backend/repositories/approvedCompanyRepository";
 
 export class ApprovedCompanyService {
   private approvedCompanyRepository: ApprovedCompanyRepository;
