@@ -28,7 +28,7 @@ function HRNavbar() {
         {menus.map(({ href, label }) => (
           <Link
             key={href}
-            href={`hr/${href}`}
+            href={`/hr/${href}`}
             className={cn(
               "hover:text-zinc-800",
               pathname?.includes(href) && "text-primary font-medium",

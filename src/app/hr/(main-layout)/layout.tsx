@@ -3,9 +3,9 @@ import HRNavbar from "./_components/HRNavbar";
 
 function HRMainLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-20 px-4">
+    <div className="p-4 h-screen">
       <HRNavbar />
-      {children}
+      <div className="pt-16 h-full">{children}</div>
     </div>
   );
 }
