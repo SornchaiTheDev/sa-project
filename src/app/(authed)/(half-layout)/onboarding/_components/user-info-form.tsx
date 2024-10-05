@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { motion } from "framer-motion";
 
 function UserInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,7 +61,11 @@ function UserInfoForm() {
   };
 
   return (
-    <div className="mt-4">
+    <motion.div
+
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+      className="mt-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleOnSubmit)}
@@ -154,7 +159,7 @@ function UserInfoForm() {
           </Button>
         </form>
       </Form>
-    </div>
+    </motion.div>
   );
 }
 
