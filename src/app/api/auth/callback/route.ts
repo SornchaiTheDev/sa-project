@@ -16,6 +16,35 @@ interface TokenResponse {
   scope: string;
 }
 
+export interface UserInfoResponse {
+  "faculty-id": string;
+  sub: string;
+  "google-mail": string;
+  preferred_username: string;
+  "office365-mail": string;
+  locale: string;
+  faculty: string;
+  uid: string;
+  idcode: string;
+  givenname: string;
+  surname: string;
+  thaiprename: string;
+  "advisor-id": string;
+  "last-name": string;
+  "major-id": string;
+  email_verified: boolean;
+  campus: string;
+  degree: string;
+  cn: string;
+  given_name: string;
+  "first-name": string;
+  userprincipalname: string;
+  "type-person": string;
+  thainame: string;
+  name: string;
+  family_name: string;
+}
+
 const isSameState = (cookie: string, state: string) => {
   return cookie === state;
 };
@@ -76,7 +105,7 @@ export const GET = async (req: Request) => {
       },
     );
 
-    const { data: userRes } = await axios.get<UserInfo>(
+    const { data: userRes } = await axios.get<UserInfoResponse>(
       env.KU_ALL_LOGIN_USER_INFO_URI,
       {
         headers: {
@@ -85,7 +114,35 @@ export const GET = async (req: Request) => {
       },
     );
 
-    const accessToken = await signJwt(userRes, env.JWT_SECRET);
+    const payload: UserInfo = {
+      facultyId: userRes["faculty-id"],
+      sub: userRes.sub,
+      googleMail: userRes["google-mail"],
+      preferredUsername: userRes.preferred_username,
+      office365Mail: userRes["office365-mail"],
+      locale: userRes.locale,
+      faculty: userRes.faculty,
+      uid: userRes.uid,
+      idCode: userRes.idcode,
+      enFirstName: userRes.givenname,
+      enSurName: userRes.surname,
+      enFullName: userRes.name,
+      thaiPreName: userRes.thaiprename,
+      thFirstName: userRes["first-name"],
+      thSurName: userRes["last-name"],
+      thFullName: userRes.thainame,
+      advisorId: userRes["advisor-id"],
+      lastName: userRes["last-name"],
+      majorId: userRes["major-id"],
+      emailVerified: userRes.email_verified,
+      campus: userRes.campus,
+      degree: userRes.degree,
+      cn: userRes.cn,
+      userPrincipalName: userRes.userprincipalname,
+      typePerson: userRes["type-person"],
+    };
+
+    const accessToken = await signJwt(payload, env.JWT_SECRET);
     const refreshToken = await signJwt(
       { uid: userRes.uid },
       env.JWT_REFRESH_SECRET,
@@ -118,5 +175,5 @@ export const GET = async (req: Request) => {
     );
   }
 
-  return redirect(env.WEB_URL);
+  return redirect(env.WEB_URL + "/onboarding/user-info");
 };

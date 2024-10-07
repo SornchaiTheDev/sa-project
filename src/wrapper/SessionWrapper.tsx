@@ -2,12 +2,45 @@
 
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect } from "react";
+import { UserInfo } from "~/types/userInfo";
+
+const SessionContext = createContext<UserInfo>({
+  facultyId: "",
+  sub: "",
+  googleMail: "",
+  preferredUsername: "",
+  office365Mail: "",
+  locale: "",
+  faculty: "",
+  uid: "",
+  idCode: "",
+  givenName: "",
+  surname: "",
+  thaiPrename: "",
+  advisorId: "",
+  lastName: "",
+  majorId: "",
+  emailVerified: false,
+  campus: "",
+  degree: "",
+  cn: "",
+  firstName: "",
+  userPrincipalName: "",
+  typePerson: "",
+  thaiName: "",
+  name: "",
+  familyName: "",
+});
+
+export const useSession = () => useContext(SessionContext);
 
 export default function SessionWrapper({
   children,
+  userInfo,
 }: {
   children: React.ReactNode;
+  userInfo: UserInfo;
 }) {
   const router = useRouter();
   const refreshToken = useCallback(async () => {
@@ -39,5 +72,10 @@ export default function SessionWrapper({
       window.removeEventListener("focus", refreshToken);
     };
   }, [refreshToken]);
-  return children;
+
+  return (
+    <SessionContext.Provider value={{ ...userInfo }}>
+      {children}
+    </SessionContext.Provider>
+  );
 }

@@ -24,18 +24,20 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { motion } from "framer-motion";
+import { useSession } from "~/wrapper/SessionWrapper";
 
 function UserInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { thaiPreName, thFirstName, thSurName, googleMail } = useSession();
   const form = useForm<UserInfo>({
     resolver: zodResolver(userInfo),
     defaultValues: {
-      prefix: "none",
-      firstName: "ศรชัย",
-      lastName: "สมสกุล",
-      email: "sornchai.som@ku.th",
-      bod: new Date("2003-10-14"),
-      phone: "0966353408",
+      prefix: thaiPreName,
+      firstName: thFirstName,
+      lastName: thSurName,
+      email: googleMail,
+      bod: new Date(),
+      phone: "",
     },
   });
 
