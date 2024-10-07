@@ -56,9 +56,9 @@ function CreateAnnouncementForm() {
     append({
       name: "",
       description: "",
-      salary: 0,
+      salary: "0",
       type: "full-time",
-      amount: 0,
+      amount: "0",
       welfare: "",
       qualification: "",
     });
@@ -66,7 +66,10 @@ function CreateAnnouncementForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleOnSubmit)} className="flex flex-col">
+      <form
+        onSubmit={form.handleSubmit(handleOnSubmit)}
+        className="flex flex-col"
+      >
         <FormField
           control={form.control}
           name="name"

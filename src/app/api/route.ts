@@ -1,12 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import pool from '../../lib/db';
+import pool from "../../lib/db";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function GET(req: Request) {
   try {
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS "STUDENT" (
@@ -162,9 +156,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await pool.query(createTableQuery);
 
-    res.status(200).json({ message: 'Table created successfully' });
+    return Response.json(
+      { message: "Table created successfully" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error('Error creating table:', error);
-    res.status(500).json({ error: 'Failed to create table' });
+    console.error("Error creating table:", error);
+    return Response.json({ error: "Failed to create table" }, { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-import { KUSD } from "../../types/KUSD";
+import { KUSD } from "../../types/kusd";
 
 export class KUSDModel implements KUSD {
   constructor(
@@ -7,7 +7,7 @@ export class KUSDModel implements KUSD {
     private _firstName: KUSD["firstName"],
     private _lastName: KUSD["lastName"],
     private _email: KUSD["email"],
-    private _isActive: KUSD["isActive"]
+    private _isActive: KUSD["isActive"],
   ) {}
 
   public get username(): KUSD["username"] {

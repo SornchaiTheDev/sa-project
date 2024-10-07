@@ -1,6 +1,6 @@
 import React from "react";
 import ResultCard from "./result-card";
-import { JobAnnouncement } from "~/types/jobAnnouncement";
+import { JobAnnouncement } from "~/types/DTO/jobAnnouncement";
 
 interface Props {
   jobAnnouncements: JobAnnouncement[];

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
 import { BriefcaseBusiness, Heart, Users } from "lucide-react";
-import { JobAnnouncement } from "~/types/jobAnnouncement";
+import { JobAnnouncement } from "~/types/DTO/jobAnnouncement";
 import dayjs from "~/lib/dayjs";
 import Link from "next/link";
 
@@ -9,10 +9,10 @@ export default function ResultCard({
   title,
   id,
   description,
-  companyName,
+  companyImage,
   createdAt,
   positions,
-  companyImage,
+  companyName,
 }: JobAnnouncement) {
   const jobCreatedAt = dayjs(createdAt).fromNow();
 
