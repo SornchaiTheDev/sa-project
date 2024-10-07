@@ -6,7 +6,7 @@ export const hrSignUpSchema = z
     username: z
       .string()
       .min(1, "ชื่อผู้ใช้ต้องยาวอย่างน้อย 1 ตัวอักษร")
-      .max(30, "ชื่อผู้ใช้ต้องยาวไม่เกิน 30 ตัวอักษร"),
+      .regex(/^[a-zA-Z_]+$/, "ชื่อผู้ใช้ต้องเป็นตัวอักษร A-Z และ _ เท่านั้น"),
     password: z
       .string()
       .regex(
