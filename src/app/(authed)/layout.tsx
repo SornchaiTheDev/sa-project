@@ -1,10 +1,11 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
-import { getPayload } from "~/lib/jwt";
+import { env } from "~/configs/env";
+import { getPayload, verifyJwt } from "~/lib/jwt";
 import SessionWrapper from "~/wrapper/SessionWrapper";
 
-export default function NisitAuthedLayout({
+export default async function NisitAuthedLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -12,6 +13,12 @@ export default function NisitAuthedLayout({
   const accessToken = cookies().get("access_token")?.value;
 
   if (accessToken === undefined) {
+    return redirect("/auth/sign-in");
+  }
+
+  try {
+    await verifyJwt(accessToken, env.JWT_SECRET);
+  } catch (_) {
     return redirect("/auth/sign-in");
   }
 

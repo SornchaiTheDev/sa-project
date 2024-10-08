@@ -2,12 +2,13 @@ import { createHash, randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { env } from "~/configs/env";
+import { KU_ALL_LOGIN_AUTHORIZATION_URI } from "~/constants/allLogin";
 
 const base64URLEncode = (str: string) =>
   str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 
 export const GET = () => {
-  const url = new URL(env.KU_ALL_LOGIN_AUTHORIZATION_URI);
+  const url = new URL(KU_ALL_LOGIN_AUTHORIZATION_URI);
   const searchParams = url.searchParams;
 
   searchParams.append("response_type", "code");

@@ -5,6 +5,10 @@ import { signJwt } from "~/lib/jwt";
 import { redirect } from "next/navigation";
 import dayjs from "dayjs";
 import { UserInfo } from "~/types/userInfo";
+import {
+  KU_ALL_LOGIN_TOKEN_ENDPOINT,
+  KU_ALL_LOGIN_USER_INFO_URI,
+} from "~/constants/allLogin";
 
 interface TokenResponse {
   access_token: string;
@@ -95,7 +99,7 @@ export const GET = async (req: Request) => {
 
   try {
     const { data: tokenRes } = await axios.post<TokenResponse>(
-      env.KU_ALL_LOGIN_TOKEN_ENDPOINT,
+      KU_ALL_LOGIN_TOKEN_ENDPOINT,
       tokenParams,
       {
         headers: {
@@ -106,7 +110,7 @@ export const GET = async (req: Request) => {
     );
 
     const { data: userRes } = await axios.get<UserInfoResponse>(
-      env.KU_ALL_LOGIN_USER_INFO_URI,
+      KU_ALL_LOGIN_USER_INFO_URI,
       {
         headers: {
           Authorization: `Bearer ${tokenRes.access_token}`,
