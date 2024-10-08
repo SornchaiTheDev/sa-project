@@ -1,7 +1,16 @@
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import { KULogo } from "~/configs/assets";
 
 function NisitSignInPage() {
+  const accessToken = cookies().get("access_token")?.value;
+  const isAlreadyMember = false;
+  if (accessToken !== undefined) {
+    if (!isAlreadyMember) redirect("/onboarding/user-info");
+
+    redirect("/");
+  }
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h2 className="text-lg font-medium text-center">เข้าสู่ระบบ</h2>

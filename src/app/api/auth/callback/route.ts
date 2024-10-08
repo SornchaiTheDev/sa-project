@@ -175,5 +175,5 @@ export const GET = async (req: Request) => {
     );
   }
 
-  return redirect(env.WEB_URL + "/onboarding/user-info");
+  redirect(env.WEB_URL + "/auth/sign-in");
 };
