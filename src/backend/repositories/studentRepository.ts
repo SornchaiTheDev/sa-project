@@ -60,12 +60,14 @@ export class StudentRepository {
   public async hasCompletedForm(username: string): Promise<boolean> {
     try {
       const text = `
-        SELECT * FROM STUDENT
-        WHERE STU_Username = $1 AND
-        STU_Activity_Hours IS NOT NULL AND
-        STU_Phone_Number IS NOT NULL AND
-        STU_Description IS NOT NULL AND
-        STU_GPAX IS NOT NULL;
+        SELECT * FROM "STUDENT"
+        WHERE "STU_Username" = $1 AND
+        "STU_Birth_Date" IS NOT NULL AND
+        "STU_Phone_Number" IS NOT NULL AND
+        "STU_Faculty" IS NOT NULL AND
+        "STU_Major" IS NOT NULL AND
+        "STU_GPAX" IS NOT NULL AND
+        "STU_Activity_Hours" IS NOT NULL;
       `;
 
       const values = [username];

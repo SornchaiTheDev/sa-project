@@ -1,12 +1,21 @@
 import { redirect } from "next/navigation";
 import React from "react";
+import { StudentRepository } from "~/backend/repositories/studentRepository";
+import { getUserInfo } from "~/lib/getUserInfo";
 
-export default function OnboardingLayout({
+export default async function OnboardingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const isAlreadyMember = false;
-  if (isAlreadyMember) redirect("/");
+  const userInfo = await getUserInfo();
+
+  const studentRepo = new StudentRepository();
+
+  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.idCode);
+
+  if (hasCompleteForm) {
+    redirect("/");
+  }
   return children;
 }
