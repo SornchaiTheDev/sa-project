@@ -13,7 +13,10 @@ export const createTable = async () => {
           "STU_Activity_Hours" INT,
           "STU_Phone_Number" VARCHAR(10),
           "STU_Description" TEXT,
-          "STU_GPAX" FLOAT
+          "STU_GPAX" FLOAT,
+          "STU_Birth_Date" DATE,
+          "STU_Faculty" VARCHAR(100),
+          "STU_Major" VARCHAR(100)
       );
 
       CREATE TABLE IF NOT EXISTS "JOB_ANNOUNCER" (
