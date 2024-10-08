@@ -25,6 +25,7 @@ import {
 } from "~/components/ui/select";
 import { motion } from "framer-motion";
 import { useSession } from "~/wrapper/SessionWrapper";
+import { ChevronRight } from "lucide-react";
 
 function UserInfoFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -179,8 +180,14 @@ function UserInfoFormPage() {
                   </FormItem>
                 )}
               />
-              <Button className="h-10" isLoading={isSubmitting}>
-                บันทึกข้อมูล
+              <Button
+                disabled={isSubmitting || !form.formState.isValid}
+                isLoading={isSubmitting}
+                variant="ghost"
+                className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
+              >
+                <span>ถัดไป</span>
+                <ChevronRight size="1rem" />
               </Button>
             </form>
           </Form>

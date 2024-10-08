@@ -80,7 +80,7 @@ function EducationAndWorksForm() {
           animate={{ y: 0, opacity: 1 }}
           className="text-lg"
         >
-          ข้อมูลส่วนตัว
+          ประวัติการศึกษาและประวัติการทำงาน
         </motion.h6>
         <motion.div
           initial={{ y: 40, opacity: 0 }}
