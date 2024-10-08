@@ -4,16 +4,13 @@ export interface CreateStudent {
   firstName: string;
   lastName: string;
   email: string;
+  faculty: string;
 }
 
 export interface UpdateStudent {
-  prefix: string;
-  firstName: string;
-  surName: string;
-  email: string;
+  username: string;
   bod: Date;
   phone: string;
-  faculty: string;
   major: string;
   gpax: string;
   activitiesHours: string;

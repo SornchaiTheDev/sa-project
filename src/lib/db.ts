@@ -10,12 +10,21 @@ const pool = new Pool({
   ssl: false,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const query = async (text: string, params?: any[]) => {
+export const query = async (text: string, params?: unknown[]) => {
   const client = await pool.connect();
   try {
     const result = await client.query(text, params);
+    console.log(result);
     return result.rows;
+  } finally {
+    client.release();
+  }
+};
+
+export const execute = async (text: string, params?: unknown[]) => {
+  const client = await pool.connect();
+  try {
+    return await client.query(text, params);
   } finally {
     client.release();
   }

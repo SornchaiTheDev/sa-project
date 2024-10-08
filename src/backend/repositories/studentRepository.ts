@@ -1,6 +1,6 @@
-import { query } from "../../lib/db";
+import { execute, query } from "../../lib/db";
 import { Student } from "../../types/student";
-import { CreateStudent } from "../DTO/studentDTO";
+import { CreateStudent, UpdateStudent } from "../DTO/studentDTO";
 
 export class StudentRepository {
   public async getByUsername(email: string): Promise<Student | undefined> {
@@ -12,6 +12,9 @@ export class StudentRepository {
     const values = [email];
 
     const res = await query(text, values);
+
+    if (res.length === 0) return undefined;
+
     return {
       username: res[0].STU_Username,
       title: res[0].STU_Title,
@@ -34,8 +37,9 @@ export class StudentRepository {
           "STU_Title",
           "STU_First_Name",
           "STU_Last_Name",
-          "STU_Email_Google"
-        ) VALUES ($1, $2, $3, $4, $5)
+          "STU_Email_Google",
+          "STU_Faculty"
+        ) VALUES ($1, $2, $3, $4, $5, $6)
       `;
 
       const values = [
@@ -44,6 +48,7 @@ export class StudentRepository {
         student.firstName,
         student.lastName,
         student.email,
+        student.faculty,
       ];
       await query(text, values);
     } catch (error) {
@@ -69,6 +74,42 @@ export class StudentRepository {
     } catch (error) {
       console.error("Failed to fetch student in the database", error);
       throw error;
+    }
+  }
+
+  public async update(student: UpdateStudent): Promise<boolean> {
+    const text = `
+      UPDATE "STUDENT" SET
+      "STU_Birth_Date" = $1,
+      "STU_Phone_Number" = $2,
+      "STU_Major" = $3,
+      "STU_GPAX" = $4,
+      "STU_Activity_Hours" = $5,
+      "STU_Description" = $6
+      WHERE "STU_Username" = $7
+    `;
+
+    const values = [
+      student.bod,
+      student.phone,
+      student.major,
+      parseFloat(student.gpax),
+      parseInt(student.activitiesHours),
+      student.workExp,
+      student.username,
+    ];
+
+    try {
+      const query_result = await execute(text, values);
+
+      if (query_result.rowCount === null) {
+        return false;
+      }
+
+      return query_result.rowCount === 1;
+    } catch (err) {
+      console.error("Failed to update student in the database", err);
+      throw err;
     }
   }
 }

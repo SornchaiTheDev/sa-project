@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "~/components/ui/sonner";
+import QueryWrapper from "~/wrapper/QueryWrapper";
 
 const kanit = Kanit({
   subsets: ["latin"],
@@ -21,8 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${kanit.className} antialiased`}>
-        {children}
-        <Toaster position="top-right" className={`${kanit.className} toaster group`} />
+        <QueryWrapper>{children}</QueryWrapper>
+        <Toaster
+          position="top-right"
+          className={`${kanit.className} toaster group`}
+        />
       </body>
     </html>
   );

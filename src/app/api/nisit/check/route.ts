@@ -52,15 +52,17 @@ export const GET = async () => {
     if (student === undefined) {
       try {
         await studentRepo.create({
-          email: payload.googleMail,
           username: payload.idCode,
           title: payload.thaiPreName,
           firstName: payload.thFirstName,
           lastName: payload.thSurName,
+          email: payload.googleMail,
+          faculty: payload.faculty,
         });
       } catch (err) {
         console.error("Failed to create student in the database", err);
       }
+      redirect("/onboarding/user-info");
     } else {
       if (student.phoneNumber === null) {
         redirect("/onboarding/user-info");
@@ -70,4 +72,11 @@ export const GET = async () => {
       redirect("/");
     }
   }
+  return Response.json(
+    {
+      message: "SOMETING_WENT_WRONG",
+      code: 500,
+    },
+    { status: 500 },
+  );
 };

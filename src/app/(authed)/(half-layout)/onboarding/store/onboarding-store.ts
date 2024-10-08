@@ -1,10 +1,8 @@
 import { atomWithStorage } from "jotai/utils";
-import { UserInfo } from "../user-info/schemas/user-info";
-import { EducationAndWorks } from "../educations-and-works/schemas/education-and-works";
+import { Onboarding } from "../types/onboarding-type";
+import { atom } from "jotai";
 
-type OnboardingAtom = UserInfo & EducationAndWorks;
-
-export const onboardingAtom = atomWithStorage<OnboardingAtom>(
+export const onboardingAtom = atomWithStorage<Onboarding>(
   "onboarding",
   {
     prefix: "",
@@ -22,3 +20,21 @@ export const onboardingAtom = atomWithStorage<OnboardingAtom>(
   undefined,
   { getOnInit: true },
 );
+
+export const resetOnboardingAtom = atom(null, (_, set) => {
+  set(onboardingAtom, {
+    prefix: "",
+    firstName: "",
+    surName: "",
+    email: "",
+    bod: new Date(),
+    phone: "",
+    gpax: "",
+    activitiesHours: "",
+    faculty: "",
+    major: "",
+    workExp: "",
+  });
+
+  localStorage.removeItem("onboarding");
+});

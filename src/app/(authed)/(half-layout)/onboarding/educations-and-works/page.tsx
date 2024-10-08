@@ -28,18 +28,21 @@ import { motion } from "framer-motion";
 import { useSession } from "~/wrapper/SessionWrapper";
 import { Textarea } from "~/components/ui/textarea";
 import { faculties } from "~/constants/faculty";
-import { onboardingAtom } from "../store/onboarding-store";
-import { useAtom } from "jotai";
+import { onboardingAtom, resetOnboardingAtom } from "../store/onboarding-store";
+import { useAtom, useSetAtom } from "jotai";
+import { useMutation } from "@tanstack/react-query";
+import { saveOnboardingInfo } from "./mutationFns/saveOnboardingInfo";
 
 function EducationAndWorksForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { faculty } = useSession();
+  const { faculty, idCode } = useSession();
   const [onboard, setOnboard] = useAtom(onboardingAtom);
+  const resetOnboarding = useSetAtom(resetOnboardingAtom);
 
   const form = useForm<EducationAndWorks>({
     resolver: zodResolver(educationAndWorks),
     defaultValues: {
-      faculty: onboard.faculty.length > 0 ? onboard.faculty : "คณะ" + faculty,
+      faculty: "คณะ" + faculty,
       major: onboard.major,
       gpax: onboard.gpax,
       workExp: onboard.workExp,
@@ -47,22 +50,33 @@ function EducationAndWorksForm() {
     },
   });
 
+  console.log(form.watch("faculty"));
+
   const router = useRouter();
+
+  const saveData = useMutation({
+    mutationFn: saveOnboardingInfo,
+    mutationKey: ["saveOnboardingInfo"],
+    onSuccess: () => {
+      resetOnboarding();
+      router.push("/");
+    },
+    onError: (error) => {
+      toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      setIsSubmitting(false);
+    },
+  });
 
   const handleOnSubmit = (formData: EducationAndWorks) => {
     setIsSubmitting(true);
-    setOnboard((prev) => ({ ...prev, ...formData }));
-
-    console.log(onboard);
 
     toast.promise(
-      new Promise((res) =>
-        setTimeout(() => {
-          res("ok");
-          setIsSubmitting(false);
-          // router.push("/");
-        }, 1000),
-      ),
+      async () =>
+        await saveData.mutateAsync({
+          ...onboard,
+          ...formData,
+          username: idCode,
+        }),
       {
         loading: "กำลังบันทึกข้อมูล...",
         success: "บันทึกข้อมูลสำเร็จ",
