@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "~/configs/env";
 import { signJwt } from "~/lib/jwt";
 import { redirect } from "next/navigation";
-import dayjs from "~/lib/dayjs";
 import { UserInfo } from "~/types/userInfo";
 import {
   KU_ALL_LOGIN_TOKEN_ENDPOINT,
@@ -183,5 +182,5 @@ export const GET = async (req: Request) => {
     );
   }
 
-  redirect(env.WEB_URL + "/api/nisit/check");
+  redirect(env.WEB_URL + "/api/auth/check");
 };

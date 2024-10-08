@@ -12,7 +12,7 @@ export default async function OnboardingLayout({
 
   const studentRepo = new StudentRepository();
 
-  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.idCode);
+  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.uid);
 
   if (hasCompleteForm) {
     redirect("/");

@@ -29,14 +29,14 @@ import { useSession } from "~/wrapper/SessionWrapper";
 import { Textarea } from "~/components/ui/textarea";
 import { faculties } from "~/constants/faculty";
 import { onboardingAtom, resetOnboardingAtom } from "../store/onboarding-store";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useMutation } from "@tanstack/react-query";
 import { saveOnboardingInfo } from "./mutationFns/saveOnboardingInfo";
 
 function EducationAndWorksForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { faculty, idCode } = useSession();
-  const [onboard, setOnboard] = useAtom(onboardingAtom);
+  const { faculty, uid } = useSession();
+  const onboard = useAtomValue(onboardingAtom);
   const resetOnboarding = useSetAtom(resetOnboardingAtom);
 
   const form = useForm<EducationAndWorks>({
@@ -75,7 +75,7 @@ function EducationAndWorksForm() {
         await saveData.mutateAsync({
           ...onboard,
           ...formData,
-          username: idCode,
+          username: uid,
         }),
       {
         loading: "กำลังบันทึกข้อมูล...",

@@ -9,7 +9,7 @@ async function AuthedLayout({ children }: { children: ReactNode }) {
   const userInfo = await getUserInfo();
   const studentRepo = new StudentRepository();
 
-  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.idCode);
+  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.uid);
 
   if (!hasCompleteForm) {
     redirect("/onboarding/user-info");
