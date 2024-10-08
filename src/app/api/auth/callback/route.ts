@@ -3,12 +3,13 @@ import axios from "axios";
 import { env } from "~/configs/env";
 import { signJwt } from "~/lib/jwt";
 import { redirect } from "next/navigation";
-import dayjs from "dayjs";
+import dayjs from "~/lib/dayjs";
 import { UserInfo } from "~/types/userInfo";
 import {
   KU_ALL_LOGIN_TOKEN_ENDPOINT,
   KU_ALL_LOGIN_USER_INFO_URI,
 } from "~/constants/allLogin";
+import { setHTTPOnlyCookie } from "~/lib/cookies";
 
 interface TokenResponse {
   access_token: string;
@@ -146,6 +147,20 @@ export const GET = async (req: Request) => {
       typePerson: userRes["type-person"],
     };
 
+    // const accountYear = parseInt(payload.idCode.slice(0, 2));
+    //
+    // const currentYear = parseInt(dayjs().format("BBBB").slice(2, 4));
+    // Check if current student
+    // if (currentYear - accountYear > 4) {
+    //   return Response.json(
+    //     {
+    //       message: "INVALID_ACCOUNT_YEAR",
+    //       code: 400,
+    //     },
+    //     { status: 400 },
+    //   );
+    // }
+
     const accessToken = await signJwt(payload, env.JWT_SECRET);
     const refreshToken = await signJwt(
       { uid: userRes.uid },
@@ -155,19 +170,8 @@ export const GET = async (req: Request) => {
     cookies().delete("state");
     cookies().delete("code_verifier");
 
-    cookies().set("access_token", accessToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      expires: dayjs().add(30, "minute").toDate(),
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    cookies().set("refresh_token", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      expires: dayjs().add(2, "hour").toDate(),
-      secure: process.env.NODE_ENV === "production",
-    });
+    setHTTPOnlyCookie("access_token", accessToken);
+    setHTTPOnlyCookie("refresh_token", refreshToken);
   } catch (err) {
     console.log(err);
     return Response.json(
@@ -179,5 +183,5 @@ export const GET = async (req: Request) => {
     );
   }
 
-  redirect(env.WEB_URL + "/auth/sign-in");
+  redirect(env.WEB_URL + "/api/nisit/check");
 };
