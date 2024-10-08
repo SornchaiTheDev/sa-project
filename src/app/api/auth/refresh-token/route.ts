@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { cookies } from "next/headers";
 import { env } from "~/configs/env";
 import { setHTTPOnlyCookie } from "~/lib/cookies";
-import { getPayload, isExpired, signJwt, verifyJwt } from "~/lib/jwt";
+import { getPayload, signJwt, verifyJwt } from "~/lib/jwt";
 
 export const POST = async () => {
   const accessToken = cookies().get("access_token")?.value;
@@ -18,26 +18,13 @@ export const POST = async () => {
     );
   }
 
-  const isAccessTokenValid = await verifyJwt(accessToken, env.JWT_SECRET);
-  const isRefreshTokenValid = await verifyJwt(
-    refreshToken,
-    env.JWT_REFRESH_SECRET,
-  );
-
-  if (!isAccessTokenValid || !isRefreshTokenValid) {
+  try {
+    await verifyJwt(accessToken, env.JWT_SECRET);
+    await verifyJwt(refreshToken, env.JWT_REFRESH_SECRET);
+  } catch (_) {
     return Response.json(
       {
-        message: "NOT_AUTHROIZED",
-        code: 401,
-      },
-      { status: 401 },
-    );
-  }
-
-  if (isExpired(refreshToken)) {
-    return Response.json(
-      {
-        message: "REFRESH_TOKEN_EXPIRED",
+        message: "UNAUTHORIZED",
         code: 401,
       },
       { status: 401 },

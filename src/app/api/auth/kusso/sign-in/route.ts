@@ -20,7 +20,6 @@ export const GET = () => {
   searchParams.append("state", state);
 
   const codeVerifier = base64URLEncode(randomBytes(64).toString("base64"));
-  console.log(codeVerifier);
   const codeChallenge = createHash("sha256")
     .update(codeVerifier)
     .digest("base64");
