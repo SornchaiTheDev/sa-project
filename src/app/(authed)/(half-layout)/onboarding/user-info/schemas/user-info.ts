@@ -10,7 +10,7 @@ export const userInfo = z.object({
     .min(1, "กรุณาเลือกคำนำหน้า")
     .refine((val) => val !== "none", "กรุณาเลือกคำนำหน้า"),
   firstName: z.string().min(1, "กรุณากรอกชื่อ"),
-  lastName: z.string().min(1, "กรุณากรอกนามสกุล"),
+  surName: z.string().min(1, "กรุณากรอกนามสกุล"),
   email: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
   bod: z
     .date()

@@ -11,10 +11,8 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { DatePicker } from "~/components/ui/date-picker";
 import dayjs from "~/lib/dayjs";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -25,20 +23,35 @@ import {
 } from "~/components/ui/select";
 import { motion } from "framer-motion";
 import { useSession } from "~/wrapper/SessionWrapper";
-import { ChevronRight } from "lucide-react";
+import { CalendarIcon, ChevronRight } from "lucide-react";
+import { useAtom } from "jotai";
+import { onboardingAtom } from "../store/onboarding-store";
+import dynamic from "next/dynamic";
+
+const DatePicker = dynamic(() => import("~/components/ui/date-picker"), {
+  ssr: false,
+  loading: () => (
+    <div className="items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-zinc-100 shadow-sm hover:bg-accent hover:text-accent-foreground px-4 py-2 w-full justify-start text-left font-normal flex h-12">
+      <CalendarIcon className="mr-2 h-4 w-4" />
+      Loading...
+    </div>
+  ),
+});
 
 function UserInfoFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { thaiPreName, thFirstName, thSurName, googleMail } = useSession();
+  const [onboard, setOnboard] = useAtom(onboardingAtom);
+
   const form = useForm<UserInfo>({
     resolver: zodResolver(userInfo),
     defaultValues: {
-      prefix: thaiPreName,
-      firstName: thFirstName,
-      lastName: thSurName,
-      email: googleMail,
-      bod: new Date(),
-      phone: "",
+      prefix: onboard.prefix.length > 0 ? onboard.prefix : thaiPreName,
+      firstName: onboard.firstName.length > 0 ? onboard.firstName : thFirstName,
+      surName: onboard.surName.length > 0 ? onboard.surName : thSurName,
+      email: onboard.surName.length > 0 ? onboard.email : googleMail,
+      bod: new Date(onboard.bod),
+      phone: onboard.phone,
     },
   });
 
@@ -49,19 +62,8 @@ function UserInfoFormPage() {
 
   const handleOnSubmit = (formData: UserInfo) => {
     setIsSubmitting(true);
-    toast.promise(
-      new Promise((res) =>
-        setTimeout(() => {
-          res("ok");
-          setIsSubmitting(false);
-          router.push("/onboarding/educations-and-works");
-        }, 1000),
-      ),
-      {
-        loading: "กำลังบันทึกข้อมูล...",
-        success: "บันทึกข้อมูลสำเร็จ",
-      },
-    );
+    setOnboard((prev) => ({ ...prev, ...formData }));
+    router.push("/onboarding/educations-and-works");
   };
 
   return (
@@ -97,8 +99,8 @@ function UserInfoFormPage() {
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">คำนำหน้า</FormLabel>
-                    <Select value={value} onValueChange={onChange}>
-                      <SelectTrigger className="w-full h-12">
+                    <Select value={value} disabled onValueChange={onChange}>
+                      <SelectTrigger className="w-full h-12 bg-zinc-100">
                         <SelectValue placeholder="คำนำหน้า" />
                       </SelectTrigger>
                       <SelectContent>
@@ -120,18 +122,28 @@ function UserInfoFormPage() {
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">ชื่อ</FormLabel>
-                    <Input className="h-12" {...field} placeholder="ชื่อ" />
+                    <Input
+                      disabled
+                      className="h-12 bg-zinc-100"
+                      {...field}
+                      placeholder="ชื่อ"
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="lastName"
+                name="surName"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">นามสกุล</FormLabel>
-                    <Input className="h-12" {...field} placeholder="นามสกุล" />
+                    <Input
+                      disabled
+                      className="h-12 bg-zinc-100"
+                      {...field}
+                      placeholder="นามสกุล"
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -142,7 +154,12 @@ function UserInfoFormPage() {
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">อีเมล</FormLabel>
-                    <Input className="h-12" {...field} placeholder="อีเมล" />
+                    <Input
+                      disabled
+                      className="h-12 bg-zinc-100"
+                      {...field}
+                      placeholder="อีเมล"
+                    />
                     <FormMessage />
                   </FormItem>
                 )}
@@ -156,7 +173,7 @@ function UserInfoFormPage() {
                       วัน เดือน ปีเกิด
                     </FormLabel>
                     <DatePicker
-                      className="h-12"
+                      className="h-12 bg-zinc-100"
                       fromYear={fromYear.toDate()}
                       toYear={toYear.toDate()}
                       {...{ value, onChange }}
@@ -172,7 +189,7 @@ function UserInfoFormPage() {
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">เบอร์ติดต่อ</FormLabel>
                     <Input
-                      className="h-12"
+                      className="h-12 bg-zinc-100"
                       {...field}
                       placeholder="เบอร์ติดต่อ"
                     />

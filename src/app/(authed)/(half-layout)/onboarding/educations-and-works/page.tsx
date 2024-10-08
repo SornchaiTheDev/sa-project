@@ -14,7 +14,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -28,18 +28,22 @@ import { motion } from "framer-motion";
 import { useSession } from "~/wrapper/SessionWrapper";
 import { Textarea } from "~/components/ui/textarea";
 import { faculties } from "~/constants/faculty";
+import { onboardingAtom } from "../store/onboarding-store";
+import { useAtom } from "jotai";
 
 function EducationAndWorksForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { faculty } = useSession();
+  const [onboard, setOnboard] = useAtom(onboardingAtom);
+
   const form = useForm<EducationAndWorks>({
     resolver: zodResolver(educationAndWorks),
     defaultValues: {
-      faculty: "คณะ" + faculty,
-      major: "",
-      gpax: "",
-      workExp: "",
-      activitiesHours: "4",
+      faculty: onboard.faculty.length > 0 ? onboard.faculty : "คณะ" + faculty,
+      major: onboard.major,
+      gpax: onboard.gpax,
+      workExp: onboard.workExp,
+      activitiesHours: onboard.activitiesHours,
     },
   });
 
@@ -47,12 +51,16 @@ function EducationAndWorksForm() {
 
   const handleOnSubmit = (formData: EducationAndWorks) => {
     setIsSubmitting(true);
+    setOnboard((prev) => ({ ...prev, ...formData }));
+
+    console.log(onboard);
+
     toast.promise(
       new Promise((res) =>
         setTimeout(() => {
           res("ok");
           setIsSubmitting(false);
-          router.push("/");
+          // router.push("/");
         }, 1000),
       ),
       {
@@ -61,6 +69,11 @@ function EducationAndWorksForm() {
       },
     );
   };
+
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const majors =
     faculties.find(({ name }) => name === form.watch("faculty"))?.majors ?? [];
@@ -98,7 +111,7 @@ function EducationAndWorksForm() {
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">คณะ</FormLabel>
-                    <Select value={value} onValueChange={onChange}>
+                    <Select disabled value={value} onValueChange={onChange}>
                       <SelectTrigger className="w-full h-12 bg-zinc-100">
                         <SelectValue placeholder="คณะ" />
                       </SelectTrigger>
@@ -125,7 +138,11 @@ function EducationAndWorksForm() {
                     <FormLabel className="font-normal">ภาควิชา</FormLabel>
                     <Select value={value} onValueChange={onChange}>
                       <SelectTrigger className="w-full h-12 bg-zinc-100">
-                        <SelectValue placeholder="ภาควิชา" />
+                        {isLoading ? (
+                          "Loading"
+                        ) : (
+                          <SelectValue placeholder="ภาควิชา" />
+                        )}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none" disabled>
