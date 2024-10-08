@@ -17,5 +17,6 @@ export default async function OnboardingLayout({
   if (hasCompleteForm) {
     redirect("/");
   }
+
   return children;
 }
