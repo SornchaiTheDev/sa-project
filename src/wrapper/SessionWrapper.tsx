@@ -15,9 +15,13 @@ const SessionContext = createContext<UserInfo>({
   faculty: "",
   uid: "",
   idCode: "",
-  givenName: "",
-  surname: "",
-  thaiPrename: "",
+  thaiPreName: "",
+  thFirstName: "",
+  thSurName: "",
+  thFullName: "",
+  enFirstName: "",
+  enSurName: "",
+  enFullName: "",
   advisorId: "",
   lastName: "",
   majorId: "",
@@ -25,12 +29,8 @@ const SessionContext = createContext<UserInfo>({
   campus: "",
   degree: "",
   cn: "",
-  firstName: "",
   userPrincipalName: "",
   typePerson: "",
-  thaiName: "",
-  name: "",
-  familyName: "",
 });
 
 export const useSession = () => useContext(SessionContext);
@@ -48,9 +48,10 @@ export default function SessionWrapper({
       await axios.post("/api/auth/refresh-token");
     } catch (err) {
       if (err instanceof AxiosError) {
+        console.log(err);
         switch (err.response?.data.message) {
+          case "UNAUTHORIZED":
           case "TOKEN_NOT_FOUND":
-          case "TOKEN_EXPIRED":
             router.push("/auth/sign-in");
             break;
         }
