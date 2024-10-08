@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import * as jose from "jose";
 import { env } from "~/configs/env";
 import { UserInfo } from "~/types/userInfo";
@@ -26,13 +27,8 @@ export const verifyJwt = async (jwt: string, secret: string) => {
 
 export const isExpired = (jwt: string) => {
   const { exp } = jose.decodeJwt<UserInfo>(jwt);
-  const now = Math.floor(Date.now() / 1000);
-
-  if (exp === undefined) {
-    return true;
-  }
-
-  return exp < now;
+  if (exp === undefined) return true;
+  return dayjs(exp / 1000).isBefore(dayjs());
 };
 
 export const getPayload = (jwt: string) => {
