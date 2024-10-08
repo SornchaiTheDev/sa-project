@@ -27,7 +27,7 @@ interface Props {
   value: Date;
   onChange: (date: Date | undefined) => void;
 }
-export function DatePicker({
+export default function DatePicker({
   className,
   fromYear,
   toYear,
