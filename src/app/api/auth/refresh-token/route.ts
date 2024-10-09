@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { env } from "~/configs/env";
 import { setHTTPOnlyCookie } from "~/lib/cookies";
@@ -31,7 +32,7 @@ export const POST = async () => {
     );
   }
 
-  const payload = getPayload(accessToken);
+  const payload = getPayload<JWTPayload>(accessToken);
 
   if (payload?.exp === undefined) {
     return Response.json(

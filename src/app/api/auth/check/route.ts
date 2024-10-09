@@ -99,7 +99,7 @@ export const GET = async () => {
     redirect("/auth/sign-in?error=UNAUTHORIZED");
   }
 
-  const payload = getPayload(accessToken);
+  const payload = getPayload<UserInfo>(accessToken);
 
   switch (payload.typePerson) {
     case "3":
