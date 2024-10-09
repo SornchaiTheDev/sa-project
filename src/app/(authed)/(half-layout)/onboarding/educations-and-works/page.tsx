@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { motion } from "framer-motion";
-import { useSession } from "~/wrapper/SessionWrapper";
+import { useAllLoginSession } from "~/wrapper/AllLoginSessionWrapper";
 import { Textarea } from "~/components/ui/textarea";
 import { faculties } from "~/constants/faculty";
 import { onboardingAtom, resetOnboardingAtom } from "../store/onboarding-store";
@@ -35,7 +35,7 @@ import { saveOnboardingInfo } from "./mutationFns/saveOnboardingInfo";
 
 function EducationAndWorksForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { faculty, uid } = useSession();
+  const { faculty, uid } = useAllLoginSession();
   const onboard = useAtomValue(onboardingAtom);
   const resetOnboarding = useSetAtom(resetOnboardingAtom);
 

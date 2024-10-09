@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { motion } from "framer-motion";
-import { useSession } from "~/wrapper/SessionWrapper";
+import { useAllLoginSession } from "~/wrapper/AllLoginSessionWrapper";
 import { CalendarIcon, ChevronRight } from "lucide-react";
 import { useAtom } from "jotai";
 import { onboardingAtom } from "../store/onboarding-store";
@@ -40,7 +40,8 @@ const DatePicker = dynamic(() => import("~/components/ui/date-picker"), {
 
 function UserInfoFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { thaiPreName, thFirstName, thSurName, googleMail } = useSession();
+  const { thaiPreName, thFirstName, thSurName, googleMail } =
+    useAllLoginSession();
   const [onboard, setOnboard] = useAtom(onboardingAtom);
 
   const form = useForm<UserInfo>({

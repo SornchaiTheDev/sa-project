@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect } from "react";
 import { UserInfo } from "~/types/userInfo";
 
-const SessionContext = createContext<UserInfo>({
+const AllLoginSessionContext = createContext<UserInfo>({
   facultyId: "",
   sub: "",
   googleMail: "",
@@ -33,9 +33,9 @@ const SessionContext = createContext<UserInfo>({
   typePerson: "",
 });
 
-export const useSession = () => useContext(SessionContext);
+export const useAllLoginSession = () => useContext(AllLoginSessionContext);
 
-export default function SessionWrapper({
+export default function AllLoginSessionWrapper({
   children,
   userInfo,
 }: {
@@ -75,8 +75,8 @@ export default function SessionWrapper({
   }, [refreshToken]);
 
   return (
-    <SessionContext.Provider value={{ ...userInfo }}>
+    <AllLoginSessionContext.Provider value={{ ...userInfo }}>
       {children}
-    </SessionContext.Provider>
+    </AllLoginSessionContext.Provider>
   );
 }

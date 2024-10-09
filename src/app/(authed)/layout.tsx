@@ -1,5 +1,5 @@
 import { getUserInfo } from "~/lib/getUserInfo";
-import SessionWrapper from "~/wrapper/SessionWrapper";
+import AllLoginSessionWrapper from "~/wrapper/AllLoginSessionWrapper";
 
 export default async function NisitAuthedLayout({
   children,
@@ -8,5 +8,9 @@ export default async function NisitAuthedLayout({
 }) {
   const userInfo = await getUserInfo();
 
-  return <SessionWrapper {...{ userInfo }}>{children}</SessionWrapper>;
+  return (
+    <AllLoginSessionWrapper {...{ userInfo }}>
+      {children}
+    </AllLoginSessionWrapper>
+  );
 }
