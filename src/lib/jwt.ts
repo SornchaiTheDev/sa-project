@@ -31,6 +31,6 @@ export const isExpired = (jwt: string) => {
   return dayjs(exp / 1000).isBefore(dayjs());
 };
 
-export const getPayload = (jwt: string) => {
-  return jose.decodeJwt<UserInfo>(jwt);
+export const getPayload = <T>(jwt: string) => {
+  return jose.decodeJwt<T>(jwt);
 };
