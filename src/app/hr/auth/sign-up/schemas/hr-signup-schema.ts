@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const hrSignUpSchema = z
   .object({
-    email: z.string().email("กรุณากรอกอีเมลให้ถูกต้อง"),
     username: z
       .string()
       .min(1, "ชื่อผู้ใช้ต้องยาวอย่างน้อย 1 ตัวอักษร")

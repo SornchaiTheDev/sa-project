@@ -17,6 +17,14 @@ const assertThaiId = (thaiId: string): boolean => {
   return true;
 };
 
+const uploadedFile = z.object({
+  id: z.string(),
+  name: z.string(),
+  url: z.string(),
+  size: z.number(),
+  type: z.string(),
+});
+
 export const companyInfo = z
   .object({
     type: z
@@ -28,10 +36,11 @@ export const companyInfo = z
       .string()
       .refine(
         (val) => assertThaiId(val),
-        "กรุณากรอกเลขประจำตัวผู้เสียภาษี 13 หลัก",
+        "กรุณากรอกเลขประจำตัวผู้เสียภาษี 13 หลักให้ถูกต้อง",
       ),
     category: z.string().min(1, "กรุณาเลือกหมวดบริษัท"),
-    bookUrl: z.array(z.string()),
+    logoUrl: z.array(uploadedFile),
+    bookUrl: z.array(uploadedFile),
   })
   .refine((data) => data.type !== "none", {
     message: "กรุณาเลือกประเภทบริษัท",
@@ -40,6 +49,10 @@ export const companyInfo = z
   .refine((data) => data.bookUrl.length === 1, {
     message: "กรุณาอัพโหลดหนังสือคำร้อง",
     path: ["bookUrl"],
+  })
+  .refine((data) => data.logoUrl.length === 1, {
+    message: "กรุณาอัพโหลดสัญลักษณ์หน่วยงาน",
+    path: ["logoUrl"],
   });
 
 export type CompanyInfo = z.infer<typeof companyInfo>;

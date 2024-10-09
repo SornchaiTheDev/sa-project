@@ -27,6 +27,10 @@ import UploadFile from "~/components/upload-file";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
+import { useAtom } from "jotai";
+import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
+import axios from "axios";
+import { DBDData } from "~/types/dbdData";
 
 const jobCategories: { name: string; id: string }[] = [
   {
@@ -39,27 +43,51 @@ const jobCategories: { name: string; id: string }[] = [
   },
 ];
 
+const checkTaxId = async (taxId: string) => {
+  const res = await axios.get<DBDData>(
+    `https://openapi.dbd.go.th/api/v1/juristic_person/${taxId}`,
+  );
+
+  if (res.data.status.code === "1000") {
+    return true;
+  }
+};
+
 function CompanyInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [{ type, name, taxId, category, bookUrl, logoUrl }, setSignUpData] =
+    useAtom(hrSignUpAtom);
   const form = useForm<CompanyInfo>({
     resolver: zodResolver(companyInfo),
     defaultValues: {
-      type: "none",
-      name: "",
-      taxId: "",
-      category: "",
-      bookUrl: [],
+      type,
+      name,
+      taxId,
+      category,
+      bookUrl,
+      logoUrl,
     },
   });
 
   const router = useRouter();
 
-  const handleOnSubmit = () => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+  const handleOnSubmit = async (formData: CompanyInfo) => {
+    setSignUpData((prev) => ({ ...prev, ...formData }));
+
+    try {
+      setIsSubmitting(true);
+      const isFound = await checkTaxId(formData.taxId);
+      if (!isFound) {
+        form.setError("taxId", {
+          message: "ไม่พบเลขประจำตัวผู้เสียภาษีนี้",
+        });
+        return;
+      }
       router.push("/hr/onboarding/verify");
-    }, 2000);
+    } catch (err) {
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -157,19 +185,38 @@ function CompanyInfoForm() {
 
           <FormField
             control={form.control}
+            name="logoUrl"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">
+                  อัปโหลดสัญลักษณ์หน่วยงาน
+                </FormLabel>
+                <UploadFile
+                  maxFiles={1}
+                  accept={{
+                    "image/*": [],
+                  }}
+                  {...field}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="bookUrl"
-            render={({ field: { onChange } }) => (
+            render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">
                   อัปโหลดหนังสือยื่นคำร้อง
                 </FormLabel>
                 <UploadFile
                   maxFiles={1}
-                  onChange={onChange}
                   accept={{
                     "image/*": [".png", ".jpg", ".jpeg"],
                     "application/pdf": [".pdf"],
                   }}
+                  {...field}
                 />
                 <FormMessage />
               </FormItem>

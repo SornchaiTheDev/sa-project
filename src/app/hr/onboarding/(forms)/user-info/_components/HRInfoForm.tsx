@@ -26,11 +26,12 @@ import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
 
 function HRInfoForm() {
-  const [{ title, firstName, surName, phone }, setSignUpData] =
+  const [{ email, title, firstName, surName, phone }, setSignUpData] =
     useAtom(hrSignUpAtom);
   const form = useForm<HRInfo>({
     resolver: zodResolver(hrInfo),
     defaultValues: {
+      email,
       title,
       firstName,
       surName,
@@ -67,6 +68,21 @@ function HRInfoForm() {
           animate={{ y: 0, opacity: 1 }}
           onSubmit={form.handleSubmit(handleOnSubmit)}
         >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">อีเมล</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  {...field}
+                  placeholder="อีเมล"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="title"

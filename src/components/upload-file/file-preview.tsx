@@ -2,12 +2,13 @@ import { FileImage, File, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { fileSizeCalc } from "~/lib";
 import { Button } from "../ui/button";
+import { UploadedFile } from "./types/uploadded-file";
 
 interface Props {
   file: File;
   id: string;
-  onRemove: () => void;
-  onUploaded: (id: string, url: string) => void;
+  onRemove: (id: string) => void;
+  onUploaded: (uploaded: UploadedFile) => void;
 }
 
 function FilePreview({ file, id, onRemove, onUploaded }: Props) {
@@ -24,9 +25,9 @@ function FilePreview({ file, id, onRemove, onUploaded }: Props) {
 
   useEffect(() => {
     if (progress >= 100) {
-      onUploaded(id, name);
+      onUploaded({ id, name, url: "https://example.com", size, type });
     }
-  }, [progress, onUploaded, id, name]);
+  }, [progress, onUploaded, id, name, size, type]);
 
   return (
     <div className="flex justify-between items-center flex-row gap-4">
@@ -41,7 +42,7 @@ function FilePreview({ file, id, onRemove, onUploaded }: Props) {
       </div>
       {isUploaded && (
         <Button
-          onClick={onRemove}
+          onClick={() => onRemove(id)}
           variant="ghost"
           size="icon"
           className="w-8 h-8"

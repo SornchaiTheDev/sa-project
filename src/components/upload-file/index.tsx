@@ -5,6 +5,8 @@ import { cn } from "~/lib/utils";
 import FilePreview from "./file-preview";
 import { useCallback, useEffect, useState } from "react";
 import { v7 as uuid } from "uuid";
+import { UploadedFile } from "./types/uploadded-file";
+import FileRestore from "./file-restore";
 
 interface FilePreview {
   id: string;
@@ -13,26 +15,23 @@ interface FilePreview {
 
 interface Props {
   accept: Record<string, string[]>;
-  onChange: (file: string[]) => void;
+  value: UploadedFile[];
+  onChange: (file: UploadedFile[]) => void;
   disabled?: boolean;
   maxFiles?: number;
   maxSize?: number;
 }
 
-interface UploadedFile {
-  id: string;
-  url: string;
-}
-
 function UploadFile({
   accept,
+  value,
   onChange,
   disabled,
   maxFiles = 1,
   maxSize,
 }: Props) {
   const [files, setFiles] = useState<FilePreview[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(value);
 
   const handleOnRemove = (id: string) => {
     setFiles((prev) => prev.filter((file) => file.id !== id));
@@ -49,12 +48,12 @@ function UploadFile({
     ]);
   };
 
-  const onUploaded = useCallback((id: string, url: string) => {
-    setUploadedFiles((prev) => [...prev, { id, url }]);
+  const onUploaded = useCallback((uploaded: UploadedFile) => {
+    setUploadedFiles((prev) => [...prev, uploaded]);
   }, []);
 
   useEffect(() => {
-    onChange(uploadedFiles.map(({ url }) => url));
+    onChange(uploadedFiles);
   }, [uploadedFiles, onChange]);
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
@@ -68,6 +67,10 @@ function UploadFile({
         addFiles(acceptedFiles);
       },
     });
+
+  const cleanedUploadedFiles = uploadedFiles.filter(
+    (file) => !files.some(({ id }) => id === file.id),
+  );
 
   return (
     <div>
@@ -92,10 +95,14 @@ function UploadFile({
         </h5>
       </button>
       <div className="flex flex-col mt-4 gap-4">
+        {cleanedUploadedFiles.map((file) => (
+          <FileRestore key={file.id} {...file} onRemove={handleOnRemove} />
+        ))}
+
         {files.map(({ id, file }) => (
           <FilePreview
             key={id}
-            onRemove={() => handleOnRemove(id)}
+            onRemove={handleOnRemove}
             onUploaded={onUploaded}
             {...{ file, id }}
           />

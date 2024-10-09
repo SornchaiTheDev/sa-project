@@ -1,6 +1,12 @@
 import { z } from "zod";
 
 export const hrInfo = z.object({
+  email: z
+    .string()
+    .regex(
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "กรุณากรอกอีเมลให้ถูกต้อง",
+    ),
   title: z
     .string()
     .min(1, "กรุณาเลือกคำนำหน้า")

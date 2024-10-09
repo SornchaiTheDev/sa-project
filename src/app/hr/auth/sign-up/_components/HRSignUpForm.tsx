@@ -20,12 +20,11 @@ import { useAtom } from "jotai";
 import { hrSignUpAtom } from "../store/hr-sign-up-store";
 
 function HRSignUpForm() {
-  const [{ email, username, password, confirmPassword }, setSignUpData] =
+  const [{ username, password, confirmPassword }, setSignUpData] =
     useAtom(hrSignUpAtom);
   const form = useForm<HRSignUpSchema>({
     resolver: zodResolver(hrSignUpSchema),
     defaultValues: {
-      email,
       username,
       password,
       confirmPassword,
@@ -35,7 +34,7 @@ function HRSignUpForm() {
   const router = useRouter();
 
   const handleOnSubmit = (data: HRSignUpSchema) => {
-    setSignUpData((prev) => ({ ...prev, data }));
+    setSignUpData((prev) => ({ ...prev, ...data }));
     router.push("/hr/onboarding/user-info");
   };
 
@@ -54,21 +53,6 @@ function HRSignUpForm() {
           animate={{ y: 0, opacity: 1 }}
           onSubmit={form.handleSubmit(handleOnSubmit)}
         >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel className="font-normal">อีเมล</FormLabel>
-                <Input
-                  className="h-12 bg-zinc-100"
-                  {...field}
-                  placeholder="อีเมล"
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <FormField
             control={form.control}
             name="username"
