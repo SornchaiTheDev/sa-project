@@ -1,13 +1,21 @@
 import { SearchIcon } from "lucide-react";
+import { notFound } from "next/navigation";
 import Navbar from "~/components/nav-bar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { getUserInfo } from "~/lib/getUserInfo";
 
-export default function MyAnnouncementLayout({
+export default async function MyAnnouncementLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const userInfo = await getUserInfo();
+
+  if (userInfo.typePerson !== "2") {
+    notFound();
+  }
+
   return (
     <>
       <div className="p-4 h-screen">

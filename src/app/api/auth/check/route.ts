@@ -65,10 +65,10 @@ const kusdFlow = async (payload: UserInfo) => {
   }
 
   // TODO: Check if user is kusd department
-  if (payload.faculty !== "กองพัฒนานิสิต") {
-    clearAuthCookies();
-    redirect("/auth/sign-in?error=UNAUTHORIZED");
-  }
+  // if (payload.faculty !== "กองพัฒนานิสิต") {
+  //   clearAuthCookies();
+  //   redirect("/auth/sign-in?error=UNAUTHORIZED");
+  // }
 
   if (kusd === undefined) {
     try {
