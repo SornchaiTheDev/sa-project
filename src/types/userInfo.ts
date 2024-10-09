@@ -10,7 +10,7 @@ export interface UserInfo {
   idCode: string;
   enFirstName: string;
   enSurName: string;
-  thaiPreName: string;
+  thaiPreName: string | undefined;
   advisorId: string;
   lastName: string;
   majorId: string;

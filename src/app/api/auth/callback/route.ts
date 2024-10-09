@@ -146,20 +146,6 @@ export const GET = async (req: Request) => {
       typePerson: userRes["type-person"],
     };
 
-    // const accountYear = parseInt(payload.idCode.slice(0, 2));
-    //
-    // const currentYear = parseInt(dayjs().format("BBBB").slice(2, 4));
-    // Check if current student
-    // if (currentYear - accountYear > 4) {
-    //   return Response.json(
-    //     {
-    //       message: "INVALID_ACCOUNT_YEAR",
-    //       code: 400,
-    //     },
-    //     { status: 400 },
-    //   );
-    // }
-
     const accessToken = await signJwt(payload, env.JWT_SECRET);
     const refreshToken = await signJwt(
       { uid: userRes.uid },

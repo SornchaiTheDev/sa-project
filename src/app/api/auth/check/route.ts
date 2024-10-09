@@ -10,11 +10,24 @@ import { UserInfo } from "~/types/userInfo";
 
 export const dynamic = "force-dynamic";
 
+const clearAuthCookies = () => {
+  cookies().delete("access_token");
+  cookies().delete("refresh_token");
+};
+
 const nisitFlow = async (payload: UserInfo) => {
+  // const accountYear = parseInt(payload.idCode.slice(0, 2));
+  //
+  // const currentYear = parseInt(dayjs().format("BBBB").slice(2, 4));
+  // if (currentYear - accountYear > 4) {
+  //   clearAuthCookies();
+  //   redirect("/auth/sign-in?error=UNAUTHORIZED");
+  // }
+
   const studentRepo = new StudentRepository();
   let student: Student | undefined;
   try {
-    student = await studentRepo.getByUsername(payload.idCode);
+    student = await studentRepo.getByUsername(payload.uid);
   } catch (err) {
     console.error("Failed to fetch student in the database", err);
   }
@@ -23,7 +36,7 @@ const nisitFlow = async (payload: UserInfo) => {
     try {
       await studentRepo.create({
         username: payload.uid,
-        title: payload.thaiPreName,
+        title: payload.thaiPreName ?? "นาย",
         firstName: payload.thFirstName,
         lastName: payload.thSurName,
         email: payload.googleMail,
@@ -34,10 +47,9 @@ const nisitFlow = async (payload: UserInfo) => {
     }
     redirect("/onboarding/user-info");
   } else {
-    if (student.phoneNumber === null) {
+    const hasCompletedForm = await studentRepo.hasCompletedForm(payload.uid);
+    if (!hasCompletedForm) {
       redirect("/onboarding/user-info");
-    } else if (student.gpax === null) {
-      redirect("/onboarding/educations-and-works");
     }
     redirect("/");
   }
@@ -47,16 +59,22 @@ const kusdFlow = async (payload: UserInfo) => {
   let kusd: KUSD | undefined;
   const kusdRepo = new KUSDRepository();
   try {
-    kusd = await kusdRepo.getByUsername(payload.idCode);
+    kusd = await kusdRepo.getByUsername(payload.uid);
   } catch (err) {
     console.error("Failed to fetch student in the database", err);
+  }
+
+  // TODO: Check if user is kusd department
+  if (payload.faculty !== "กองพัฒนานิสิต") {
+    clearAuthCookies();
+    redirect("/auth/sign-in?error=UNAUTHORIZED");
   }
 
   if (kusd === undefined) {
     try {
       await kusdRepo.create({
         username: payload.uid,
-        title: payload.thaiPreName,
+        title: payload.thaiPreName ?? "นาย",
         firstName: payload.thFirstName,
         lastName: payload.thSurName,
         email: payload.googleMail,
@@ -64,32 +82,21 @@ const kusdFlow = async (payload: UserInfo) => {
     } catch (err) {
       console.error("Failed to create kusd in the database", err);
     }
-    redirect("/kusd");
   }
+  redirect("/kusd");
 };
 
 export const GET = async () => {
   const accessToken = cookies().get("access_token")?.value;
   if (accessToken === undefined) {
-    return Response.json(
-      {
-        message: "UNAUTHORIZED",
-        code: 401,
-      },
-      { status: 401 },
-    );
+    redirect("/auth/sign-in?error=UNAUTHORIZED");
   }
 
   try {
     await verifyJwt(accessToken, env.JWT_SECRET);
   } catch (err) {
-    return Response.json(
-      {
-        message: "UNAUTHORIZED",
-        code: 401,
-      },
-      { status: 401 },
-    );
+    clearAuthCookies();
+    redirect("/auth/sign-in?error=UNAUTHORIZED");
   }
 
   const payload = getPayload(accessToken);
@@ -103,11 +110,6 @@ export const GET = async () => {
       break;
   }
 
-  return Response.json(
-    {
-      message: "INTERNAL_SERVER_ERROR",
-      code: 500,
-    },
-    { status: 500 },
-  );
+  clearAuthCookies();
+  redirect("/auth/sign-in?error=SOMETHING_WENT_WRONG");
 };
