@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   hrSignUpAtom,
   HRSignUpStore,
