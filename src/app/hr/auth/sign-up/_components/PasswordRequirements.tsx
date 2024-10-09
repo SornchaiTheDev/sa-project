@@ -1,5 +1,4 @@
 import { Check, X } from "lucide-react";
-import React from "react";
 import { cn } from "~/lib";
 
 interface Props {
@@ -13,12 +12,16 @@ interface Requirement {
 
 const requirements: Requirement[] = [
   {
+    description: "รหัสมีความยาว 8-100 ตัวอักษร",
+    isValid: (val) => /.{8,100}/.test(val),
+  },
+  {
     description: "รหัสประกอบไปด้วยตัวอักษรตัวเล็กและตัวใหญ่",
-    isValid: (val: string) => /(?=.*[a-z]+)(?=.*[A-Z]+)/.test(val),
+    isValid: (val) => /(?=.*[a-z]+)(?=.*[A-Z]+)/.test(val),
   },
   {
     description: "รหัสประกอบไปด้วยตัวเลขและอักขระพิเศษ",
-    isValid: (val: string) => /(?=.*[0-9]+)(?=.*[^A-Za-z0-9]+)/.test(val),
+    isValid: (val) => /(?=.*[0-9]+)(?=.*[!@#$%^&*(),.?":{}|<>]+)/.test(val),
   },
 ];
 

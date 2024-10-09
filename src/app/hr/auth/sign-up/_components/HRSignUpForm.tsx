@@ -12,30 +12,30 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PasswordRequirements from "./PasswordRequirements";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAtom } from "jotai";
+import { hrSignUpAtom } from "../store/hr-sign-up-store";
 
 function HRSignUpForm() {
+  const [{ email, username, password, confirmPassword }, setSignUpData] =
+    useAtom(hrSignUpAtom);
   const form = useForm<HRSignUpSchema>({
     resolver: zodResolver(hrSignUpSchema),
     defaultValues: {
-      email: "sornchai.som@ku.th",
-      username: "SornchaiTheDev",
-      password: "Hello1$",
-      confirmPassword: "Hello1$",
+      email,
+      username,
+      password,
+      confirmPassword,
     },
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
 
   const handleOnSubmit = (data: HRSignUpSchema) => {
-    setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 1000);
+    setSignUpData((prev) => ({ ...prev, data }));
     router.push("/hr/onboarding/user-info");
   };
 

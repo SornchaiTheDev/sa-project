@@ -12,7 +12,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -23,25 +22,26 @@ import {
 } from "~/components/ui/select";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAtom } from "jotai";
+import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
 
 function HRInfoForm() {
+  const [{ title, firstName, surName, phone }, setSignUpData] =
+    useAtom(hrSignUpAtom);
   const form = useForm<HRInfo>({
     resolver: zodResolver(hrInfo),
     defaultValues: {
-      prefix: "none",
-      firstName: "ศรชัย",
-      lastName: "สมสกุล",
-      phone: "0987654321",
+      title,
+      firstName,
+      surName,
+      phone,
     },
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
 
   const handleOnSubmit = (data: HRInfo) => {
-    setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 1000);
+    setSignUpData((prev) => ({ ...prev, ...data }));
     router.push("/hr/onboarding/company");
   };
 
@@ -69,7 +69,7 @@ function HRInfoForm() {
         >
           <FormField
             control={form.control}
-            name="prefix"
+            name="title"
             render={({ field: { value, onChange } }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">คำนำหน้า</FormLabel>
@@ -107,7 +107,7 @@ function HRInfoForm() {
           />
           <FormField
             control={form.control}
-            name="lastName"
+            name="surName"
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">นามสกุล</FormLabel>

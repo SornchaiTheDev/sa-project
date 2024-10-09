@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const hrInfo = z.object({
-  prefix: z
+  title: z
     .string()
     .min(1, "กรุณาเลือกคำนำหน้า")
     .refine((val) => val !== "none", "กรุณาเลือกคำนำหน้า"),
   firstName: z.string().min(1, "กรุณากรอกชื่อ"),
-  lastName: z.string().min(1, "กรุณากรอกนามสกุล"),
+  surName: z.string().min(1, "กรุณากรอกนามสกุล"),
   phone: z
     .string()
     .min(9, "เบอร์ติดต่อต้องมีอย่างน้อย 9 หลัก")
