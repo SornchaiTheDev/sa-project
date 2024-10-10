@@ -27,7 +27,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useAtom } from "jotai";
-import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
+import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
 import axios from "axios";
 import { DBDData } from "~/types/dbdData";
 import { ApprovedCompany } from "~/types/approvedCompany";

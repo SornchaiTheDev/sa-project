@@ -1,5 +1,5 @@
 import { atomWithStorage } from "jotai/utils";
-import { HRSignUpSchema } from "../schemas/hr-signup-schema";
+import { HRSignUpSchema } from "../sign-up/schemas/hr-signup-schema";
 import { HRInfo } from "~/app/hr/onboarding/(forms)/user-info/schemas/hr-info-schema";
 import { CompanyInfo } from "~/app/hr/onboarding/(forms)/company/create/schemas/company-info-schema";
 

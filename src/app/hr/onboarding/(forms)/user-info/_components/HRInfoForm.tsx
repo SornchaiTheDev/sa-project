@@ -23,7 +23,7 @@ import {
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
-import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
+import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import _ from "lodash";

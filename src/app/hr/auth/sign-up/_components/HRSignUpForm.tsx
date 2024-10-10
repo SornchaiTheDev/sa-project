@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
-import { hrSignUpAtom } from "../store/hr-sign-up-store";
+import { hrSignUpAtom } from "../../store/hr-sign-up-store";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
