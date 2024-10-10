@@ -23,7 +23,13 @@ export const POST = async (req: Request) => {
       confirmPassword: body.confirmPassword,
     });
   } catch (err) {
-    console.log(err);
+    return Response.json(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error creating Job announcer and company",
+      },
+      { status: 500 },
+    );
   }
 
   return Response.json({

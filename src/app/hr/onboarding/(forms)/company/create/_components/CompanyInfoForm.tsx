@@ -129,7 +129,6 @@ function CompanyInfoForm() {
 
   const handleOnSubmit = async (formData: CompanyInfo) => {
     try {
-      setSignUpData((prev) => ({ ...prev, ...formData }));
       setIsSubmitting(true);
       if (formData.type === "private") {
         await checkPrivateCompany(formData.taxId);
@@ -137,7 +136,7 @@ function CompanyInfoForm() {
         checkGovernmentCompany(taxId);
       }
 
-      const isExists = await checkAlreadyRegistered(taxId);
+      const isExists = await checkAlreadyRegistered(formData.taxId);
       if (isExists) {
         form.setError("taxId", {
           type: "custom",
@@ -146,6 +145,7 @@ function CompanyInfoForm() {
         return;
       }
 
+      setSignUpData((prev) => ({ ...prev, ...formData }));
       router.push("/hr/onboarding/verify");
     } catch (err) {
       return;

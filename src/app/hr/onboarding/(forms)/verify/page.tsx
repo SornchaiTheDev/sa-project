@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   hrSignUpAtom,
   HRSignUpStore,
@@ -94,9 +95,16 @@ function VerifyPage() {
 
   const handleOnSave = async () => {
     setIsSaving(true);
-    const res = await axios.post("/api/hr/register", signUp);
-    console.log(res.data)
-    // router.push("/hr/onboarding/waiting");
+
+    try {
+      await axios.post("/api/hr/register", signUp);
+      toast.success("บันทึกข้อมูลสำเร็จ");
+      router.push("/hr/onboarding/waiting");
+    } catch (err) {
+      toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
