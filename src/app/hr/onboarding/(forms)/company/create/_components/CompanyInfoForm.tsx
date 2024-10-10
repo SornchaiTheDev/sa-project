@@ -23,7 +23,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
-import UploadFile from "~/components/upload-file";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
@@ -33,6 +32,11 @@ import axios from "axios";
 import { DBDData } from "~/types/dbdData";
 import { ApprovedCompany } from "~/types/approvedCompany";
 import _ from "lodash";
+import dynamic from "next/dynamic";
+
+const UploadFile = dynamic(() => import("~/components/upload-file"), {
+  ssr: false,
+});
 
 const jobCategories: { name: string; id: string }[] = [
   {
@@ -129,6 +133,12 @@ function CompanyInfoForm() {
     debouncedCheckTaxId(taxIdField);
   }, [taxIdField, debouncedCheckTaxId]);
 
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
   return (
     <motion.div
       initial={{ y: 40, opacity: 0 }}
@@ -140,27 +150,29 @@ function CompanyInfoForm() {
 
       <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleOnSubmit)}>
+        <form className="flex flex-col" onSubmit={form.handleSubmit(handleOnSubmit)}>
           <FormField
             control={form.control}
             name="type"
             render={({ field: { value, onChange } }) => (
               <FormItem className="mb-4">
-                <RadioGroup
-                  className="flex gap-20 mt-2"
-                  defaultValue="none"
-                  value={value}
-                  onValueChange={(v: CompanyInfo["type"]) => onChange(v)}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="government" id="government" />
-                    <Label htmlFor="government">รัฐบาล</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="private" id="private" />
-                    <Label htmlFor="private">เอกชน</Label>
-                  </div>
-                </RadioGroup>
+                {isHydrated && (
+                  <RadioGroup
+                    className="flex gap-20 mt-2"
+                    defaultValue="none"
+                    value={value}
+                    onValueChange={(v: CompanyInfo["type"]) => onChange(v)}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="government" id="government" />
+                      <Label htmlFor="government">รัฐบาล</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="private" id="private" />
+                      <Label htmlFor="private">เอกชน</Label>
+                    </div>
+                  </RadioGroup>
+                )}
                 <FormMessage />
               </FormItem>
             )}
@@ -205,7 +217,9 @@ function CompanyInfoForm() {
                 <FormLabel className="font-normal">ประเภทบริษัท</FormLabel>
                 <Select onValueChange={onChange} value={value}>
                   <SelectTrigger className="h-12 bg-zinc-100">
-                    <SelectValue placeholder="โปรดเลือกหมวดหมู่ของหน่วยงาน" />
+                    {isHydrated && (
+                      <SelectValue placeholder="โปรดเลือกหมวดหมู่ของหน่วยงาน" />
+                    )}
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -267,7 +281,7 @@ function CompanyInfoForm() {
             }
             isLoading={isSubmitting}
             variant="ghost"
-            className="flex gap-2 items-center float-end mt-10 hover:text-zinc-500 self-end"
+            className="flex gap-2 items-center mt-10 hover:text-zinc-500 self-end"
           >
             <span>ถัดไป</span>
             <ChevronRight size="1rem" />
