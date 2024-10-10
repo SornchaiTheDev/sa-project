@@ -28,11 +28,11 @@ const PasswordRequirements = dynamic(() => import("./PasswordRequirements"), {
 
 const isUsernameExists = async (username: string) => {
   try {
-    const res = await axios.get<{ status: "USERNAME_EXITS" | "AVAILABLE" }>(
+    const res = await axios.get<{ status: "USERNAME_EXISTS" | "AVAILABLE" }>(
       `/api/hr/validate/username/${username}`,
     );
 
-    return res.data.status === "USERNAME_EXITS";
+    return res.data.status === "USERNAME_EXISTS";
   } catch (err) {}
 };
 
