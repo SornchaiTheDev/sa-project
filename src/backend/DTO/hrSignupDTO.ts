@@ -17,7 +17,7 @@ export interface HRSignUpDTO {
   phone: string;
   taxId: string;
   name: string;
-  type: "government" | "private" | "none";
+  address: string;
   bookUrl: UploadedFile[];
   logoUrl: UploadedFile[];
   category: string;

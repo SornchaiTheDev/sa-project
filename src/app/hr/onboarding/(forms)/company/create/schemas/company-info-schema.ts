@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const assertThaiId = (thaiId: string): boolean => {
+  if (thaiId.length !== 13) return false;
   const m = thaiId.match(/(\d{12})(\d)/);
   if (!m) {
     return false;
@@ -51,17 +52,25 @@ export const companyInfo = z
     message: "กรุณาอัพโหลดหนังสือคำร้อง",
     path: ["bookUrl"],
   })
-  .refine((data) => data.bookUrl[0].size < 10 * 1024 * 1024, {
-    message: "ขนาดไฟล์หนังสือคำร้องต้องไม่เกิน 10 MB",
-    path: ["bookUrl"],
-  })
+  .refine(
+    (data) =>
+      data.bookUrl.length === 1 && data.bookUrl[0].size < 10 * 1024 * 1024,
+    {
+      message: "ขนาดไฟล์หนังสือคำร้องต้องไม่เกิน 10 MB",
+      path: ["bookUrl"],
+    },
+  )
   .refine((data) => data.logoUrl.length === 1, {
     message: "กรุณาอัพโหลดสัญลักษณ์หน่วยงาน",
     path: ["logoUrl"],
   })
-  .refine((data) => data.logoUrl[0].size < 10 * 1024 * 1024, {
-    message: "ขนาดไฟล์สัญลักษณ์หน่วยงานต้องไม่เกิน 10 MB",
-    path: ["logoUrl"],
-  });
+  .refine(
+    (data) =>
+      data.logoUrl.length === 1 && data.logoUrl[0].size < 10 * 1024 * 1024,
+    {
+      message: "ขนาดไฟล์สัญลักษณ์หน่วยงานต้องไม่เกิน 10 MB",
+      path: ["logoUrl"],
+    },
+  );
 
 export type CompanyInfo = z.infer<typeof companyInfo>;

@@ -1,4 +1,4 @@
-import { execute } from "../../lib/db";
+import pool from "../../lib/db";
 import { HRSignUpDTO } from "../DTO/hrSignupDTO";
 import bcrypt from "bcrypt";
 
@@ -9,38 +9,13 @@ const hashPassword = async (password: string) => {
 
 export class JobAAndCompanyRepository {
   public async create(payload: HRSignUpDTO) {
-    const text = `
-        START TRANSACTION;
-
-        INSERT INTO "APPROVED_COMPANY" (
-          "Company_Name",
-          "Tax_ID",
-          "Company_Image",
-          "Company_Book",
-          "Approved_Company_Is_Active"
-        ) VALUES ($1,$2,$3,$4);
-
-        SET @last_company_id = LAST_INSERT_ID();
-        INSERT INTO JOB_ANNOUNCER (
-                "JOBA_Username",
-                "Company_ID",
-                "JOBA_Title",
-                "JOBA_First_Name",
-                "JOBA_Last_Name",
-                "JOBA_Email_Google",
-                "JOBA_Is_Active",
-                "JOBA_Last_Update_Date",
-                "JOBA_Approve_Request_Date",
-                "JOBA_Password"
-            ) VALUES ($5, @last_company_id, $6, $7, $8, $9, $10, $11, $12, $13);
-
-        COMMIT;
-        `;
     const {
       name,
       taxId,
+      address,
       logoUrl,
       bookUrl,
+      category,
       username,
       title,
       firstName,
@@ -49,27 +24,87 @@ export class JobAAndCompanyRepository {
       password,
     } = payload;
 
-    const hashedPassword = await hashPassword(password);
+    const client = await pool.connect();
 
-    const result = await execute(text, [
-      name,
-      taxId,
-      logoUrl,
-      bookUrl,
-      false,
-      username,
-      title,
-      firstName,
-      surName,
-      email,
-      true,
-      new Date(),
-      new Date(),
-      hashedPassword,
-    ]);
+    try {
+      await client.query("BEGIN");
 
-    if (result.rowCount === null) return false;
+      const createTag = `INSERT INTO "TAG" ("Tag_Name") VALUES ($1) ON CONFLICT ("Tag_Name") DO NOTHING;`;
+      await client.query(createTag, [category]);
 
-    return result.rowCount > 0;
+      const createCompany = `INSERT INTO "APPROVED_COMPANY" (
+      "Company_Name",
+      "Tax_ID",
+      "Company_Address",
+      "Company_Image",
+      "Company_Book",
+      "Approved_Company_Is_Active"
+    ) VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      $5,
+      $6
+    ) RETURNING "Company_ID";`;
+
+      const createdCompany = await client.query(createCompany, [
+        name,
+        taxId,
+        address,
+        logoUrl,
+        bookUrl,
+        0,
+      ]);
+
+      const companyID = createdCompany.rows[0].Company_ID;
+
+      const createRelateTag = `INSERT INTO "RELATION_TAGGED" ("Company_ID", "Tag_Name") VALUES ($1, $2)`;
+
+      await client.query(createRelateTag, [companyID, category]);
+
+      const createJobAnnouncer = `INSERT INTO "JOB_ANNOUNCER" (
+      "JOBA_Username",
+      "Company_ID",
+      "JOBA_Title",
+      "JOBA_First_Name",
+      "JOBA_Last_Name",
+      "JOBA_Email_Google",
+      "JOBA_Is_Active",
+      "JOBA_Last_Update_Date",
+      "JOBA_Approve_Request_Date",
+      "JOBA_Password"
+    ) VALUES (
+      $1,
+      $2,
+      $3,
+      $4,
+      $5,
+      $6,
+      $7,
+      CURRENT_TIMESTAMP,
+      NULL,
+      $8
+    );`;
+
+      const hashedPassword = await hashPassword(password);
+      await client.query(createJobAnnouncer, [
+        username,
+        companyID,
+        title,
+        firstName,
+        surName,
+        email,
+        1,
+        hashedPassword,
+      ]);
+
+      await client.query("COMMIT");
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 }

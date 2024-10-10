@@ -3,6 +3,8 @@ import pool from "~/lib/db";
 export const createTable = async () => {
   try {
     const createTableQuery = `
+      CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
       CREATE TABLE IF NOT EXISTS "STUDENT" (
           "STU_Username" VARCHAR(50) PRIMARY KEY,
           "STU_Title" VARCHAR(50) NOT NULL,
@@ -25,9 +27,12 @@ export const createTable = async () => {
           "JOBA_Title" VARCHAR(50) NOT NULL,
           "JOBA_First_Name" VARCHAR(100) NOT NULL,
           "JOBA_Last_Name" VARCHAR(100) NOT NULL,
-          "JOBA_Is_Active" INT NOT NULL DEFAULT 1,
+          "JOBA_Is_Active" INT NOT NULL DEFAULT 0,
           "JOBA_Phone_Number" VARCHAR(10),
-          "JOBA_Email_Google" VARCHAR(100)
+          "JOBA_Email_Google" VARCHAR(100),
+          "JOBA_Last_Update_Date" TIMESTAMP,
+          "JOBA_Approve_Request_Date" TIMESTAMP,
+          "JOBA_Password" VARCHAR(100) NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS "KUSD" (
@@ -40,9 +45,12 @@ export const createTable = async () => {
       );
 
       CREATE TABLE IF NOT EXISTS "APPROVED_COMPANY" (
-          "Company_ID" uuid PRIMARY KEY DEFAULT uuid_generate_v7(),
+          "Company_ID" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           "Company_Name" VARCHAR(100),
-          "Company_Address" json NOT NULL,
+          "Company_Address" VARCHAR(100) NOT NULL,
+          "Company_Image" VARCHAR(100),
+          "Company_Book" VARCHAR(100),
+          "Approved_Company_Is_Active" INT NOT NULL DEFAULT 0,
           "Tax_ID" VARCHAR(13) NOT NULL
       );
 

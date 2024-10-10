@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { motion } from "framer-motion";
 import { useAtomValue } from "jotai";
 import Link from "next/link";
@@ -91,10 +92,11 @@ function VerifyPage() {
   const userInfo = useMemo(() => generateUserInfo(signUp), [signUp]);
   const companyInfo = useMemo(() => generateCompanyInfo(signUp), [signUp]);
 
-  const handleOnSave = () => {
+  const handleOnSave = async () => {
     setIsSaving(true);
-    setTimeout(() => setIsSaving(false), 1000);
-    router.push("/hr/onboarding/waiting");
+    const res = await axios.post("/api/hr/register", signUp);
+    console.log(res.data)
+    // router.push("/hr/onboarding/waiting");
   };
 
   useEffect(() => {

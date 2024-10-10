@@ -25,17 +25,18 @@ import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
-import _ from "lodash";
+import { useEffect, useState } from "react";
 
 const isEmailExists = async (email: string) => {
   try {
     const res = await axios.get<{ status: "EMAIL_EXISTS" | "AVAILABLE" }>(
-      `/api/hr/validate/email/${email}`,
+      `/api/hr/validate/email/${email.replaceAll(/\//g, "%2F").replaceAll(/\\/g, "%5C")}`,
     );
 
     return res.data.status === "EMAIL_EXISTS";
-  } catch (err) {}
+  } catch (err) {
+    throw err;
+  }
 };
 
 function HRInfoForm() {
@@ -54,41 +55,20 @@ function HRInfoForm() {
 
   const router = useRouter();
 
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
-
   const handleOnSubmit = async (data: HRInfo) => {
-    if (!isEmailChecked) return;
-    setSignUpData((prev) => ({ ...prev, ...data }));
-    router.push("/hr/onboarding/company");
+    try {
+      const isExists = await isEmailExists(data.email);
+      if (isExists) {
+        form.setError("email", {
+          type: "custom",
+          message: "อีเมลนี้ถูกใช้ไปแล้ว",
+        });
+        return;
+      }
+      setSignUpData((prev) => ({ ...prev, ...data }));
+      router.push("/hr/onboarding/company");
+    } catch (err) {}
   };
-
-  const debouncedCheckEmail = useMemo(
-    () =>
-      _.debounce(async (email: string) => {
-        setIsEmailChecked(false);
-        try {
-          const isExists = await isEmailExists(email);
-          if (isExists) {
-            form.setError("email", {
-              type: "manual",
-              message: "อีเมลนี้ถูกใช้ไปแล้ว",
-            });
-          } else {
-            form.clearErrors("email");
-          }
-        } catch (err) {
-        } finally {
-          setIsEmailChecked(true);
-        }
-      }, 500),
-    [form],
-  );
-
-  const emailField = form.watch("email");
-
-  useEffect(() => {
-    debouncedCheckEmail(emailField);
-  }, [debouncedCheckEmail, emailField]);
 
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -203,7 +183,6 @@ function HRInfoForm() {
           />
           <Button
             variant="ghost"
-            disabled={!isEmailChecked}
             isLoading={form.formState.isSubmitting}
             className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
           >

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -50,20 +50,30 @@ const jobCategories: { name: string; id: string }[] = [
 ];
 
 const checkTaxId = async (taxId: string) => {
-  const res = await axios.get<DBDData>(
-    `https://openapi.dbd.go.th/api/v1/juristic_person/${taxId}`,
-  );
+  if (taxId.length !== 13) return;
+  try {
+    const res = await axios.get<DBDData>(
+      `https://openapi.dbd.go.th/api/v1/juristic_person/${taxId}`,
+    );
 
-  if (res.data.status.code === "1000") {
-    return true;
+    if (res.data.status.code === "1000") {
+      return true;
+    }
+  } catch (err) {
+    throw new Error("Not found");
   }
 };
 
 const checkAlreadyRegistered = async (taxId: string) => {
-  const res = await axios.get<{ company: ApprovedCompany | null }>(
-    `/api/hr/validate/company/${taxId}`,
-  );
-  return res.data.company === null;
+  if (taxId.length !== 13) return;
+  try {
+    const res = await axios.get<{ company: ApprovedCompany | null }>(
+      `/api/hr/validate/company/${taxId}`,
+    );
+    return res.data.company !== null;
+  } catch (err) {
+    throw new Error("Not found");
+  }
 };
 
 function CompanyInfoForm() {
@@ -86,36 +96,6 @@ function CompanyInfoForm() {
     },
   });
 
-  const [isTaxIdChecked, setIsTaxIdChecked] = useState(false);
-
-  const taxIdField = form.watch("taxId");
-
-  const debouncedCheckTaxId = useMemo(
-    () =>
-      _.debounce(async (taxId: string) => {
-        try {
-          setIsTaxIdChecked(false);
-          const isExists = await checkAlreadyRegistered(taxId);
-          if (!isExists) {
-            form.setError("taxId", {
-              type: "manual",
-              message: "บริษัทนี้ได้ลงทะเบียนแล้ว",
-            });
-          } else {
-            form.clearErrors("taxId");
-          }
-        } catch (err) {
-        } finally {
-          setIsTaxIdChecked(true);
-        }
-      }, 500),
-    [form],
-  );
-
-  useEffect(() => {
-    debouncedCheckTaxId(taxIdField);
-  }, [taxIdField, debouncedCheckTaxId]);
-
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
@@ -128,6 +108,7 @@ function CompanyInfoForm() {
     const isFound = await checkTaxId(taxId);
     if (!isFound) {
       form.setError("taxId", {
+        type: "custom",
         message: "ไม่พบเลขประจำตัวผู้เสียภาษีนี้",
       });
       throw new Error("Not found");
@@ -138,6 +119,7 @@ function CompanyInfoForm() {
     const isValid = taxId.startsWith("0994000");
     if (!isValid) {
       form.setError("taxId", {
+        type: "custom",
         message: "เลขประจำตัวผู้เสียภาษีของหน่วยงานรัฐบาลไม่ถูกต้อง",
       });
       throw new Error("Invalid taxId");
@@ -146,15 +128,24 @@ function CompanyInfoForm() {
   };
 
   const handleOnSubmit = async (formData: CompanyInfo) => {
-    if (!isTaxIdChecked) return;
-    setSignUpData((prev) => ({ ...prev, ...formData }));
     try {
+      setSignUpData((prev) => ({ ...prev, ...formData }));
       setIsSubmitting(true);
       if (formData.type === "private") {
         await checkPrivateCompany(formData.taxId);
       } else if (formData.type === "government") {
         checkGovernmentCompany(taxId);
       }
+
+      const isExists = await checkAlreadyRegistered(taxId);
+      if (isExists) {
+        form.setError("taxId", {
+          type: "custom",
+          message: "เลขประจำตัวผู้เสียภาษีนี้ถูกใช้ไปแล้ว",
+        });
+        return;
+      }
+
       router.push("/hr/onboarding/verify");
     } catch (err) {
       return;
@@ -318,7 +309,6 @@ function CompanyInfoForm() {
             )}
           />
           <Button
-            disabled={isSubmitting || !isTaxIdChecked}
             isLoading={isSubmitting}
             variant="ghost"
             className="flex gap-2 items-center mt-10 hover:text-zinc-500 self-end"
