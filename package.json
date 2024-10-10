@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "create-table": "tsx cli/create-table.ts"
+    "create-table": "tsx cli/create-table.ts",
+    "reset-db": "tsx cli/reset-db.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -34,6 +35,7 @@
     "framer-motion": "^11.11.1",
     "jose": "^5.9.3",
     "jotai": "^2.10.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.445.0",
     "next": "14.2.13",
     "next-themes": "^0.3.0",
@@ -51,6 +53,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.10",
     "@types/node": "^20",
     "@types/pg": "^8.11.10",
     "@types/react": "^18",

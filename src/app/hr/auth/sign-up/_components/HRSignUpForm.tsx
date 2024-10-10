@@ -13,11 +13,28 @@ import {
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { useRouter } from "next/navigation";
-import PasswordRequirements from "./PasswordRequirements";
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { hrSignUpAtom } from "../store/hr-sign-up-store";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import _ from "lodash";
+
+const PasswordRequirements = dynamic(() => import("./PasswordRequirements"), {
+  ssr: false,
+});
+
+const isUsernameExists = async (username: string) => {
+  try {
+    const res = await axios.get<{ status: "USERNAME_EXITS" | "AVAILABLE" }>(
+      `/api/hr/validate/username/${username}`,
+    );
+
+    return res.data.status === "USERNAME_EXITS";
+  } catch (err) {}
+};
 
 function HRSignUpForm() {
   const [{ username, password, confirmPassword }, setSignUpData] =
@@ -32,8 +49,53 @@ function HRSignUpForm() {
   });
 
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleOnSubmit = (data: HRSignUpSchema) => {
+  const [isUsernameChecked, setIsUsernameChecked] = useState(false);
+  const debouncedCheckUsername = useMemo(
+    () =>
+      _.debounce(async (email: string) => {
+        setIsUsernameChecked(false);
+        try {
+          const isExists = await isUsernameExists(email);
+          if (isExists) {
+            form.setError("username", {
+              type: "manual",
+              message: "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว",
+            });
+          } else {
+            form.clearErrors("username");
+          }
+        } catch (err) {
+        } finally {
+          setIsUsernameChecked(true);
+        }
+      }, 500),
+    [form],
+  );
+
+  const usernameField = form.watch("username");
+
+  useEffect(() => {
+    debouncedCheckUsername(usernameField);
+  }, [debouncedCheckUsername, usernameField]);
+
+  const handleOnSubmit = async (data: HRSignUpSchema) => {
+    if (!isUsernameChecked) return;
+    try {
+      setIsSubmitting(true);
+      const isExists = await isUsernameExists(data.username);
+      if (isExists) {
+        form.setError("username", {
+          type: "manual",
+          message: "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว",
+        });
+        return;
+      }
+    } catch (err) {
+    } finally {
+      setIsSubmitting(false);
+    }
     setSignUpData((prev) => ({ ...prev, ...data }));
     router.push("/hr/onboarding/user-info");
   };
@@ -101,6 +163,8 @@ function HRSignUpForm() {
             )}
           />
           <Button
+            isLoading={isSubmitting}
+            disabled={isSubmitting || !isUsernameChecked}
             variant="ghost"
             className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
           >

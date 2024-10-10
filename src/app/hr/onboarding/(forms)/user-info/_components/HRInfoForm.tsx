@@ -24,6 +24,19 @@ import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
+import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
+import _ from "lodash";
+
+const isEmailExists = async (email: string) => {
+  try {
+    const res = await axios.get<{ status: "EMAIL_EXISTS" | "AVAILABLE" }>(
+      `/api/hr/validate/email/${email}`,
+    );
+
+    return res.data.status === "EMAIL_EXISTS";
+  } catch (err) {}
+};
 
 function HRInfoForm() {
   const [{ email, title, firstName, surName, phone }, setSignUpData] =
@@ -41,10 +54,47 @@ function HRInfoForm() {
 
   const router = useRouter();
 
-  const handleOnSubmit = (data: HRInfo) => {
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+
+  const handleOnSubmit = async (data: HRInfo) => {
+    if (!isEmailChecked) return;
     setSignUpData((prev) => ({ ...prev, ...data }));
     router.push("/hr/onboarding/company");
   };
+
+  const debouncedCheckEmail = useMemo(
+    () =>
+      _.debounce(async (email: string) => {
+        setIsEmailChecked(false);
+        try {
+          const isExists = await isEmailExists(email);
+          if (isExists) {
+            form.setError("email", {
+              type: "manual",
+              message: "อีเมลนี้ถูกใช้ไปแล้ว",
+            });
+          } else {
+            form.clearErrors("email");
+          }
+        } catch (err) {
+        } finally {
+          setIsEmailChecked(true);
+        }
+      }, 500),
+    [form],
+  );
+
+  const emailField = form.watch("email");
+
+  useEffect(() => {
+    debouncedCheckEmail(emailField);
+  }, [debouncedCheckEmail, emailField]);
+
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   return (
     <>
@@ -91,7 +141,7 @@ function HRInfoForm() {
                 <FormLabel className="font-normal">คำนำหน้า</FormLabel>
                 <Select value={value} onValueChange={onChange}>
                   <SelectTrigger className="w-full h-12 bg-zinc-100">
-                    <SelectValue placeholder="คำนำหน้า" />
+                    {isHydrated && <SelectValue placeholder="คำนำหน้า" />}
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none" disabled>
@@ -153,6 +203,8 @@ function HRInfoForm() {
           />
           <Button
             variant="ghost"
+            disabled={!isEmailChecked}
+            isLoading={form.formState.isSubmitting}
             className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
           >
             <span>ถัดไป</span>
