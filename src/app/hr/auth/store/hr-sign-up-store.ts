@@ -18,6 +18,7 @@ export const hrSignUpAtom = atomWithStorage<HRSignUpStore>(
     phone: "",
     taxId: "",
     name: "",
+    address: "",
     type: "none",
     bookUrl: [],
     logoUrl: [],

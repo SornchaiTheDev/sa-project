@@ -37,13 +37,18 @@ const mapType = (type: string) => {
 };
 
 const generateCompanyInfo = (signUp: HRSignUpStore) => {
-  const { name, type, category, taxId, bookUrl, logoUrl } = signUp;
+  const { name, type, category, taxId, bookUrl, logoUrl, address } = signUp;
   if (bookUrl.length === 0 || logoUrl.length === 0) return [];
 
   return [
     {
       title: "ชื่อหน่วยงาน",
       value: name,
+      type: "text",
+    },
+    {
+      title: "ที่อยู่หน่วยงาน",
+      value: address,
       type: "text",
     },
     {

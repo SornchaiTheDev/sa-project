@@ -32,6 +32,7 @@ export const companyInfo = z
       .or(z.literal("private"))
       .or(z.literal("none")),
     name: z.string().min(1, "กรุณากรอกชื่อบริษัท"),
+    address: z.string().min(1, "กรุณากรอกที่อยู่บริษัท"),
     taxId: z
       .string()
       .refine(

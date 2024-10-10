@@ -68,13 +68,17 @@ const checkAlreadyRegistered = async (taxId: string) => {
 
 function CompanyInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [{ type, name, taxId, category, bookUrl, logoUrl }, setSignUpData] =
-    useAtom(hrSignUpAtom);
+  const [
+    { type, name, taxId, category, bookUrl, logoUrl, address },
+    setSignUpData,
+  ] = useAtom(hrSignUpAtom);
+
   const form = useForm<CompanyInfo>({
     resolver: zodResolver(companyInfo),
     defaultValues: {
       type,
       name,
+      address,
       taxId,
       category,
       bookUrl,
@@ -210,6 +214,21 @@ function CompanyInfoForm() {
                   className="h-12 bg-zinc-100"
                   {...field}
                   placeholder="ชื่อบริษัท"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">ที่อยู่บริษัท</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  {...field}
+                  placeholder="ที่อยู่บริษัท"
                 />
                 <FormMessage />
               </FormItem>
