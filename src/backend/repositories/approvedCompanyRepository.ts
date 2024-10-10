@@ -35,7 +35,28 @@ export class ApprovedCompanyRepository {
       const result = await query(text, values);
       return result.length > 0 ? (result[0] as ApprovedCompany) : null;
     } catch (error) {
-      console.error("Failed to fetch approved company from the database", error);
+      console.error(
+        "Failed to fetch approved company from the database",
+        error,
+      );
+      throw error;
+    }
+  }
+
+  public async getByTaxId(taxId: string): Promise<ApprovedCompany | null> {
+    try {
+      const text = `
+        SELECT * FROM "APPROVED_COMPANY"
+        WHERE "Tax_ID" = $1
+      `;
+      const values = [taxId];
+      const result = await query(text, values);
+      return result.length > 0 ? (result[0] as ApprovedCompany) : null;
+    } catch (error) {
+      console.error(
+        "Failed to fetch approved company from the database",
+        error,
+      );
       throw error;
     }
   }

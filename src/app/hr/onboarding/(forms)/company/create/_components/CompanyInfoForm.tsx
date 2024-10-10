@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -31,6 +31,8 @@ import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
 import axios from "axios";
 import { DBDData } from "~/types/dbdData";
+import { ApprovedCompany } from "~/types/approvedCompany";
+import _ from "lodash";
 
 const jobCategories: { name: string; id: string }[] = [
   {
@@ -51,6 +53,13 @@ const checkTaxId = async (taxId: string) => {
   if (res.data.status.code === "1000") {
     return true;
   }
+};
+
+const checkAlreadyRegistered = async (taxId: string) => {
+  const res = await axios.get<{ company: ApprovedCompany | null }>(
+    `/api/hr/validate/company/${taxId}`,
+  );
+  return res.data.company === null;
 };
 
 function CompanyInfoForm() {
@@ -89,6 +98,36 @@ function CompanyInfoForm() {
       setIsSubmitting(false);
     }
   };
+
+  const [isTaxIdChecked, setIsTaxIdChecked] = useState(false);
+
+  const taxIdField = form.watch("taxId");
+
+  const debouncedCheckTaxId = useMemo(
+    () =>
+      _.debounce(async (taxId: string) => {
+        try {
+          setIsTaxIdChecked(false);
+          const isExists = await checkAlreadyRegistered(taxId);
+          if (!isExists) {
+            form.setError("taxId", {
+              type: "manual",
+              message: "บริษัทนี้ได้ลงทะเบียนแล้ว",
+            });
+          } else {
+            form.clearErrors("taxId");
+          }
+        } catch (err) {
+        } finally {
+          setIsTaxIdChecked(true);
+        }
+      }, 500),
+    [form],
+  );
+
+  useEffect(() => {
+    debouncedCheckTaxId(taxIdField);
+  }, [taxIdField, debouncedCheckTaxId]);
 
   return (
     <motion.div
@@ -223,7 +262,9 @@ function CompanyInfoForm() {
             )}
           />
           <Button
-            disabled={isSubmitting || !form.formState.isValid}
+            disabled={
+              isSubmitting || !form.formState.isValid || !isTaxIdChecked
+            }
             isLoading={isSubmitting}
             variant="ghost"
             className="flex gap-2 items-center float-end mt-10 hover:text-zinc-500 self-end"
