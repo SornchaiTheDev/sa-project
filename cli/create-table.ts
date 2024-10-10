@@ -26,7 +26,8 @@ export const createTable = async () => {
           "JOBA_First_Name" VARCHAR(100) NOT NULL,
           "JOBA_Last_Name" VARCHAR(100) NOT NULL,
           "JOBA_Is_Active" INT NOT NULL DEFAULT 1,
-          "JOBA_Phone_Number" VARCHAR(10)
+          "JOBA_Phone_Number" VARCHAR(10),
+          "JOBA_Email_Google" VARCHAR(100)
       );
 
       CREATE TABLE IF NOT EXISTS "KUSD" (
