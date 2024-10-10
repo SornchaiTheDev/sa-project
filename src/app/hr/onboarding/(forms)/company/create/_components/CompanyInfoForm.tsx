@@ -82,27 +82,6 @@ function CompanyInfoForm() {
     },
   });
 
-  const router = useRouter();
-
-  const handleOnSubmit = async (formData: CompanyInfo) => {
-    setSignUpData((prev) => ({ ...prev, ...formData }));
-
-    try {
-      setIsSubmitting(true);
-      const isFound = await checkTaxId(formData.taxId);
-      if (!isFound) {
-        form.setError("taxId", {
-          message: "ไม่พบเลขประจำตัวผู้เสียภาษีนี้",
-        });
-        return;
-      }
-      router.push("/hr/onboarding/verify");
-    } catch (err) {
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const [isTaxIdChecked, setIsTaxIdChecked] = useState(false);
 
   const taxIdField = form.watch("taxId");
@@ -139,6 +118,47 @@ function CompanyInfoForm() {
     setIsHydrated(true);
   }, []);
 
+  const router = useRouter();
+
+  const checkPrivateCompany = async (taxId: string) => {
+    const isFound = await checkTaxId(taxId);
+    if (!isFound) {
+      form.setError("taxId", {
+        message: "ไม่พบเลขประจำตัวผู้เสียภาษีนี้",
+      });
+      throw new Error("Not found");
+    }
+  };
+
+  const checkGovernmentCompany = (taxId: string) => {
+    const isValid = taxId.startsWith("0994000");
+    if (!isValid) {
+      form.setError("taxId", {
+        message: "เลขประจำตัวผู้เสียภาษีของหน่วยงานรัฐบาลไม่ถูกต้อง",
+      });
+      throw new Error("Invalid taxId");
+    }
+    return;
+  };
+
+  const handleOnSubmit = async (formData: CompanyInfo) => {
+    if (!isTaxIdChecked) return;
+    setSignUpData((prev) => ({ ...prev, ...formData }));
+    try {
+      setIsSubmitting(true);
+      if (formData.type === "private") {
+        await checkPrivateCompany(formData.taxId);
+      } else if (formData.type === "government") {
+        checkGovernmentCompany(taxId);
+      }
+      router.push("/hr/onboarding/verify");
+    } catch (err) {
+      return;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <motion.div
       initial={{ y: 40, opacity: 0 }}
@@ -150,7 +170,10 @@ function CompanyInfoForm() {
 
       <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
       <Form {...form}>
-        <form className="flex flex-col" onSubmit={form.handleSubmit(handleOnSubmit)}>
+        <form
+          className="flex flex-col"
+          onSubmit={form.handleSubmit(handleOnSubmit)}
+        >
           <FormField
             control={form.control}
             name="type"
@@ -276,9 +299,7 @@ function CompanyInfoForm() {
             )}
           />
           <Button
-            disabled={
-              isSubmitting || !form.formState.isValid || !isTaxIdChecked
-            }
+            disabled={isSubmitting || !isTaxIdChecked}
             isLoading={isSubmitting}
             variant="ghost"
             className="flex gap-2 items-center mt-10 hover:text-zinc-500 self-end"
