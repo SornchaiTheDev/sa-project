@@ -8,8 +8,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   hrSignUpAtom,
   HRSignUpStore,
-} from "~/app/hr/auth/sign-up/store/hr-sign-up-store";
+} from "~/app/hr/auth/store/hr-sign-up-store";
 import { Button } from "~/components/ui/button";
+
+export const dynamic = "force-dynamic";
 
 const generateUserInfo = (signUp: HRSignUpStore) => {
   const { firstName, surName, email, phone } = signUp;
@@ -36,6 +38,8 @@ const mapType = (type: string) => {
 
 const generateCompanyInfo = (signUp: HRSignUpStore) => {
   const { name, type, category, taxId, bookUrl, logoUrl } = signUp;
+  if (bookUrl.length === 0 || logoUrl.length === 0) return [];
+
   return [
     {
       title: "ชื่อหน่วยงาน",
