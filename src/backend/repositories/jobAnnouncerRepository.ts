@@ -1,5 +1,6 @@
 import { query } from "../../lib/db";
 import { JobAnnouncerDTO } from "../DTO/jobAnnouncerDTO";
+import { hashPassword } from "../libs/bcrypt";
 
 export class JobAnnouncerRepository {
   public async checkUsername(
@@ -62,15 +63,27 @@ INSERT INTO "JOB_ANNOUNCER" (
 ) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, $8)
 `;
 
+    const {
+      username,
+      companyId,
+      title,
+      firstName,
+      lastName,
+      phoneNumber,
+      email,
+    } = payload;
+
+    const hashedPassword = await hashPassword(payload.password);
+
     const values = [
-      payload.username,
-      payload.companyId,
-      payload.title,
-      payload.firstName,
-      payload.lastName,
-      payload.phoneNumber,
-      payload.email,
-      payload.password,
+      username,
+      companyId,
+      title,
+      firstName,
+      lastName,
+      phoneNumber,
+      email,
+      hashedPassword,
     ];
 
     await query(text, values);

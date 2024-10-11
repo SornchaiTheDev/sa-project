@@ -1,11 +1,6 @@
 import pool from "../../lib/db";
 import { HRSignUpDTO } from "../DTO/hrSignupDTO";
-import bcrypt from "bcrypt";
-
-const hashPassword = async (password: string) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return hashedPassword;
-};
+import { hashPassword } from "../libs/bcrypt";
 
 export class JobAAndCompanyRepository {
   public async create(payload: HRSignUpDTO) {
