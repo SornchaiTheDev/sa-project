@@ -28,6 +28,12 @@ export const POST = async (req: Request) => {
     const accessToken = await signJwt(
       {
         username: user.username,
+        title: user.title,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isActive: user.isActive,
+        companyId: user.companyId,
+        phoneNumber: user.phoneNumber,
       },
       env.JWT_SECRET,
     );

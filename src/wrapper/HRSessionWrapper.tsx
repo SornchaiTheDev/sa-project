@@ -1,7 +1,13 @@
 "use client";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { createContext, ReactNode, useCallback, useEffect } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+} from "react";
 import { HRInfo } from "~/types/hrInfo";
 
 const HRSessionContext = createContext<HRInfo>({
@@ -13,6 +19,8 @@ const HRSessionContext = createContext<HRInfo>({
   companyId: "",
   phoneNumber: "",
 });
+
+export const useHRSession = () => useContext(HRSessionContext);
 
 function HRSessionWrapper({
   children,
