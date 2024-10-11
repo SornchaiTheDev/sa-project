@@ -9,6 +9,7 @@ import {
   KU_ALL_LOGIN_USER_INFO_URI,
 } from "~/constants/allLogin";
 import { setHTTPOnlyCookie } from "~/lib/cookies";
+import dayjs from "dayjs";
 
 interface TokenResponse {
   access_token: string;
@@ -155,8 +156,12 @@ export const GET = async (req: Request) => {
     cookies().delete("state");
     cookies().delete("code_verifier");
 
-    setHTTPOnlyCookie("access_token", accessToken);
-    setHTTPOnlyCookie("refresh_token", refreshToken);
+    setHTTPOnlyCookie("access_token", accessToken, {
+      expires: dayjs().add(30, "minute").toDate(),
+    });
+    setHTTPOnlyCookie("refresh_token", refreshToken, {
+      expires: dayjs().add(1, "day").toDate(),
+    });
   } catch (err) {
     console.log(err);
     return Response.json(
