@@ -22,9 +22,12 @@ export class JobAAndCompanyRepository {
       surName,
       email,
       password,
+      isVerified,
     } = payload;
 
     const client = await pool.connect();
+
+    const isApproved = isVerified ? 1 : 0;
 
     try {
       await client.query("BEGIN");
@@ -54,7 +57,7 @@ export class JobAAndCompanyRepository {
         address,
         logoUrl,
         bookUrl,
-        0,
+        isApproved,
       ]);
 
       const companyID = createdCompany.rows[0].Company_ID;

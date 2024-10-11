@@ -106,23 +106,15 @@ function CompanyInfoForm() {
 
   const checkPrivateCompany = async (taxId: string) => {
     const isFound = await checkTaxId(taxId);
-    if (!isFound) {
-      form.setError("taxId", {
-        type: "custom",
-        message: "ไม่พบเลขประจำตัวผู้เสียภาษีนี้",
-      });
-      throw new Error("Not found");
+    if (isFound) {
+      setSignUpData((prev) => ({ ...prev, isVerified: true }));
     }
   };
 
   const checkGovernmentCompany = (taxId: string) => {
     const isValid = taxId.startsWith("0994000");
-    if (!isValid) {
-      form.setError("taxId", {
-        type: "custom",
-        message: "เลขประจำตัวผู้เสียภาษีของหน่วยงานรัฐบาลไม่ถูกต้อง",
-      });
-      throw new Error("Invalid taxId");
+    if (isValid) {
+      setSignUpData((prev) => ({ ...prev, isVerified: true }));
     }
     return;
   };
@@ -130,11 +122,6 @@ function CompanyInfoForm() {
   const handleOnSubmit = async (formData: CompanyInfo) => {
     try {
       setIsSubmitting(true);
-      if (formData.type === "private") {
-        await checkPrivateCompany(formData.taxId);
-      } else if (formData.type === "government") {
-        checkGovernmentCompany(formData.taxId);
-      }
 
       const isExists = await checkAlreadyRegistered(formData.taxId);
       if (isExists) {
@@ -143,6 +130,12 @@ function CompanyInfoForm() {
           message: "เลขประจำตัวผู้เสียภาษีนี้ถูกใช้ไปแล้ว",
         });
         return;
+      }
+
+      if (formData.type === "private") {
+        await checkPrivateCompany(formData.taxId);
+      } else if (formData.type === "government") {
+        checkGovernmentCompany(formData.taxId);
       }
 
       setSignUpData((prev) => ({ ...prev, ...formData }));

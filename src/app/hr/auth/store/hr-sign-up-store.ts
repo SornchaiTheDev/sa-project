@@ -4,7 +4,9 @@ import { HRInfo } from "~/app/hr/onboarding/(forms)/user-info/schemas/hr-info-sc
 import { CompanyInfo } from "~/app/hr/onboarding/(forms)/company/create/schemas/company-info-schema";
 import { atom } from "jotai";
 
-export type HRSignUpStore = HRSignUpSchema & HRInfo & CompanyInfo;
+export type HRSignUpStore = HRSignUpSchema &
+  HRInfo &
+  CompanyInfo & { isVerified: boolean };
 
 const defaultValues: HRSignUpStore = {
   email: "",
@@ -22,6 +24,7 @@ const defaultValues: HRSignUpStore = {
   bookUrl: [],
   logoUrl: [],
   category: "",
+  isVerified: false,
 };
 
 export const hrSignUpAtom = atomWithStorage<HRSignUpStore>(

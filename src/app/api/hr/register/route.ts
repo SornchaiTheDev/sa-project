@@ -21,6 +21,7 @@ export const POST = async (req: Request) => {
       password: body.password,
       phone: body.phone,
       confirmPassword: body.confirmPassword,
+      isVerified: body.isVerified,
     });
   } catch (err) {
     return Response.json(

@@ -21,4 +21,5 @@ export interface HRSignUpDTO {
   bookUrl: UploadedFile[];
   logoUrl: UploadedFile[];
   category: string;
+  isVerified: boolean;
 }
