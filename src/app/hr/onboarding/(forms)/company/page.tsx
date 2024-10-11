@@ -43,7 +43,7 @@ function HRSignUpPage() {
   const createJobA = useMutation({
     mutationFn: createJobAnnouncer,
     onSuccess: () => {
-      router.push("verify");
+      router.push("/hr/onboarding/waiting");
     },
     onError: () => toast.error("เกิดข้อผิดพลาดในการสร้างบัญชี"),
   });
