@@ -17,11 +17,11 @@ import { Button } from "~/components/ui/button";
 export const dynamic = "force-dynamic";
 
 const generateUserInfo = (signUp: HRSignUpStore) => {
-  const { firstName, surName, email, phone } = signUp;
+  const { firstName, lastName, email, phone } = signUp;
   return [
     {
       title: "ชื่อ",
-      value: firstName + " " + surName,
+      value: firstName + " " + lastName,
     },
     {
       title: "อีเมล",

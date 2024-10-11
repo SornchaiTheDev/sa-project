@@ -9,7 +9,7 @@ export const POST = async (req: Request) => {
     await jobAnCompany.create({
       title: body.title,
       firstName: body.firstName,
-      surName: body.surName,
+      lastName: body.lastName,
       email: body.email,
       username: body.username,
       category: body.category,

@@ -40,7 +40,7 @@ const isEmailExists = async (email: string) => {
 };
 
 function HRInfoForm() {
-  const [{ email, title, firstName, surName, phone }, setSignUpData] =
+  const [{ email, title, firstName, lastName, phone }, setSignUpData] =
     useAtom(hrSignUpAtom);
   const form = useForm<HRInfo>({
     resolver: zodResolver(hrInfo),
@@ -48,7 +48,7 @@ function HRInfoForm() {
       email,
       title,
       firstName,
-      surName,
+      lastName,
       phone,
     },
   });
@@ -153,7 +153,7 @@ function HRInfoForm() {
           />
           <FormField
             control={form.control}
-            name="surName"
+            name="lastName"
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">นามสกุล</FormLabel>

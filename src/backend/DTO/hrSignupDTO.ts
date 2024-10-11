@@ -13,7 +13,7 @@ export interface HRSignUpDTO {
   confirmPassword: string;
   title: string;
   firstName: string;
-  surName: string;
+  lastName: string;
   phone: string;
   taxId: string;
   name: string;

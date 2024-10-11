@@ -49,8 +49,8 @@ function UserInfoFormPage() {
     defaultValues: {
       prefix: onboard.prefix.length > 0 ? onboard.prefix : thaiPreName,
       firstName: onboard.firstName.length > 0 ? onboard.firstName : thFirstName,
-      surName: onboard.surName.length > 0 ? onboard.surName : thSurName,
-      email: onboard.surName.length > 0 ? onboard.email : googleMail,
+      lastName: onboard.lastName.length > 0 ? onboard.lastName : thSurName,
+      email: onboard.lastName.length > 0 ? onboard.email : googleMail,
       bod: new Date(onboard.bod),
       phone: onboard.phone,
     },
@@ -135,7 +135,7 @@ function UserInfoFormPage() {
               />
               <FormField
                 control={form.control}
-                name="surName"
+                name="lastName"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">นามสกุล</FormLabel>

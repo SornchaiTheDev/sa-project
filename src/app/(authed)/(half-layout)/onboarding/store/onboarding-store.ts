@@ -7,7 +7,7 @@ export const onboardingAtom = atomWithStorage<Onboarding>(
   {
     prefix: "",
     firstName: "",
-    surName: "",
+    lastName: "",
     email: "",
     bod: new Date(),
     phone: "",
@@ -25,7 +25,7 @@ export const resetOnboardingAtom = atom(null, (_, set) => {
   set(onboardingAtom, {
     prefix: "",
     firstName: "",
-    surName: "",
+    lastName: "",
     email: "",
     bod: new Date(),
     phone: "",
