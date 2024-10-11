@@ -60,4 +60,30 @@ export class ApprovedCompanyRepository {
       throw error;
     }
   }
+
+  public async getByName(name: string): Promise<ApprovedCompany[] | null> {
+    try {
+      const text = `
+        SELECT * FROM "APPROVED_COMPANY"
+        WHERE "Company_Name" LIKE $1 AND "Approved_Company_Is_Active" = 1
+      `;
+      const values = [`%${name}%`];
+      const result = await query(text, values);
+      return result.map((row) => ({
+        taxId: row.Tax_ID,
+        name: row.Company_Name,
+        id: row.Company_ID,
+        address: row.Company_Address,
+        isActive: row.Approved_Company_Is_Active,
+        companyImage: row.Company_Image,
+        requestedFile: row.Requested_File,
+      }));
+    } catch (error) {
+      console.error(
+        "Failed to fetch approved company from the database",
+        error,
+      );
+      throw error;
+    }
+  }
 }

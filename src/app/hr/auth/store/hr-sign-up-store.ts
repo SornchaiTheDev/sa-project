@@ -15,7 +15,7 @@ const defaultValues: HRSignUpStore = {
   confirmPassword: "",
   title: "",
   firstName: "",
-  surName: "",
+  lastName: "",
   phone: "",
   taxId: "",
   name: "",

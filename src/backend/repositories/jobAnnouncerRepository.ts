@@ -1,4 +1,5 @@
 import { query } from "../../lib/db";
+import { JobAnnouncerDTO } from "../DTO/jobAnnouncerDTO";
 
 export class JobAnnouncerRepository {
   public async checkUsername(
@@ -44,5 +45,34 @@ export class JobAnnouncerRepository {
     if (res[0].emailcounts > 0) return "EMAIL_EXISTS";
 
     return "AVAILABLE";
+  }
+
+  public async create(payload: JobAnnouncerDTO): Promise<void> {
+    const text = `
+INSERT INTO "JOB_ANNOUNCER" (
+  "JOBA_Username",
+  "Company_ID",
+  "JOBA_Title",
+  "JOBA_First_Name",
+  "JOBA_Last_Name",
+  "JOBA_Phone_Number",
+  "JOBA_Email_Google",
+  "JOBA_Last_Update_Date",
+  "JOBA_Password"
+) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, $8)
+`;
+
+    const values = [
+      payload.username,
+      payload.companyId,
+      payload.title,
+      payload.firstName,
+      payload.lastName,
+      payload.phoneNumber,
+      payload.email,
+      payload.password,
+    ];
+
+    await query(text, values);
   }
 }

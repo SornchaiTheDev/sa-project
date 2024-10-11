@@ -15,7 +15,7 @@ export const hrInfo = z.object({
     .string()
     .min(1, "กรุณากรอกชื่อ")
     .regex(/^[ก-๏\s]+$/, "กรุณากรอกชื่อให้ถูกต้อง"),
-  surName: z
+  lastName: z
     .string()
     .min(1, "กรุณากรอกนามสกุล")
     .regex(/^[ก-๏\s]+$/, "กรุณากรอกนามสกุลให้ถูกต้อง"),

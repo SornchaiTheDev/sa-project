@@ -1,30 +1,103 @@
 "use client";
 
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import _ from "lodash";
+import { ChevronLeft, ChevronRight, CircleDashed, Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { ApprovedCompany } from "~/types/approvedCompany";
+import { createJobAnnouncer } from "./apiFns/createJobAnnouncer";
+import { useAtomValue } from "jotai";
+import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
+import { toast } from "sonner";
 
 type Selected = "already-has" | "not-yet" | "none";
+
+const getCompanies = async (name: string) => {
+  if (name.length === 0) return [];
+  const res = await axios.get<{ companies: ApprovedCompany[] }>(
+    `/api/companies?search=${name}`,
+  );
+  return res.data.companies;
+};
 
 function HRSignUpPage() {
   const [selected, setSelected] = useState<Selected>("none");
   const [companyName, setCompanyName] = useState<string>("");
+  const [companies, setCompanies] = useState<ApprovedCompany[]>([]);
+  const [selectedCompany, setSelectedCompany] =
+    useState<ApprovedCompany | null>(null);
+
+  const createJobA = useMutation({
+    mutationFn: createJobAnnouncer,
+    onSuccess: () => {
+      router.push("verify");
+    },
+    onError: () => toast.error("เกิดข้อผิดพลาดในการสร้างบัญชี"),
+  });
 
   const router = useRouter();
 
+  const { username, title, password, email, phone, firstName, lastName } =
+    useAtomValue(hrSignUpAtom);
+
   const handleNext = () => {
     if (selected === "already-has") {
-      router.push("verify");
+      if (!selectedCompany) return;
+      createJobA.mutate({
+        username,
+        title,
+        password,
+        email,
+        phoneNumber: phone,
+        companyId: selectedCompany.id,
+        firstName,
+        lastName,
+      });
     } else if (selected === "not-yet") {
       router.push("company/create");
     }
   };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const debouncedGetCompanies = useMemo(
+    () =>
+      _.debounce(async (name: string) => {
+        try {
+          const companies = await getCompanies(name);
+          setCompanies(companies);
+        } catch (err) {
+        } finally {
+          setIsLoading(false);
+        }
+      }, 500),
+    [],
+  );
+
+  const handleSelectCompany = (company: ApprovedCompany) => {
+    setCompanyName(company.name);
+    setSelectedCompany(company);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    debouncedGetCompanies(companyName);
+  }, [companyName, debouncedGetCompanies]);
+
+  const isSameName = selectedCompany?.name === companyName;
 
   return (
     <>
@@ -67,12 +140,50 @@ function HRSignUpPage() {
               className="mt-4 space-y-2"
             >
               <Label className="text-sm">ชื่อบริษัท</Label>
-              <Input
-                className="bg-zinc-100 h-12"
-                placeholder="Company's name"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-              />
+              <Popover open={companyName.length > 0 && !isSameName}>
+                <PopoverTrigger className="block w-full">
+                  <Input
+                    className="bg-zinc-100 h-12"
+                    placeholder="Company's name"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                  />
+                </PopoverTrigger>
+                <PopoverContent
+                  onCloseAutoFocus={(e) => e.preventDefault()}
+                  onOpenAutoFocus={(e) => e.preventDefault()}
+                  className="w-[--radix-popper-anchor-width] p-2 overflow-y-auto max-h-24"
+                  align="start"
+                >
+                  {isLoading ? (
+                    <div className="flex flex-col gap-2 justify-center items-center h-full">
+                      <Loader />
+                      <h6 className="text-sm">กำลังโหลด...</h6>
+                    </div>
+                  ) : companies.length === 0 ? (
+                    <div className="flex flex-col gap-2 justify-center items-center h-full">
+                      <CircleDashed />
+                      <h6 className="text-sm">ไม่มีบริษัทนี้</h6>
+                    </div>
+                  ) : (
+                    <ul>
+                      {companies.map((company) => (
+                        <li
+                          key={company.id}
+                          className="hover:bg-zinc-100 p-3 text-sm rounded-lg"
+                        >
+                          <button
+                            onClick={() => handleSelectCompany(company)}
+                            className="w-full text-start"
+                          >
+                            {company.name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </PopoverContent>
+              </Popover>
             </motion.div>
           )}
         </AnimatePresence>
