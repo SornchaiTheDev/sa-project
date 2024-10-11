@@ -1,3 +1,4 @@
+import { JobAnnouncer } from "~/types/jobAnnouncer";
 import { query } from "../../lib/db";
 import { JobAnnouncerDTO } from "../DTO/jobAnnouncerDTO";
 import { hashPassword } from "../libs/bcrypt";
@@ -87,5 +88,31 @@ INSERT INTO "JOB_ANNOUNCER" (
     ];
 
     await query(text, values);
+  }
+
+  public async getByUsername(username: string): Promise<JobAnnouncer> {
+    const text = `
+      SELECT *
+      FROM "JOB_ANNOUNCER" 
+      WHERE "JOBA_Username" = $1
+    `;
+
+    const values = [username];
+
+    const res = await query(text, values);
+
+    return {
+      email: res[0]["JOBA_Email_Google"],
+      firstName: res[0]["JOBA_First_Name"],
+      lastName: res[0]["JOBA_Last_Name"],
+      password: res[0]["JOBA_Password"],
+      phoneNumber: res[0]["JOBA_Phone_Number"],
+      title: res[0]["JOBA_Title"],
+      username: res[0]["JOBA_Username"],
+      isActive: res[0]["JOBA_Is_Active"],
+      companyId: res[0]["Company_ID"],
+      lastUpdate: res[0]["JOBA_Last_Update_Date"],
+      approveRequest: res[0]["JOBA_Approve_Request_Date"],
+    };
   }
 }

@@ -31,7 +31,7 @@ function HRSessionWrapper({
         switch (err.response?.data.message) {
           case "UNAUTHORIZED":
           case "TOKEN_NOT_FOUND":
-            router.push("/auth/sign-in");
+            router.push("/hr/auth/sign-in");
             break;
         }
       }
