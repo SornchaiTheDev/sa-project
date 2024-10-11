@@ -133,7 +133,7 @@ function CompanyInfoForm() {
       if (formData.type === "private") {
         await checkPrivateCompany(formData.taxId);
       } else if (formData.type === "government") {
-        checkGovernmentCompany(taxId);
+        checkGovernmentCompany(formData.taxId);
       }
 
       const isExists = await checkAlreadyRegistered(formData.taxId);

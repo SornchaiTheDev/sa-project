@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { motion } from "framer-motion";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import {
   hrSignUpAtom,
   HRSignUpStore,
+  resetHrSignUpAtom,
 } from "~/app/hr/auth/store/hr-sign-up-store";
 import { Button } from "~/components/ui/button";
 
@@ -89,6 +90,7 @@ function VerifyPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const signUp = useAtomValue(hrSignUpAtom);
+  const resetStore = useSetAtom(resetHrSignUpAtom);
 
   const userInfo = useMemo(() => generateUserInfo(signUp), [signUp]);
   const companyInfo = useMemo(() => generateCompanyInfo(signUp), [signUp]);
@@ -99,6 +101,8 @@ function VerifyPage() {
     try {
       await axios.post("/api/hr/register", signUp);
       toast.success("บันทึกข้อมูลสำเร็จ");
+      resetStore();
+      localStorage.removeItem("hrSignUp");
       router.push("/hr/onboarding/waiting");
     } catch (err) {
       toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
