@@ -27,6 +27,7 @@ const PasswordRequirements = dynamic(() => import("./PasswordRequirements"), {
 });
 
 const isUsernameExists = async (username: string) => {
+  if (username.length === 0) return;
   try {
     const res = await axios.get<{ status: "USERNAME_EXISTS" | "AVAILABLE" }>(
       `/api/hr/validate/username/${username}`,
