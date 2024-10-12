@@ -55,20 +55,23 @@ export const createTable = async () => {
       );
 
       CREATE TABLE IF NOT EXISTS "JOB_ANNOUNCEMENT" (
-          "Job_Announce_ID" uuid PRIMARY KEY,
+          "Job_Announce_ID" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           "JOBA_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in JOB_ANNOUNCER
+          "Company_ID" uuid NOT NULL,
           "Job_Announce_Date_Time" TIMESTAMP UNIQUE NOT NULL,
           "Job_Announce_Title" VARCHAR(100) NOT NULL,
           "Job_Announce_Description" VARCHAR(100) NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS "POSITION" (
-          "Job_Position_ID" uuid PRIMARY KEY,
+          "Job_Position_ID" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           "Job_Announce_ID" uuid,
           "Job_Mode" INT,
           "Position_Name" VARCHAR(100),
           "Position_Amount" INT,
-          "Job_Position_Detail" uuid
+          "Job_Position_Detail" TEXT NOT NULL,
+          "Job_Position_Qualifications" TEXT NOT NULL,
+          "Job_Position_Welfare" TEXT
       );
 
       CREATE TABLE IF NOT EXISTS "EVALUATION" (
@@ -135,7 +138,8 @@ export const createTable = async () => {
       CREATE TABLE IF NOT EXISTS "RELATION_APPLY" (
          "STU_Username" VARCHAR(50),
          "Job_Announce_ID" uuid,
-         PRIMARY KEY ("STU_Username", "Job_Announce_ID")
+         "Job_Position_ID" uuid,
+         PRIMARY KEY ("STU_Username", "Job_Announce_ID", "Job_Position_ID")
       );
 
       ALTER TABLE "JOB_ANNOUNCER" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
@@ -175,6 +179,8 @@ export const createTable = async () => {
       ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
 
       ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("Job_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT" ("Job_Announce_ID");
+
+      ALTER TABLE "JOB_ANNOUNCEMENT" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
     `;
 
     await pool.query(createTableQuery);
