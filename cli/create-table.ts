@@ -131,6 +131,13 @@ export const createTable = async () => {
           PRIMARY KEY ("JOBA_Username", "KUSD_Username")
       );
 
+
+      CREATE TABLE IF NOT EXISTS "RELATION_APPLY" (
+         "STU_Username" VARCHAR(50),
+         "Job_Announce_ID" uuid,
+         PRIMARY KEY ("STU_Username", "Job_Announce_ID")
+      );
+
       ALTER TABLE "JOB_ANNOUNCER" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
 
       ALTER TABLE "RELATION_TAGGED" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
@@ -164,6 +171,10 @@ export const createTable = async () => {
       ALTER TABLE "RELATION_PROVIDE_EXAM" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
 
       ALTER TABLE "RELATION_PROVIDE_EXAM" ADD FOREIGN KEY ("Examination_ID") REFERENCES "EXAMINATION" ("Examination_ID");
+
+      ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
+
+      ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("Job_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT" ("Job_Announce_ID");
     `;
 
     await pool.query(createTableQuery);

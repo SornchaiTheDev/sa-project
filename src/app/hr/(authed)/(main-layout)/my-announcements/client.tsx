@@ -3,7 +3,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import {
   Announcement,
   announcementSchema,
-} from "../schemas/announcement-schema";
+} from "./schemas/announcement-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,13 +23,15 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
-import { useHRSession } from "~/wrapper/HRSessionWrapper";
-import CreateAnnouncementAlert from "./CreateAnnouncementAlert";
+import CreateAnnouncementAlert from "./_components/CreateAnnouncementAlert";
 import { useState } from "react";
+import SuspensedAlert from "./_components/SuspensedAlert";
 
-function CreateAnnouncementForm() {
-  const info = useHRSession();
-  console.log(info);
+interface Props {
+  isSuspensed: boolean;
+}
+
+function CreateAnnouncementClient({ isSuspensed }: Props) {
   const form = useForm<Announcement>({
     resolver: zodResolver(announcementSchema),
     defaultValues: {
@@ -74,6 +76,8 @@ function CreateAnnouncementForm() {
 
   return (
     <>
+      {isSuspensed && <SuspensedAlert />}
+      <h5 className="text-2xl font-medium">ประกาศงาน</h5>
       <CreateAnnouncementAlert
         isOpen={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
@@ -263,4 +267,4 @@ function CreateAnnouncementForm() {
   );
 }
 
-export default CreateAnnouncementForm;
+export default CreateAnnouncementClient;
