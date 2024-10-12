@@ -8,7 +8,6 @@ import React, { FormEvent, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import WaitForVerifyAlert from "./_components/WaitForVerifyAlert";
-import { isNotFoundError } from "next/dist/client/components/not-found";
 
 function HRSignInPage() {
   const [username, setUsername] = useState("");
