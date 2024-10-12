@@ -109,4 +109,19 @@ WHERE "Company_ID" = $1 AND "Job_Announce_Title" LIKE $2
     const res = await query(text, [companyId, `%${search}%`]);
     return res.map((row) => ({ id: row["id"], name: row["title"] }));
   }
+  public async getById(jobAID: string): Promise<JobAnnouncementDTO> {
+    const text = `
+    SELECT * 
+    FROM "JOB_ANNOUNCEMENT"
+    WHERE "Job_Announce_ID" = $1
+`;
+
+    const res = await query(text, [jobAID]);
+
+    return {
+      name: res[0]["Job_Announce_Title"],
+      description: res[0]["Job_Announce_Description"],
+      positions: [],
+    };
+  }
 }
