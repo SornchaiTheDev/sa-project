@@ -21,6 +21,10 @@ export const POST = async (req: Request) => {
       throw new Error("UNAUTHORIZED");
     }
 
+    if (!user.isActive) {
+      throw new Error("NOT_ACTIVE");
+    }
+
     const isSame = comparePassword(body.password, user.password);
     if (!isSame) {
       throw new Error("UNAUTHORIZED");
@@ -54,9 +58,24 @@ export const POST = async (req: Request) => {
 
     return Response.json({ message: "Login success", code: "OK" });
   } catch (err) {
+    if (err instanceof Error) {
+      if (err.message === "UNAUTHORIZED") {
+        return Response.json(
+          { message: "Username or password is incorrect", code: "UNAUTHORIZE" },
+          { status: 401 },
+        );
+      }
+      if (err.message === "NOT_ACTIVE") {
+        return Response.json(
+          { message: "User is not active", code: "NOT_ACTIVE" },
+          { status: 401 },
+        );
+      }
+    }
+
     return Response.json(
-      { message: "Username or password is incorrect", code: "UNAUTHORIZE" },
-      { status: 401 },
+      { message: "Something went wrong", code: "INTERNAL_SERVER_ERROR" },
+      { status: 500 },
     );
   }
 };

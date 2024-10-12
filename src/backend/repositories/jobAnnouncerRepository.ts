@@ -109,7 +109,7 @@ INSERT INTO "JOB_ANNOUNCER" (
       phoneNumber: res[0]["JOBA_Phone_Number"],
       title: res[0]["JOBA_Title"],
       username: res[0]["JOBA_Username"],
-      isActive: res[0]["JOBA_Is_Active"],
+      isActive: res[0]["JOBA_Is_Active"] === 1,
       companyId: res[0]["Company_ID"],
       lastUpdate: res[0]["JOBA_Last_Update_Date"],
       approveRequest: res[0]["JOBA_Approve_Request_Date"],
