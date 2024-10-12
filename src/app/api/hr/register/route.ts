@@ -4,8 +4,6 @@ import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepos
 export const POST = async (req: Request) => {
   const body = (await req.json()) as JobAnnouncerDTO;
 
-  console.log(body);
-
   const jobAnnouncerRepo = new JobAnnouncerRepository();
 
   try {
