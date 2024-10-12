@@ -18,7 +18,7 @@ function AnnouncementLink({ href, name }: Props) {
       {...{ href }}
       className={cn(
         "text-sm p-1 block truncate",
-        isActive && "bg-primary rounded-md",
+        isActive && "bg-primary text-white rounded-md",
       )}
       passHref
     >
