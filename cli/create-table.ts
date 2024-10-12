@@ -137,9 +137,8 @@ export const createTable = async () => {
 
       CREATE TABLE IF NOT EXISTS "RELATION_APPLY" (
          "STU_Username" VARCHAR(50),
-         "Job_Announce_ID" uuid,
          "Job_Position_ID" uuid,
-         PRIMARY KEY ("STU_Username", "Job_Announce_ID", "Job_Position_ID")
+         PRIMARY KEY ("STU_Username", "Job_Position_ID")
       );
 
       ALTER TABLE "JOB_ANNOUNCER" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
@@ -178,7 +177,7 @@ export const createTable = async () => {
 
       ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
 
-      ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("Job_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT" ("Job_Announce_ID");
+      ALTER TABLE "RELATION_APPLY" ADD FOREIGN KEY ("Job_Position_ID") REFERENCES "POSITION" ("Job_Position_ID");
 
       ALTER TABLE "JOB_ANNOUNCEMENT" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
     `;

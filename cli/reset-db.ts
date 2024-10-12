@@ -19,6 +19,7 @@ const reset = async () => {
     DROP TABLE IF EXISTS "RELATION_PROVIDE_EXAM" CASCADE;
     DROP TABLE IF EXISTS "RELATION_VALIDATE" CASCADE;
     DROP TABLE IF EXISTS "RELATION_TAGGED" CASCADE;
+    DROP TABLE IF EXISTS "RELATION_APPLY" CASCADE;
 `;
   await execute(query);
   console.log("Reset database successfully");
