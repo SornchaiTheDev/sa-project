@@ -13,3 +13,8 @@ export interface JobAnnouncementDTO {
   description: string;
   positions: Position[];
 }
+
+export interface JobAnnouncementPreview {
+  name: string;
+  id: string;
+}

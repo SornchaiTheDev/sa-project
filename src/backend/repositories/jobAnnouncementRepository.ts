@@ -1,5 +1,8 @@
 import { query } from "~/lib/db";
-import { JobAnnouncementDTO } from "../DTO/jobAnnouncementDTO";
+import {
+  JobAnnouncementDTO,
+  JobAnnouncementPreview,
+} from "../DTO/jobAnnouncementDTO";
 
 export class JobAnnouncementRepository {
   public async countMissingAnnouncement(recentJobAID: string): Promise<number> {
@@ -42,19 +45,26 @@ export class JobAnnouncementRepository {
   public async create(
     jobA: JobAnnouncementDTO,
     jobAUsername: string,
+    companyId: string,
   ): Promise<void> {
     const createJobAnnouncement = `
       INSERT INTO "JOB_ANNOUNCEMENT" (
       "JOBA_Username",
+      "Company_ID",
       "Job_Announce_Date_Time",
       "Job_Announce_Title",
       "Job_Announce_Description"
       )
-      VALUES ($1, CURRENT_TIMESTAMP, $2, $3)
+      VALUES ($1, $2, CURRENT_TIMESTAMP, $3, $4)
       RETURNING "Job_Announce_ID"
     `;
 
-    const values: string[] = [jobAUsername, jobA.name, jobA.description];
+    const values: string[] = [
+      jobAUsername,
+      companyId,
+      jobA.name,
+      jobA.description,
+    ];
 
     const jobAnnouncementRes = await query(createJobAnnouncement, values);
     const jobAnnouncementID = jobAnnouncementRes[0]["Job_Announce_ID"];
@@ -85,5 +95,18 @@ export class JobAnnouncementRepository {
 
       await query(createPositionText, values);
     }
+  }
+
+  public async getAllJobAnnouncementByCompanyID(
+    companyId: string,
+    search?: string,
+  ): Promise<JobAnnouncementPreview[]> {
+    const text = `
+SELECT "Job_Announce_ID" AS id, "Job_Announce_Title" as title
+FROM "JOB_ANNOUNCEMENT"
+WHERE "Company_ID" = $1 AND "Job_Announce_Title" LIKE $2
+`;
+    const res = await query(text, [companyId, `%${search}%`]);
+    return res.map((row) => ({ id: row["id"], name: row["title"] }));
   }
 }
