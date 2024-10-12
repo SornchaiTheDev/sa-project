@@ -93,7 +93,7 @@ export class JobAAndCompanyRepository {
         firstName,
         lastName,
         email,
-        1,
+        isApproved,
         hashedPassword,
       ]);
 
