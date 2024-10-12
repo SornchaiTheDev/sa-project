@@ -6,4 +6,5 @@ export interface HRInfo {
   lastName: string;
   isActive: boolean;
   phoneNumber: string;
+  role: "JOB_ANNOUNCER"
 }

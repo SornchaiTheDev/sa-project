@@ -119,6 +119,8 @@ export const GET = async (req: Request) => {
       },
     );
 
+    const isStudent = userRes["type-person"] === "3";
+
     const payload: UserInfo = {
       facultyId: userRes["faculty-id"],
       sub: userRes.sub,
@@ -145,6 +147,7 @@ export const GET = async (req: Request) => {
       cn: userRes.cn,
       userPrincipalName: userRes.userprincipalname,
       typePerson: userRes["type-person"],
+      role: isStudent ? "STUDENT" : "KUSD",
     };
 
     const accessToken = await signJwt(payload, env.JWT_SECRET);

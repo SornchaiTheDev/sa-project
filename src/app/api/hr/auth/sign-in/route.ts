@@ -4,6 +4,7 @@ import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepos
 import { env } from "~/configs/env";
 import { setHTTPOnlyCookie } from "~/lib/cookies";
 import { signJwt } from "~/lib/jwt";
+import { HRInfo } from "~/types/hrInfo";
 
 interface SignInRequest {
   username: string;
@@ -25,18 +26,18 @@ export const POST = async (req: Request) => {
       throw new Error("UNAUTHORIZED");
     }
 
-    const accessToken = await signJwt(
-      {
-        username: user.username,
-        title: user.title,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        isActive: user.isActive,
-        companyId: user.companyId,
-        phoneNumber: user.phoneNumber,
-      },
-      env.JWT_SECRET,
-    );
+    const payload: HRInfo = {
+      username: user.username,
+      title: user.title,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      isActive: user.isActive,
+      companyId: user.companyId,
+      phoneNumber: user.phoneNumber ?? "",
+      role: "JOB_ANNOUNCER",
+    };
+
+    const accessToken = await signJwt(payload, env.JWT_SECRET);
 
     setHTTPOnlyCookie("access_token", accessToken, {
       expires: dayjs().add(30, "minute").toDate(),

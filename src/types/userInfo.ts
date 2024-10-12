@@ -24,4 +24,5 @@ export interface UserInfo {
   typePerson: string;
   thFullName: string;
   enFullName: string;
+  role: "STUDENT" | "KUSD"
 }
