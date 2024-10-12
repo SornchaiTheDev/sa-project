@@ -38,6 +38,7 @@ export class JobAnnouncementRepository {
     }
     return res[0]["ID"];
   }
+
   public async create(
     jobA: JobAnnouncementDTO,
     jobAUsername: string,
@@ -50,7 +51,7 @@ export class JobAnnouncementRepository {
       "Job_Announce_Description"
       )
       VALUES ($1, CURRENT_TIMESTAMP, $2, $3)
-      RETURING "Job_Announce_ID"
+      RETURNING "Job_Announce_ID"
     `;
 
     const values: string[] = [jobAUsername, jobA.name, jobA.description];
@@ -71,15 +72,15 @@ export class JobAnnouncementRepository {
       VALUES ($1, $2, $3, $4, $5, $6, $7)
 `;
 
-    for (const positin of jobA.postions) {
+    for (const position of jobA.positions) {
       const values: string[] = [
         jobAnnouncementID,
-        positin.type === "full-time" ? 1 : 0,
-        positin.name,
-        positin.amount,
-        positin.description,
-        positin.qualification,
-        positin.welfare,
+        position.type === "full-time" ? 0 : 1,
+        position.name,
+        position.amount,
+        position.description,
+        position.qualification,
+        position.welfare,
       ];
 
       await query(createPositionText, values);

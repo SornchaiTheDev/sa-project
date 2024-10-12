@@ -11,5 +11,5 @@ interface Position {
 export interface JobAnnouncementDTO {
   name: string;
   description: string;
-  postions: Position[];
+  positions: Position[];
 }

@@ -2,10 +2,7 @@ import { z } from "zod";
 
 const positionSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อตำแหน่ง"),
-  type: z
-    .literal("full-time")
-    .or(z.literal("part-time"))
-    .or(z.literal("internship")),
+  type: z.literal("full-time").or(z.literal("part-time")),
   amount: z
     .string()
     .min(1, "กรุณากรอกจำนวนรับสมัคร")
@@ -20,10 +17,12 @@ const positionSchema = z.object({
     }),
   description: z.string().min(1, "กรุณากรอกคำอธิบาย"),
   qualification: z.string().min(1, "กรุณากรอกคุณสมบัติ"),
-  welfare: z.string().optional(),
+  welfare: z.string(),
 });
+
 export const announcementSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อประกาศ"),
+  description: z.string().min(1, "กรุณากรอกรายละเอียดประกาศ"),
   position: z.array(positionSchema),
 });
 

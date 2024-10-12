@@ -26,6 +26,10 @@ import { Textarea } from "~/components/ui/textarea";
 import CreateAnnouncementAlert from "./_components/CreateAnnouncementAlert";
 import { useState } from "react";
 import SuspensedAlert from "./_components/SuspensedAlert";
+import { useMutation } from "@tanstack/react-query";
+import { createAnnouncementFn } from "./_mutationFns/createAnnouncementFn";
+import { JobAnnouncementDTO } from "~/backend/DTO/jobAnnouncementDTO";
+import { toast } from "sonner";
 
 interface Props {
   isSuspensed: boolean;
@@ -69,9 +73,27 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const create = useMutation({
+    mutationFn: createAnnouncementFn,
+    onSuccess: () => {
+      toast.success("บันทึกสำเร็จ");
+      form.reset();
+    },
+    onError: () => toast.error("การเชื่อมต่อผิดพลาด"),
+  });
+
   const handleOnSubmit = (data: Announcement) => {
     setIsConfirmOpen(true);
-    console.log(data);
+    const payload: JobAnnouncementDTO = {
+      ...data,
+      positions: data.position.map((pos) => ({
+        ...pos,
+        salary: parseInt(pos.salary),
+        amount: parseInt(pos.amount),
+      })),
+    };
+
+    create.mutate(payload);
   };
 
   return (
@@ -97,6 +119,21 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
                   className="h-12 bg-zinc-100"
                   {...field}
                   placeholder="ชื่อประกาศ"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="mb-4">
+                <FormLabel className="font-normal">คำอธิบายประกาศ</FormLabel>
+                <Input
+                  className="h-12 bg-zinc-100"
+                  {...field}
+                  placeholder="คำอธิบายประกาศ"
                 />
                 <FormMessage />
               </FormItem>
@@ -260,7 +297,9 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               <div className="border-b-2 border-primary my-2"></div>
             </div>
           ))}
-          <Button className="w-36 mt-8 self-end">ประกาศ</Button>
+          <Button isLoading={create.isPending} className="w-36 mt-8 self-end">
+            ประกาศ
+          </Button>
         </form>
       </Form>
     </>
