@@ -114,7 +114,7 @@ function HRSignUpPage() {
         className="w-full flex flex-col"
       >
         <h4 className="text-2xl font-medium mb-10">ลงทะเบียนผู้ใช้</h4>
-        <p className="text-sm text-zinc-800">ขั้นตอนที่ 2 / 2</p>
+        <p className="text-sm text-zinc-400">ขั้นตอนที่ 2 / 2</p>
         <h5 className="text-xl font-medium">ข้อมูลบริษัท</h5>
         <h6 className="mt-4">บริษัทของคุณลงทะเบียนในระบบอยู่แล้วหรือไม่</h6>
         <RadioGroup

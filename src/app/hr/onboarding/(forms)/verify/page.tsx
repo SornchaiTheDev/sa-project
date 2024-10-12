@@ -90,19 +90,21 @@ function VerifyPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   const signUp = useAtomValue(hrSignUpAtom);
-  const resetStore = useSetAtom(resetHrSignUpAtom);
 
   const userInfo = useMemo(() => generateUserInfo(signUp), [signUp]);
   const companyInfo = useMemo(() => generateCompanyInfo(signUp), [signUp]);
 
+  const isCreateNewCompany = signUp.name.length !== 0;
+
   const handleOnSave = async () => {
     setIsSaving(true);
-
     try {
-      await axios.post("/api/hr/register", signUp);
+      if (isCreateNewCompany) {
+        await axios.post("/api/hr/register/company", signUp);
+      } else {
+        await axios.post("/api/hr/register", signUp);
+      }
       toast.success("บันทึกข้อมูลสำเร็จ");
-      resetStore();
-      localStorage.removeItem("hrSignUp");
       router.push("/hr/onboarding/waiting");
     } catch (err) {
       toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
@@ -130,7 +132,7 @@ function VerifyPage() {
       <div className="mt-4 space-y-4">
         {userInfo.map(({ title, value }) => (
           <div className="flex items-center gap-2" key={title}>
-            <h6>{title}</h6>
+            <h6 className="min-w-40">{title}</h6>
             <h6 className="font-medium">
               {isLoading ? "กำลังโหลด..." : value}
             </h6>
@@ -149,8 +151,8 @@ function VerifyPage() {
       </div>
       <div className="mt-4 space-y-4">
         {companyInfo.map(({ title, value, type, href }) => (
-          <div className="flex items-center gap-2" key={title}>
-            <h6>{title}</h6>
+          <div className="flex gap-2" key={title}>
+            <h6 className="min-w-40">{title}</h6>
             {type === "link" ? (
               <a
                 {...{ href }}
@@ -160,9 +162,9 @@ function VerifyPage() {
                 {isLoading ? "กำลังโหลด..." : value}
               </a>
             ) : (
-              <h6 className="font-medium">
+              <p className="font-medium">
                 {isLoading ? "กำลังโหลด..." : value}
-              </h6>
+              </p>
             )}
           </div>
         ))}
