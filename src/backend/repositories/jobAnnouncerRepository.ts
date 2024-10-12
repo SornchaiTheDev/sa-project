@@ -90,7 +90,7 @@ INSERT INTO "JOB_ANNOUNCER" (
     await query(text, values);
   }
 
-  public async getByUsername(username: string): Promise<JobAnnouncer> {
+  public async getByUsername(username: string): Promise<JobAnnouncer | null> {
     const text = `
       SELECT *
       FROM "JOB_ANNOUNCER" 
@@ -100,6 +100,8 @@ INSERT INTO "JOB_ANNOUNCER" (
     const values = [username];
 
     const res = await query(text, values);
+
+    if (res.length === 0) return null;
 
     return {
       email: res[0]["JOBA_Email_Google"],
