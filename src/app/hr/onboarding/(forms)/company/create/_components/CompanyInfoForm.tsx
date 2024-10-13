@@ -33,21 +33,11 @@ import { DBDData } from "~/types/dbdData";
 import { ApprovedCompany } from "~/types/approvedCompany";
 import _ from "lodash";
 import dynamic from "next/dynamic";
+import { companyCategories } from "~/__mocks__/company-categories";
 
 const UploadFile = dynamic(() => import("~/components/upload-file"), {
   ssr: false,
 });
-
-const jobCategories: { name: string; id: string }[] = [
-  {
-    name: "เกษตรกรรม",
-    id: "agriculture",
-  },
-  {
-    name: "สัตว์เลี้ยง",
-    id: "animal-husbandry",
-  },
-];
 
 const checkTaxId = async (taxId: string) => {
   if (taxId.length !== 13) return;
@@ -116,7 +106,6 @@ function CompanyInfoForm() {
     if (isValid) {
       setSignUpData((prev) => ({ ...prev, isVerified: true }));
     }
-    return;
   };
 
   const handleOnSubmit = async (formData: CompanyInfo) => {
@@ -249,7 +238,7 @@ function CompanyInfoForm() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
-                      {jobCategories.map(({ name, id }) => (
+                      {companyCategories.map(({ name, id }) => (
                         <SelectItem key={id} value={id}>
                           {name}
                         </SelectItem>

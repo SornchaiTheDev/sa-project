@@ -1,30 +1,23 @@
-import React from "react";
-import { Button } from "~/components/ui/button";
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import CompanyCard from "./_components/CompanyCard";
+import Topbar from "./_components/Topbar";
+import { getUnverifiedFn } from "./queryFns/getUnverifiedFn";
 
 function KUSDPage() {
-  return (
-    <>
-      <h3 className="text-xl">ดำเนินการอนุมัติ</h3>
-      <div className="flex items-center gap-6 mt-2">
-        <h5 className="text-lg">XXX บริษัท</h5>
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" className="text-zinc-400">
-            อนุมัติบริษัท
-          </Button>
-          <Button variant="ghost" className="text-primary">
-            อนุมัติสมาชิกบริษัท
-          </Button>
-        </div>
-      </div>
+  const { data } = useQuery({
+    queryKey: ["companies"],
+    queryFn: getUnverifiedFn,
+  });
 
-      <div className="mt-4 space-y-2">
-        <CompanyCard />
-        <CompanyCard />
-        <CompanyCard />
-        <CompanyCard />
-      </div>
-    </>
+  return (
+    <div className="mt-4 space-y-2">
+      <Topbar />
+      {data?.companies.map((company) => (
+        <CompanyCard key={company.id} {...company} />
+      ))}
+    </div>
   );
 }
 
