@@ -18,6 +18,7 @@ const HRSessionContext = createContext<HRInfo>({
   isActive: false,
   companyId: "",
   phoneNumber: "",
+  role: "JOB_ANNOUNCER",
 });
 
 export const useHRSession = () => useContext(HRSessionContext);

@@ -31,6 +31,7 @@ const AllLoginSessionContext = createContext<UserInfo>({
   cn: "",
   userPrincipalName: "",
   typePerson: "",
+  role: "STUDENT"
 });
 
 export const useAllLoginSession = () => useContext(AllLoginSessionContext);
