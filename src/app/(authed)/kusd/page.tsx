@@ -1,22 +1,18 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import CompanyCard from "./_components/CompanyCard";
 import Topbar from "./_components/Topbar";
-import { getUnverifiedFn } from "./queryFns/getUnverifiedFn";
+import CompanyList from "./_components/CompanyList";
+import { useAtomValue } from "jotai";
+import { tabStore } from "./store/kusdStore";
+import MemberList from "./_components/MemberList";
 
 function KUSDPage() {
-  const { data } = useQuery({
-    queryKey: ["companies"],
-    queryFn: getUnverifiedFn,
-  });
-
+  const activeTab = useAtomValue(tabStore);
   return (
     <div className="mt-4 space-y-2">
       <Topbar />
-      {data?.companies.map((company) => (
-        <CompanyCard key={company.id} {...company} />
-      ))}
+      {activeTab === "companies" && <CompanyList />}
+      {activeTab === "members" && <MemberList />}
     </div>
   );
 }

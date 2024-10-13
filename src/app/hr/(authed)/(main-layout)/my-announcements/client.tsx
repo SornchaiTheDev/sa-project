@@ -26,7 +26,7 @@ import { Textarea } from "~/components/ui/textarea";
 import CreateAnnouncementAlert from "./_components/CreateAnnouncementAlert";
 import { useState } from "react";
 import SuspensedAlert from "./_components/SuspensedAlert";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAnnouncementFn } from "./_mutationFns/createAnnouncementFn";
 import { JobAnnouncementDTO } from "~/backend/DTO/jobAnnouncementDTO";
 import { toast } from "sonner";
@@ -73,11 +73,14 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const create = useMutation({
     mutationFn: createAnnouncementFn,
     onSuccess: () => {
       toast.success("บันทึกสำเร็จ");
       form.reset();
+      queryClient.invalidateQueries({ queryKey: ["announcements"] });
     },
     onError: () => toast.error("การเชื่อมต่อผิดพลาด"),
   });

@@ -17,8 +17,8 @@ export default async function MyAnnouncementLayout({
     <>
       <div className="p-4 h-screen">
         <Navbar />
-        <div className="mt-20 flex flex-col">
-          <div className="rounded-lg bg-zinc-100 p-4  h-full">
+        <div className="pt-20 flex flex-col h-full">
+          <div className="rounded-lg bg-zinc-100 p-4 flex-1">
             <h3 className="text-xl">ดำเนินการอนุมัติ</h3>
             {children}
           </div>

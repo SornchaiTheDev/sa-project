@@ -88,6 +88,34 @@ export class ApprovedCompanyRepository {
     }
   }
 
+  public async getAll(): Promise<ApprovedCompany[]> {
+    try {
+      const text = `
+        SELECT * 
+        FROM "APPROVED_COMPANY"
+        JOIN "RELATION_TAGGED" ON "APPROVED_COMPANY"."Company_ID" = "RELATION_TAGGED"."Company_ID"
+      `;
+
+      const result = await query(text);
+      return result.map((row) => ({
+        taxId: row.Tax_ID,
+        name: row.Company_Name,
+        id: row.Company_ID,
+        address: row.Company_Address,
+        isActive: row.Approved_Company_Is_Active,
+        companyImage: row.Company_Image,
+        requestedFile: row.Requested_File,
+        category: row.Tag_Name,
+      }));
+    } catch (error) {
+      console.error(
+        "Failed to fetch approved company from the database",
+        error,
+      );
+      throw error;
+    }
+  }
+
   public async getAllUnverified(): Promise<ApprovedCompany[]> {
     try {
       const text = `
@@ -98,7 +126,6 @@ export class ApprovedCompanyRepository {
       `;
 
       const result = await query(text);
-      console.log(result);
       return result.map((row) => ({
         taxId: row.Tax_ID,
         name: row.Company_Name,
@@ -129,7 +156,7 @@ export class ApprovedCompanyRepository {
 
     await query(text, values);
   }
-  
+
   public async reject(id: string): Promise<void> {
     const text = `
       DELETE FROM "APPROVED_COMPANY"

@@ -15,12 +15,7 @@ function AnnouncementList() {
   const { isLoading, data, refetch } = useQuery({
     queryKey: ["announcements"],
     queryFn: () => fetchAnnouncementsFn(search),
-    enabled: false,
   });
-
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   const isNotFound = !isLoading && data?.announcements.length === 0;
 

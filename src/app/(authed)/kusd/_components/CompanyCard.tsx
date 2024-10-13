@@ -36,7 +36,7 @@ function CompanyCard({ id, name, taxId, category }: ApprovedCompany) {
       <div className="flex gap-2">
         <Image
           src={JobLogo}
-          width={120}
+          width={100}
           height={100}
           alt="Company Placeholder"
         />

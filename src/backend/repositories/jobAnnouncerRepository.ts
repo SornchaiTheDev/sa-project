@@ -117,4 +117,51 @@ INSERT INTO "JOB_ANNOUNCER" (
       approveRequest: res[0]["JOBA_Approve_Request_Date"],
     };
   }
+
+  public async approveMembers(usernames: string[]): Promise<void> {
+    const text = `
+      UPDATE "JOB_ANNOUNCER"
+      SET "JOBA_Is_Active" = 1
+      WHERE "JOBA_Username" = ANY($1)
+    `;
+
+    const values = [usernames];
+
+    await query(text, values);
+  }
+
+  public async rejectMembers(usernames: string[]): Promise<void> {
+    const text = `
+      DELETE FROM "JOB_ANNOUNCER"
+      WHERE "JOBA_Username" = ANY($1)
+    `;
+
+    const values = [usernames];
+
+    await query(text, values);
+  }
+
+  public async getAllUnverified(companyId: string): Promise<JobAnnouncer[]> {
+    const text = `SELECT *
+    FROM "JOB_ANNOUNCER"
+    WHERE "JOBA_Is_Active" = 0 AND "Company_ID" = $1`;
+
+    const values = [companyId];
+
+    const res = await query(text, values);
+
+    return res.map((row) => ({
+      email: row["JOBA_Email_Google"],
+      firstName: row["JOBA_First_Name"],
+      lastName: row["JOBA_Last_Name"],
+      password: row["JOBA_Password"],
+      phoneNumber: row["JOBA_Phone_Number"],
+      title: row["JOBA_Title"],
+      username: row["JOBA_Username"],
+      isActive: row["JOBA_Is_Active"] === 1,
+      companyId: row["Company_ID"],
+      lastUpdate: row["JOBA_Last_Update_Date"],
+      approveRequest: row["JOBA_Approve_Request"],
+    }));
+  }
 }
