@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -29,30 +29,18 @@ import { ChevronRight } from "lucide-react";
 import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
 import axios from "axios";
-import { DBDData } from "~/types/dbdData";
 import { ApprovedCompany } from "~/types/approvedCompany";
-import _ from "lodash";
 import dynamic from "next/dynamic";
 import { companyCategories } from "~/__mocks__/company-categories";
+import { useQuery } from "@tanstack/react-query";
+import { getProvinces } from "../queryFns/getProvinces";
+import { getAmphures } from "../queryFns/getAmphures";
+import { getTambons } from "../queryFns/getTambons";
+import { parseAddress } from "~/lib/parseAddress";
 
 const UploadFile = dynamic(() => import("~/components/upload-file"), {
   ssr: false,
 });
-
-const checkTaxId = async (taxId: string) => {
-  if (taxId.length !== 13) return;
-  try {
-    const res = await axios.get<DBDData>(
-      `https://openapi.dbd.go.th/api/v1/juristic_person/${taxId}`,
-    );
-
-    if (res.data.status.code === "1000") {
-      return true;
-    }
-  } catch (err) {
-    throw new Error("Not found");
-  }
-};
 
 const checkAlreadyRegistered = async (taxId: string) => {
   if (taxId.length !== 13) return;
@@ -69,7 +57,18 @@ const checkAlreadyRegistered = async (taxId: string) => {
 function CompanyInfoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [
-    { type, name, taxId, category, bookUrl, logoUrl, address },
+    {
+      type,
+      name,
+      taxId,
+      category,
+      bookUrl,
+      logoUrl,
+      place,
+      province,
+      amphur,
+      tambon,
+    },
     setSignUpData,
   ] = useAtom(hrSignUpAtom);
 
@@ -78,11 +77,14 @@ function CompanyInfoForm() {
     defaultValues: {
       type,
       name,
-      address,
+      place,
       taxId,
       category,
       bookUrl,
       logoUrl,
+      province,
+      amphur,
+      tambon,
     },
   });
 
@@ -95,8 +97,11 @@ function CompanyInfoForm() {
   const router = useRouter();
 
   const checkPrivateCompany = async (taxId: string) => {
-    const isFound = await checkTaxId(taxId);
-    if (isFound) {
+    const { data } = await axios.get<{ isValid: boolean }>(
+      `/api/companies/validate/${taxId}`,
+    );
+
+    if (data.isValid) {
       setSignUpData((prev) => ({ ...prev, isVerified: true }));
     }
   };
@@ -135,6 +140,36 @@ function CompanyInfoForm() {
       setIsSubmitting(false);
     }
   };
+
+  const provinces = useQuery({
+    queryKey: ["provinces"],
+    queryFn: getProvinces,
+  });
+
+  const parsedProvince = parseAddress(form.watch("province"));
+  const parsedAmphur = parseAddress(form.watch("amphur"));
+
+  const amphures = useQuery({
+    queryKey: ["amphures"],
+    queryFn: () => getAmphures(parsedProvince.id),
+    enabled: parsedProvince.id !== -1,
+  });
+
+  const tambons = useQuery({
+    queryKey: ["tambons"],
+    queryFn: () => getTambons(parsedProvince.id, parsedAmphur.id),
+    enabled: parsedAmphur.id !== -1,
+  });
+
+  useEffect(() => {
+    if (parsedProvince.id !== -1) {
+      amphures.refetch();
+    }
+
+    if (parsedAmphur.id !== -1) {
+      tambons.refetch();
+    }
+  }, [form, parsedProvince, parsedAmphur, amphures, tambons]);
 
   return (
     <motion.div
@@ -194,7 +229,7 @@ function CompanyInfoForm() {
           />
           <FormField
             control={form.control}
-            name="address"
+            name="place"
             render={({ field }) => (
               <FormItem className="mb-4">
                 <FormLabel className="font-normal">ที่อยู่บริษัท</FormLabel>
@@ -207,6 +242,103 @@ function CompanyInfoForm() {
               </FormItem>
             )}
           />
+          <div className="flex gap-2 mb-4">
+            <FormField
+              control={form.control}
+              name="province"
+              render={({ field: { value, onChange } }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="font-normal">จังหวัด</FormLabel>
+                  <Select onValueChange={onChange} value={value}>
+                    <SelectTrigger className="h-12 bg-zinc-100">
+                      {isHydrated && (
+                        <SelectValue placeholder="โปรดเลือกจังหวัด" />
+                      )}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {provinces.data?.map((province) => (
+                          <SelectItem
+                            key={province.id}
+                            value={JSON.stringify(province)}
+                          >
+                            {province.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amphur"
+              render={({ field: { value, onChange } }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="font-normal">เขต/อำเภอ</FormLabel>
+                  <Select
+                    disabled={parsedProvince.id === ""}
+                    onValueChange={onChange}
+                    value={value}
+                  >
+                    <SelectTrigger className="h-12 bg-zinc-100">
+                      {isHydrated && (
+                        <SelectValue placeholder="โปรดเลือกอำเภอ" />
+                      )}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {amphures.data?.map((amphure) => (
+                          <SelectItem
+                            key={amphure.id}
+                            value={JSON.stringify(amphure)}
+                          >
+                            {amphure.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tambon"
+              render={({ field: { value, onChange } }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="font-normal">แขวง/ตำบล</FormLabel>
+                  <Select
+                    disabled={parsedAmphur.id === ""}
+                    onValueChange={onChange}
+                    value={value}
+                  >
+                    <SelectTrigger className="h-12 bg-zinc-100">
+                      {isHydrated && (
+                        <SelectValue placeholder="โปรดเลือกตำบล" />
+                      )}
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {tambons.data?.map((tambon) => (
+                          <SelectItem
+                            key={tambon.id}
+                            value={JSON.stringify(tambon)}
+                          >
+                            {tambon.name}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="taxId"
@@ -293,7 +425,7 @@ function CompanyInfoForm() {
           <Button
             isLoading={isSubmitting}
             variant="ghost"
-            className="flex gap-2 items-center mt-10 hover:text-zinc-500 self-end"
+            className="flex gap-2 items-center hover:text-zinc-500 self-end"
           >
             <span>ถัดไป</span>
             <ChevronRight size="1rem" />

@@ -47,7 +47,7 @@ export const createTable = async () => {
       CREATE TABLE IF NOT EXISTS "APPROVED_COMPANY" (
           "Company_ID" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           "Company_Name" VARCHAR(100),
-          "Company_Address" TEXT NOT NULL,
+          "Company_Address" JSONB NOT NULL,
           "Company_Image" VARCHAR(100),
           "Company_Book" VARCHAR(100),
           "Approved_Company_Is_Active" INT NOT NULL DEFAULT 0,

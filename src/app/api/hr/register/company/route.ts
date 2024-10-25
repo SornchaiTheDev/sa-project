@@ -1,10 +1,10 @@
 import { JobAAndCompanyRepository } from "~/backend/repositories/jobAAndCompanyRepository";
+import { parseAddress } from "~/lib/parseAddress";
 
 export const POST = async (req: Request) => {
   const body = await req.json();
 
   const jobAnCompany = new JobAAndCompanyRepository();
-
   try {
     await jobAnCompany.create({
       title: body.title,
@@ -13,7 +13,10 @@ export const POST = async (req: Request) => {
       email: body.email,
       username: body.username,
       category: body.category,
-      address: body.address,
+      place: body.place,
+      province: parseAddress(body.province).name,
+      amphur: parseAddress(body.amphur).name,
+      tambon: body.tambon.name,
       bookUrl: body.bookUrl[0].url,
       logoUrl: body.logoUrl[0].url,
       taxId: body.taxId,

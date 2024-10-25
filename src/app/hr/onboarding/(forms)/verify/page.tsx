@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { motion } from "framer-motion";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -10,9 +10,9 @@ import { toast } from "sonner";
 import {
   hrSignUpAtom,
   HRSignUpStore,
-  resetHrSignUpAtom,
 } from "~/app/hr/auth/store/hr-sign-up-store";
 import { Button } from "~/components/ui/button";
+import { parseAddress } from "~/lib/parseAddress";
 
 export const dynamic = "force-dynamic";
 
@@ -40,8 +40,23 @@ const mapType = (type: string) => {
 };
 
 const generateCompanyInfo = (signUp: HRSignUpStore) => {
-  const { name, type, category, taxId, bookUrl, logoUrl, address } = signUp;
+  const {
+    name,
+    type,
+    category,
+    taxId,
+    bookUrl,
+    logoUrl,
+    place,
+    province,
+    tambon,
+    amphur,
+  } = signUp;
   if (bookUrl.length === 0 || logoUrl.length === 0) return [];
+
+  const parsedProvince = parseAddress(province);
+  const parsedTambon = parseAddress(tambon);
+  const parsedAmphur = parseAddress(amphur);
 
   return [
     {
@@ -51,7 +66,22 @@ const generateCompanyInfo = (signUp: HRSignUpStore) => {
     },
     {
       title: "ที่อยู่หน่วยงาน",
-      value: address,
+      value: place,
+      type: "text",
+    },
+    {
+      title: "ตำบล",
+      value: parsedTambon.name,
+      type: "text",
+    },
+    {
+      title: "อำเภอ",
+      value: parsedAmphur.name,
+      type: "text",
+    },
+    {
+      title: "จังหวัด",
+      value: parsedProvince.name,
       type: "text",
     },
     {

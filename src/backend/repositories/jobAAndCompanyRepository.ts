@@ -7,7 +7,6 @@ export class JobAAndCompanyRepository {
     const {
       name,
       taxId,
-      address,
       logoUrl,
       bookUrl,
       category,
@@ -18,6 +17,10 @@ export class JobAAndCompanyRepository {
       email,
       password,
       isVerified,
+      place,
+      province,
+      amphur,
+      tambon,
     } = payload;
 
     const client = await pool.connect();
@@ -45,6 +48,13 @@ export class JobAAndCompanyRepository {
       $5,
       $6
     ) RETURNING "Company_ID";`;
+
+      const address = {
+        place,
+        province,
+        amphur,
+        tambon,
+      };
 
       const createdCompany = await client.query(createCompany, [
         name,

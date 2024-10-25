@@ -17,7 +17,10 @@ export interface HRSignUpDTO {
   phone: string;
   taxId: string;
   name: string;
-  address: string;
+  place: string;
+  province: string;
+  amphur: string;
+  tambon: string;
   bookUrl: UploadedFile[];
   logoUrl: UploadedFile[];
   category: string;
