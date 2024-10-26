@@ -17,7 +17,7 @@ async function AuthedLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <JobAlert />
+      {/* <JobAlert /> */}
       <Navbar />
       {children}
     </>

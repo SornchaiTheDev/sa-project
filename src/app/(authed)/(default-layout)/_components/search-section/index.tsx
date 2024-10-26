@@ -1,29 +1,112 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import { Search, Settings2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Tag, TagInput } from "emblor";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { getCategoryFn } from "./queryFns/getCategoryFn";
+import { getProvinces } from "~/globalQueryFns/getProvinces";
+import { getAmphures } from "~/globalQueryFns/getAmphures";
+import { getTambons } from "~/globalQueryFns/getTambons";
 
-interface Props {
-  initialSearch?: string;
-}
-
-export default function SearchSection({ initialSearch }: Props) {
-  const [search, setSearch] = useState<string>(initialSearch || "");
+export default function SearchSection() {
+  const [searches, setSearches] = useState<Tag[]>([]);
+  const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+  const [province, setProvince] = useState("");
+  const [amphur, setAmphur] = useState("");
+  const [tambon, setTambon] = useState("");
+  const [category, setCategory] = useState("");
 
   const router = useRouter();
-  const handleOnSearch = (e: FormEvent) => {
-    e.preventDefault();
-    router.push(`/search/${search}`);
-  };
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const search = searchParams.get("search");
+    if (search) {
+      const searches = search.split(",").map((text) => ({ id: text, text }));
+      setSearches(searches);
+    }
+
+    const province = searchParams.get("province");
+    if (province) {
+      setProvince(province);
+    }
+
+    const amphur = searchParams.get("amphur");
+    if (amphur) {
+      setAmphur(amphur);
+    }
+
+    const tambon = searchParams.get("tambon");
+    if (tambon) {
+      setTambon(tambon);
+    }
+
+    const category = searchParams.get("category");
+    if (category) {
+      setCategory(category);
+    }
+  }, [searchParams]);
+
+  const categories = useQuery({
+    queryKey: ["job-category"],
+    queryFn: getCategoryFn,
+  });
+
+  const provinces = useQuery({
+    queryKey: ["provinces"],
+    queryFn: getProvinces,
+  });
+
+  const amphures = useQuery({
+    queryKey: ["amphures"],
+    queryFn: () => getAmphures(parseInt(province)),
+    enabled: province !== "",
+  });
+
+  const tambons = useQuery({
+    queryKey: ["tambons"],
+    queryFn: () => getTambons(parseInt(province), parseInt(amphur)),
+    enabled: amphur !== "",
+  });
+
+  useEffect(() => {
+    if (province !== "") {
+      amphures.refetch();
+    }
+
+    if (amphur !== "") {
+      tambons.refetch();
+    }
+  }, [amphures, tambons, province, amphur]);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (
+      searches.length === 0 &&
+      province === "" &&
+      amphur === "" &&
+      tambon === ""
+    )
+      return;
+
+    const searchParams = searches.map(({ text }) => text).join(",");
+
+    router.push(
+      `/search?search=${searchParams}&province=${province}&amphur=${amphur}&tambon=${tambon}&category=${category}`,
+    );
+  }, [province, router, searches, amphur, tambon, category, pathname]);
 
   return (
     <>
@@ -32,34 +115,94 @@ export default function SearchSection({ initialSearch }: Props) {
           className="absolute top-1/2 -translate-y-1/2 left-2"
           size="1rem"
         />
-        <form onSubmit={handleOnSearch}>
-          <Input
-            placeholder="ค้นหาตำแหน่งงาน"
-            className="border-primary border pl-8 h-12"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </form>
+        <TagInput
+          placeholder="ค้นหาตำแหน่งงาน"
+          tags={searches}
+          setTags={(newSearches) => {
+            setSearches(newSearches);
+            console.log(newSearches);
+            const searches = newSearches as Tag[];
+            const searchParams = searches.map(({ text }) => text).join(",");
+            router.push(
+              `/search/?search=${searchParams}&province=${province}&amphur=${amphur}&tambon=${tambon}&category=${category}`,
+            );
+          }}
+          styleClasses={{
+            input: "shadow-none",
+            inlineTagsContainer: "border-primary border pl-8 h-12",
+            tag: {
+              body: "bg-primary/50 hover:bg-primary/60 border border-primary",
+            },
+          }}
+          activeTagIndex={activeTagIndex}
+          setActiveTagIndex={setActiveTagIndex}
+        />
       </div>
       <div className="flex gap-2 mt-2 flex-wrap">
-        <Select>
+        <Select onValueChange={setProvince} value={province}>
           <SelectTrigger className="border-primary w-fit">
-            <SelectValue placeholder="พื้นที่ทำงาน" />
+            {provinces.isLoading ? (
+              "กำลังโหลด..."
+            ) : (
+              <SelectValue placeholder="จังหวัด" />
+            )}
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectGroup>
+              {provinces.data?.map(({ id, name }) => (
+                <SelectItem key={id} value={id.toString()}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
-        <Select>
+        <Select onValueChange={setAmphur} value={amphur}>
           <SelectTrigger className="border-primary w-fit">
-            <SelectValue placeholder="สายอาชีพ" />
+            {amphures.isLoading ? (
+              "กำลังโหลด..."
+            ) : (
+              <SelectValue placeholder="อำเภอ" />
+            )}
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectGroup>
+              {amphures.data?.map(({ id, name }) => (
+                <SelectItem key={id} value={id.toString()}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select onValueChange={setTambon} value={tambon}>
+          <SelectTrigger className="border-primary w-fit">
+            {tambons.isLoading ? (
+              "กำลังโหลด..."
+            ) : (
+              <SelectValue placeholder="ตำบล" />
+            )}
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {tambons.data?.map(({ id, name }) => (
+                <SelectItem key={id} value={id.toString()}>
+                  {name}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select value={category} onValueChange={setCategory}>
+          <SelectTrigger className="border-primary w-fit">
+            <SelectValue placeholder="หมวดหมู่" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.data?.map((category) => (
+              <SelectItem value={category} key={category}>
+                {category}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         <Select>
