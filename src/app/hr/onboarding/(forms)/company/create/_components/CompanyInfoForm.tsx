@@ -33,10 +33,10 @@ import { ApprovedCompany } from "~/types/approvedCompany";
 import dynamic from "next/dynamic";
 import { companyCategories } from "~/__mocks__/company-categories";
 import { useQuery } from "@tanstack/react-query";
-import { getProvinces } from "../queryFns/getProvinces";
-import { getAmphures } from "../queryFns/getAmphures";
-import { getTambons } from "../queryFns/getTambons";
 import { parseAddress } from "~/lib/parseAddress";
+import { getProvinces } from "~/globalQueryFns/getProvinces";
+import { getAmphures } from "~/globalQueryFns/getAmphures";
+import { getTambons } from "~/globalQueryFns/getTambons";
 
 const UploadFile = dynamic(() => import("~/components/upload-file"), {
   ssr: false,
@@ -279,7 +279,7 @@ function CompanyInfoForm() {
                 <FormItem className="flex-1">
                   <FormLabel className="font-normal">เขต/อำเภอ</FormLabel>
                   <Select
-                    disabled={parsedProvince.id === ""}
+                    disabled={parsedProvince.id === -1}
                     onValueChange={onChange}
                     value={value}
                   >
@@ -312,7 +312,7 @@ function CompanyInfoForm() {
                 <FormItem className="flex-1">
                   <FormLabel className="font-normal">แขวง/ตำบล</FormLabel>
                   <Select
-                    disabled={parsedAmphur.id === ""}
+                    disabled={parsedAmphur.id === -1}
                     onValueChange={onChange}
                     value={value}
                   >
