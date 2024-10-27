@@ -15,7 +15,7 @@ export const POST = async (req: Request) => {
       place: body.place,
       province: body.province,
       amphur: body.amphur,
-      tambon: body.tambon.name,
+      tambon: body.tambon,
       bookUrl: body.bookUrl[0].url,
       logoUrl: body.logoUrl[0].url,
       taxId: body.taxId,
