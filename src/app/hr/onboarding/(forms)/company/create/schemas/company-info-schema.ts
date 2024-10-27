@@ -18,18 +18,6 @@ const assertThaiId = (thaiId: string): boolean => {
   return true;
 };
 
-const addressObject = z.object({
-  id: z.number(),
-  name: z.string(),
-});
-
-export type Address = z.infer<typeof addressObject>;
-
-const validateAddress = (address: string): boolean => {
-  const { success } = addressObject.safeParse(JSON.parse(address));
-  return success;
-};
-
 const uploadedFile = z.object({
   id: z.string(),
   name: z.string(),
@@ -46,9 +34,9 @@ export const companyInfo = z
       .or(z.literal("none")),
     name: z.string().min(1, "กรุณากรอกชื่อบริษัท"),
     place: z.string().min(1, "กรุณากรอกที่อยู่บริษัท"),
-    province: z.string().refine(validateAddress, "กรุณาเลือกจังหวัด"),
-    amphur: z.string().refine(validateAddress, "กรุณาเลือกอำเภอ"),
-    tambon: z.string().refine(validateAddress, "กรุณาเลือกตำบล"),
+    province: z.string().min(1, "กรุณาเลือกจังหวัด"),
+    amphur: z.string().min(1, "กรุณาเลือกอำเภอ"),
+    tambon: z.string().min(1, "กรุณาเลือกตำบล"),
     taxId: z
       .string()
       .refine(

@@ -12,7 +12,6 @@ import {
   HRSignUpStore,
 } from "~/app/hr/auth/store/hr-sign-up-store";
 import { Button } from "~/components/ui/button";
-import { parseAddress } from "~/lib/parseAddress";
 
 export const dynamic = "force-dynamic";
 
@@ -54,10 +53,6 @@ const generateCompanyInfo = (signUp: HRSignUpStore) => {
   } = signUp;
   if (bookUrl.length === 0 || logoUrl.length === 0) return [];
 
-  const parsedProvince = parseAddress(province);
-  const parsedTambon = parseAddress(tambon);
-  const parsedAmphur = parseAddress(amphur);
-
   return [
     {
       title: "ชื่อหน่วยงาน",
@@ -71,17 +66,17 @@ const generateCompanyInfo = (signUp: HRSignUpStore) => {
     },
     {
       title: "ตำบล",
-      value: parsedTambon.name,
+      value: tambon,
       type: "text",
     },
     {
       title: "อำเภอ",
-      value: parsedAmphur.name,
+      value: amphur,
       type: "text",
     },
     {
       title: "จังหวัด",
-      value: parsedProvince.name,
+      value: province,
       type: "text",
     },
     {

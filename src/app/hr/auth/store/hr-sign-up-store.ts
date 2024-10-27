@@ -19,7 +19,7 @@ const defaultValues: HRSignUpStore = {
   phone: "",
   taxId: "",
   name: "",
-  address: "",
+  place: "",
   province: "",
   amphur: "",
   tambon: "",

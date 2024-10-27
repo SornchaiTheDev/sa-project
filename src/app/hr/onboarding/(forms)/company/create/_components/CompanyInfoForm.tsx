@@ -33,7 +33,6 @@ import { ApprovedCompany } from "~/types/approvedCompany";
 import dynamic from "next/dynamic";
 import { companyCategories } from "~/__mocks__/company-categories";
 import { useQuery } from "@tanstack/react-query";
-import { parseAddress } from "~/lib/parseAddress";
 import { getProvinces } from "~/globalQueryFns/getProvinces";
 import { getAmphures } from "~/globalQueryFns/getAmphures";
 import { getTambons } from "~/globalQueryFns/getTambons";
@@ -146,30 +145,30 @@ function CompanyInfoForm() {
     queryFn: getProvinces,
   });
 
-  const parsedProvince = parseAddress(form.watch("province"));
-  const parsedAmphur = parseAddress(form.watch("amphur"));
+  const formProvince = form.watch("province");
+  const formAmphur = form.watch("amphur");
 
   const amphures = useQuery({
     queryKey: ["amphures"],
-    queryFn: () => getAmphures(parsedProvince.id),
-    enabled: parsedProvince.id !== -1,
+    queryFn: () => getAmphures(formProvince),
+    enabled: formProvince !== "",
   });
 
   const tambons = useQuery({
     queryKey: ["tambons"],
-    queryFn: () => getTambons(parsedProvince.id, parsedAmphur.id),
-    enabled: parsedAmphur.id !== -1,
+    queryFn: () => getTambons(formAmphur),
+    enabled: formAmphur !== "",
   });
 
   useEffect(() => {
-    if (parsedProvince.id !== -1) {
+    if (formProvince !== "") {
       amphures.refetch();
     }
 
-    if (parsedAmphur.id !== -1) {
+    if (formAmphur !== "") {
       tambons.refetch();
     }
-  }, [form, parsedProvince, parsedAmphur, amphures, tambons]);
+  }, [form, amphures, tambons, formProvince, formAmphur]);
 
   return (
     <motion.div
@@ -257,12 +256,9 @@ function CompanyInfoForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {provinces.data?.map((province) => (
-                          <SelectItem
-                            key={province.id}
-                            value={JSON.stringify(province)}
-                          >
-                            {province.name}
+                        {provinces.data?.map(({ id, name }) => (
+                          <SelectItem key={id} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -279,7 +275,7 @@ function CompanyInfoForm() {
                 <FormItem className="flex-1">
                   <FormLabel className="font-normal">เขต/อำเภอ</FormLabel>
                   <Select
-                    disabled={parsedProvince.id === -1}
+                    disabled={formProvince === ""}
                     onValueChange={onChange}
                     value={value}
                   >
@@ -290,12 +286,9 @@ function CompanyInfoForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {amphures.data?.map((amphure) => (
-                          <SelectItem
-                            key={amphure.id}
-                            value={JSON.stringify(amphure)}
-                          >
-                            {amphure.name}
+                        {amphures.data?.map(({ id, name }) => (
+                          <SelectItem key={id} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -312,7 +305,7 @@ function CompanyInfoForm() {
                 <FormItem className="flex-1">
                   <FormLabel className="font-normal">แขวง/ตำบล</FormLabel>
                   <Select
-                    disabled={parsedAmphur.id === -1}
+                    disabled={formAmphur === ""}
                     onValueChange={onChange}
                     value={value}
                   >
@@ -323,12 +316,9 @@ function CompanyInfoForm() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {tambons.data?.map((tambon) => (
-                          <SelectItem
-                            key={tambon.id}
-                            value={JSON.stringify(tambon)}
-                          >
-                            {tambon.name}
+                        {tambons.data?.map(({ id, name }) => (
+                          <SelectItem key={id} value={name}>
+                            {name}
                           </SelectItem>
                         ))}
                       </SelectGroup>
