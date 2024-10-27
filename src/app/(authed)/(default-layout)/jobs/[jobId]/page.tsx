@@ -1,98 +1,66 @@
 "use client";
-import { Clock, HandCoins, Heart, MapPin, Users } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
-import { jobAnnouncements } from "~/__mocks__/job-announcements";
-import { Button } from "~/components/ui/button";
 import dayjs from "~/lib/dayjs";
+import { getJobAnnouncementFn } from "./queryFns/getJobAnnouncementFn";
+import { Skeleton } from "~/components/ui/skeleton";
+import PositionComponent from "./_components/Position";
+import EnrollSection from "./_components/EnrollSection";
 
 function JobDetailPage({ params }: { params: { jobId: string } }) {
-  const { companyImage, companyName, title, description, createdAt } =
-    jobAnnouncements[parseInt(params.jobId) - 1];
-  const jobCreatedAt = dayjs(createdAt).fromNow();
+  const { jobId } = params;
+  const { data, isLoading } = useQuery({
+    queryKey: ["job-announcement", jobId],
+    queryFn: () => getJobAnnouncementFn(jobId),
+  });
+
+  const jobCreatedAt = dayjs(data?.createdAt).fromNow();
 
   return (
     <>
       <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 pt-32">
-        <div className="flex gap-4 justify-between items-center">
-          <div className="relative rounded-xl w-32 h-32">
+        <div className="relative rounded-xl w-32 h-32">
+          {!isLoading && data !== undefined && (
             <Image
-              src={companyImage}
+              src={data?.companyImage}
               fill
               className="object-contain"
               alt="job logo"
             />
-          </div>
-          {/* <h5>{companyName}</h5> */}
-          {/* <Button variant="ghost" size="icon" className="w-10 h-10"> */}
-          {/*   <CircleEllipsis /> */}
-          {/* </Button> */}
+          )}
         </div>
-        <div className="flex justify-between">
-          <div>
-            <h5 className="text-2xl">{title}</h5>
-            <h6 className="font-light">{companyName}</h6>
-          </div>
-          <Button size="icon" variant="ghost">
-            <Heart />
-          </Button>
+        <div>
+          {isLoading ? (
+            <>
+              <Skeleton className="w-1/2 h-8" />
+              <Skeleton className="w-32 h-4 mt-4" />
+            </>
+          ) : (
+            <>
+              <h5 className="text-2xl">{data?.title}</h5>
+              <h6 className="font-light">{data?.companyName}</h6>
+            </>
+          )}
         </div>
         <div className="flex gap-2 items-center">
           <MapPin size="1rem" />
-          <h6 className="text-sm">กรุงเทพมหานคร</h6>
+          {isLoading ? (
+            <Skeleton className="w-32 h-4" />
+          ) : (
+            <h6 className="text-sm">{data?.companyAddress.province}</h6>
+          )}
         </div>
-        <div className="flex gap-2 items-center">
-          <HandCoins size="1rem" />
-          <h6 className="text-sm">สามารถเจรจาต่อรองได้</h6>
-        </div>
-        <div className="flex justify-between gap-2 items-center">
-          <h5 className="text-lg font-medium">
-            ตำแหน่งที่ 1 : Software Developer
-          </h5>
-          <Button size="sm">เลือก</Button>
-        </div>
-        <div className="flex gap-2 items-center">
-          <Clock size="1rem" />
-          <h6 className="text-sm">งานประจำ</h6>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Users size="1rem" />
-          <h6 className="text-sm">อัตรารับ {1} อัตรา</h6>
-        </div>
-        <h6>โพสต์เมื่อ {jobCreatedAt}</h6>
-        <h5 className="text-lg font-medium">รายละเอียดงาน</h5>
-        <ul className="list-disc list-inside font-light">
-          <li>
-            พัฒนา Web Application และ Support การใช้งานตามที่ได้รับมอบหมาย
-          </li>
-          <li>
-            พัฒนาระบบออกแบบ CSS หรือ TailwindCSS และ Support การใช้งานของ User
-            ตามที่ได้รับมอบหมาย
-          </li>
-          <li>ติดต่อประสานงานระหว่าง User และ Programmer ภายในทีม</li>
-        </ul>
-        <h5 className="text-lg font-medium">คุณสมบัติ</h5>
-        <ol className="list-decimal list-inside font-light">
-          <li>เพศชาย/หญิง อายุ 30-35 ปี</li>
-          <li>วุฒิปริญญาตรี สาขาวิทยาการคอมพิวเตอร์ หรือสาขาที่เกี่ยวข้อง</li>
-          <li> มีความรู้ด้าน Database  และการเขียน Web Application</li>
-          <li>มีความรู้ด้าน PHP,ReaxtJS, NodeJS, CSS, TailwindCSS</li>
-          <li>หากมีความสามารถด้าน C#.net จะได้รับการพิจารณาเป็นพิเศษ</li>
-          <li>มีทักษะในการสื่อสารสามารถทำงานเป็นทีมได้ มีความกระตือรือร้น</li>
-          <li>มุ่งมั่นในการทำงาน และรับผิดชอบสูง</li>
-          <li>หากสามารถเริ่มงานได้ทันทีจะพิจารณาเป็นพิเศษ</li>
-        </ol>
-        <h5 className="text-lg font-medium">สวัสดิการ</h5>
-        <p className="font-light">ตามโครงสร้างบริษัท</p>
+        {isLoading ? (
+          <Skeleton className="w-48 h-4" />
+        ) : (
+          <h6 className="text-sm">โพสต์เมื่อ {jobCreatedAt}</h6>
+        )}
+        {data?.positions.map((position, i) => (
+          <PositionComponent order={i + 1} key={position.id} {...position} />
+        ))}
       </div>
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white mx-auto max-w-5xl">
-        <div className="border border-primary rounded-lg">
-          <h6 className="p-2">
-            ตำแหน่งที่สมัคร: Software Developer, UX/UI designer
-          </h6>
-          <Button className="w-full h-12">สมัครงาน</Button>
-        </div>
-      </div>
+      <EnrollSection />
     </>
   );
 }
