@@ -25,7 +25,7 @@ function MemberCard({ name, taxId, category, id }: ApprovedCompany) {
   );
 
   const { data } = useQuery({
-    queryKey: ["members"],
+    queryKey: ["members", id],
     queryFn: () => getUnverifiedMembersFn(id),
   });
 
