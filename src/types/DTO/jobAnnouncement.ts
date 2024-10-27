@@ -1,12 +1,17 @@
 import type { StaticImageData } from "next/image";
-import { Position } from "../position";
+
+interface Position {
+  name: string;
+  amount: number;
+}
 
 export interface JobAnnouncement {
   id: string;
-  companyName: string;
-  companyImage: string | StaticImageData;
   title: string;
-  positions: Position[];
   description: string;
+  companyName: string;
+  companyAddress: string;
+  companyImage: string | StaticImageData;
+  positions: Position[];
   createdAt: string;
 }

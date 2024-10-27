@@ -48,8 +48,8 @@ export const createTable = async () => {
           "Company_ID" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
           "Company_Name" VARCHAR(100),
           "Company_Address" JSONB NOT NULL,
-          "Company_Image" VARCHAR(100),
-          "Company_Book" VARCHAR(100),
+          "Company_Image" TEXT,
+          "Company_Book" TEXT,
           "Approved_Company_Is_Active" INT NOT NULL DEFAULT 0,
           "Tax_ID" VARCHAR(13) NOT NULL
       );

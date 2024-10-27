@@ -1,7 +1,6 @@
 export interface Position {
   id: string;
-  announceId: string;
-  jobMode: "งานประจำ" | "งาน Part-time";
+  jobMode: "full-time" | "part-time";
   name: string;
   amount: number;
   detail: string;

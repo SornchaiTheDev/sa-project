@@ -21,10 +21,11 @@ import { getTambons } from "~/globalQueryFns/getTambons";
 export default function SearchSection() {
   const [searches, setSearches] = useState<Tag[]>([]);
   const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
-  const [province, setProvince] = useState("");
-  const [amphur, setAmphur] = useState("");
-  const [tambon, setTambon] = useState("");
-  const [category, setCategory] = useState("");
+  const [province, setProvince] = useState("all");
+  const [amphur, setAmphur] = useState("all");
+  const [tambon, setTambon] = useState("all");
+  const [category, setCategory] = useState("all");
+  const [jobType, setJobType] = useState("all");
 
   const router = useRouter();
 
@@ -56,6 +57,11 @@ export default function SearchSection() {
     if (category) {
       setCategory(category);
     }
+
+    const jobType = searchParams.get("jobType");
+    if (jobType) {
+      setJobType(jobType);
+    }
   }, [searchParams]);
 
   const categories = useQuery({
@@ -70,43 +76,44 @@ export default function SearchSection() {
 
   const amphures = useQuery({
     queryKey: ["amphures"],
-    queryFn: () => getAmphures(parseInt(province)),
-    enabled: province !== "",
+    queryFn: () => getAmphures(province),
+    enabled: province !== "all",
   });
 
   const tambons = useQuery({
     queryKey: ["tambons"],
-    queryFn: () => getTambons(parseInt(province), parseInt(amphur)),
-    enabled: amphur !== "",
+    queryFn: () => getTambons(amphur),
+    enabled: amphur !== "all",
   });
 
   useEffect(() => {
-    if (province !== "") {
+    if (province !== "all") {
       amphures.refetch();
     }
 
-    if (amphur !== "") {
+    if (amphur !== "all") {
       tambons.refetch();
     }
   }, [amphures, tambons, province, amphur]);
 
+  useEffect(() => {
+    setAmphur("all");
+    setTambon("all");
+  }, [province]);
+
+  useEffect(() => {
+    setTambon("all");
+  }, [amphur]);
+
   const pathname = usePathname();
 
   useEffect(() => {
-    if (
-      searches.length === 0 &&
-      province === "" &&
-      amphur === "" &&
-      tambon === ""
-    )
-      return;
-
     const searchParams = searches.map(({ text }) => text).join(",");
 
     router.push(
-      `/search?search=${searchParams}&province=${province}&amphur=${amphur}&tambon=${tambon}&category=${category}`,
+      `/search?search=${searchParams}&province=${province}&amphur=${amphur}&tambon=${tambon}&category=${category}&jobType=${jobType}`,
     );
-  }, [province, router, searches, amphur, tambon, category, pathname]);
+  }, [province, router, searches, amphur, tambon, category, pathname, jobType]);
 
   return (
     <>
@@ -128,7 +135,7 @@ export default function SearchSection() {
             );
           }}
           styleClasses={{
-            input: "shadow-none",
+            input: "shadow-all",
             inlineTagsContainer: "border-primary border pl-8 h-12",
             tag: {
               body: "bg-primary/50 hover:bg-primary/60 border border-primary",
@@ -149,8 +156,9 @@ export default function SearchSection() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
+              <SelectItem value="all">เลือกจังหวัด</SelectItem>
               {provinces.data?.map(({ id, name }) => (
-                <SelectItem key={id} value={id.toString()}>
+                <SelectItem key={id} value={name}>
                   {name}
                 </SelectItem>
               ))}
@@ -167,8 +175,9 @@ export default function SearchSection() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
+              <SelectItem value="all">เลือกอำเภอ</SelectItem>
               {amphures.data?.map(({ id, name }) => (
-                <SelectItem key={id} value={id.toString()}>
+                <SelectItem key={id} value={name}>
                   {name}
                 </SelectItem>
               ))}
@@ -185,8 +194,9 @@ export default function SearchSection() {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
+              <SelectItem value="all">เลือกตำบล</SelectItem>
               {tambons.data?.map(({ id, name }) => (
-                <SelectItem key={id} value={id.toString()}>
+                <SelectItem key={id} value={name}>
                   {name}
                 </SelectItem>
               ))}
@@ -198,6 +208,7 @@ export default function SearchSection() {
             <SelectValue placeholder="หมวดหมู่" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">เลือกหมวดหมู่</SelectItem>
             {categories.data?.map((category) => (
               <SelectItem value={category} key={category}>
                 {category}
@@ -205,14 +216,14 @@ export default function SearchSection() {
             ))}
           </SelectContent>
         </Select>
-        <Select>
+        <Select value={jobType} onValueChange={setJobType}>
           <SelectTrigger className="border-primary w-fit">
             <SelectValue placeholder="ประเภทการจ้างงาน" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="light">Light</SelectItem>
-            <SelectItem value="dark">Dark</SelectItem>
-            <SelectItem value="system">System</SelectItem>
+            <SelectItem value="all">เลือกประเภทการจ้างงาน</SelectItem>
+            <SelectItem value="0">Full-Time</SelectItem>
+            <SelectItem value="1">Part-Time</SelectItem>
           </SelectContent>
         </Select>
         <div className="self-stretch w-1 border-r border-primary"></div>
