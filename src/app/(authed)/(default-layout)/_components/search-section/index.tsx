@@ -107,6 +107,15 @@ export default function SearchSection() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (
+      searches.length === 0 &&
+      province === "all" &&
+      amphur === "all" &&
+      tambon === "all" &&
+      category === "all" &&
+      jobType === "all"
+    )
+      return;
     const searchParams = searches.map(({ text }) => text).join(",");
 
     router.push(
