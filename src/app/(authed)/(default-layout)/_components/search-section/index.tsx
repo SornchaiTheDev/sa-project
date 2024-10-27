@@ -147,7 +147,7 @@ export default function SearchSection() {
       </div>
       <div className="flex gap-2 mt-2 flex-wrap">
         <Select onValueChange={setProvince} value={province}>
-          <SelectTrigger className="border-primary w-fit">
+          <SelectTrigger className="border-primary flex-1">
             {provinces.isLoading ? (
               "กำลังโหลด..."
             ) : (
@@ -166,7 +166,7 @@ export default function SearchSection() {
           </SelectContent>
         </Select>
         <Select onValueChange={setAmphur} value={amphur}>
-          <SelectTrigger className="border-primary w-fit">
+          <SelectTrigger className="border-primary flex-1">
             {amphures.isLoading ? (
               "กำลังโหลด..."
             ) : (
@@ -185,7 +185,7 @@ export default function SearchSection() {
           </SelectContent>
         </Select>
         <Select onValueChange={setTambon} value={tambon}>
-          <SelectTrigger className="border-primary w-fit">
+          <SelectTrigger className="border-primary flex-1">
             {tambons.isLoading ? (
               "กำลังโหลด..."
             ) : (
@@ -204,7 +204,7 @@ export default function SearchSection() {
           </SelectContent>
         </Select>
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="border-primary w-fit">
+          <SelectTrigger className="border-primary flex-1">
             <SelectValue placeholder="หมวดหมู่" />
           </SelectTrigger>
           <SelectContent>
@@ -217,7 +217,7 @@ export default function SearchSection() {
           </SelectContent>
         </Select>
         <Select value={jobType} onValueChange={setJobType}>
-          <SelectTrigger className="border-primary w-fit">
+          <SelectTrigger className="border-primary flex-1">
             <SelectValue placeholder="ประเภทการจ้างงาน" />
           </SelectTrigger>
           <SelectContent>
