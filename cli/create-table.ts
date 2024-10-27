@@ -69,6 +69,7 @@ export const createTable = async () => {
           "Job_Mode" INT,
           "Position_Name" VARCHAR(100),
           "Position_Amount" INT,
+          "Job_Earnings" VARCHAR(30),
           "Job_Position_Detail" TEXT NOT NULL,
           "Job_Position_Qualifications" TEXT NOT NULL,
           "Job_Position_Welfare" TEXT
