@@ -1,9 +1,8 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Settings2 } from "lucide-react";
+import { Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
-import { Button } from "~/components/ui/button";
+import { useEffect, useState } from "react";
 import { Tag, TagInput } from "emblor";
 import {
   Select,
@@ -135,7 +134,7 @@ export default function SearchSection() {
             );
           }}
           styleClasses={{
-            input: "shadow-all",
+            input: "shadow-none",
             inlineTagsContainer: "border-primary border pl-8 h-12",
             tag: {
               body: "bg-primary/50 hover:bg-primary/60 border border-primary",
