@@ -226,10 +226,6 @@ export default function SearchSection() {
             <SelectItem value="1">Part-Time</SelectItem>
           </SelectContent>
         </Select>
-        <div className="self-stretch w-1 border-r border-primary"></div>
-        <Button size="icon" className="w-10" variant="ghost">
-          <Settings2 size="1.25rem" />
-        </Button>
       </div>
     </>
   );
