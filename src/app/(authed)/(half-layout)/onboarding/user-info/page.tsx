@@ -51,8 +51,8 @@ function UserInfoFormPage() {
       firstName: onboard.firstName.length > 0 ? onboard.firstName : thFirstName,
       lastName: onboard.lastName.length > 0 ? onboard.lastName : thSurName,
       email: onboard.lastName.length > 0 ? onboard.email : googleMail,
-      bod: new Date(onboard.bod),
-      phone: onboard.phone,
+      dateOfBirth: new Date(onboard.dateOfBirth),
+      phoneNumber: onboard.phoneNumber,
     },
   });
 
@@ -167,7 +167,7 @@ function UserInfoFormPage() {
               />
               <FormField
                 control={form.control}
-                name="bod"
+                name="dateOfBirth"
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">
@@ -185,7 +185,7 @@ function UserInfoFormPage() {
               />
               <FormField
                 control={form.control}
-                name="phone"
+                name="phoneNumber"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">เบอร์ติดต่อ</FormLabel>

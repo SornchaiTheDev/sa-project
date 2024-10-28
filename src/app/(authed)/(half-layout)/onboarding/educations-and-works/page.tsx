@@ -45,12 +45,10 @@ function EducationAndWorksForm() {
       faculty: "คณะ" + faculty,
       major: onboard.major,
       gpax: onboard.gpax,
-      workExp: onboard.workExp,
-      activitiesHours: onboard.activitiesHours,
+      description: onboard.description,
+      activitiyHour: onboard.activitiyHour,
     },
   });
-
-  console.log(form.watch("faculty"));
 
   const router = useRouter();
 
@@ -61,7 +59,7 @@ function EducationAndWorksForm() {
       resetOnboarding();
       router.push("/");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
       setIsSubmitting(false);
     },
@@ -190,7 +188,7 @@ function EducationAndWorksForm() {
               />
               <FormField
                 control={form.control}
-                name="activitiesHours"
+                name="activitiyHour"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">
@@ -207,7 +205,7 @@ function EducationAndWorksForm() {
               />
               <FormField
                 control={form.control}
-                name="workExp"
+                name="description"
                 render={({ field }) => (
                   <FormItem className="mb-4 flex-1">
                     <FormLabel className="font-normal">
