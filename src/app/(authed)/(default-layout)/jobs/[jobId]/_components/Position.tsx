@@ -12,7 +12,7 @@ function PositionComponent({
   order,
   amount,
   earnings,
-  description,
+  detail,
   qualification,
   welfare,
   id,
@@ -40,7 +40,8 @@ function PositionComponent({
         <Button
           size="sm"
           className={cn(
-            isSelected && "bg-[#F6F6F6] text-black border border-primary hover:bg-primary/50",
+            isSelected &&
+              "bg-[#F6F6F6] text-black border border-primary hover:bg-primary/50",
           )}
           onClick={handleOnSelect}
         >
@@ -61,7 +62,7 @@ function PositionComponent({
         <h6 className="text-sm">{earnings}</h6>
       </div>
       <h5 className="text-lg font-medium">รายละเอียดงาน</h5>
-      <p className="font-light">{description}</p>
+      <p className="font-light">{detail}</p>
       <h5 className="text-lg font-medium">คุณสมบัติ</h5>
       <p className="font-light">{qualification}</p>
       <h5 className="text-lg font-medium">สวัสดิการ</h5>

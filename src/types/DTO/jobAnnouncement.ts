@@ -7,6 +7,7 @@ export interface Position {
   jobMode: 0 | 1;
   earnings: string;
   amount: number;
+  detail: string;
   qualification: string;
   welfare: string;
 }
