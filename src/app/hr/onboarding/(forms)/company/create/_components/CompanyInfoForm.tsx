@@ -382,6 +382,7 @@ function CompanyInfoForm() {
                   อัปโหลดสัญลักษณ์หน่วยงาน
                 </FormLabel>
                 <UploadFile
+                  uploadApiEndpoint="/api/hr/register/company/upload/logo"
                   maxFiles={1}
                   accept={{
                     "image/*": [],
@@ -401,6 +402,7 @@ function CompanyInfoForm() {
                   อัปโหลดหนังสือยื่นคำร้อง
                 </FormLabel>
                 <UploadFile
+                  uploadApiEndpoint="/api/hr/register/company/upload/book"
                   maxFiles={1}
                   accept={{
                     "image/*": [".png", ".jpg", ".jpeg"],

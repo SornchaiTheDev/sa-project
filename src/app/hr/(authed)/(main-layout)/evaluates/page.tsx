@@ -3,7 +3,7 @@ import EvaluateList from "./_components/EvaluateList";
 
 function EvaluatePage() {
   return (
-    <div>
+    <>
       <div className="flex justify-between mb-10">
         <div>
           <h5 className="text-2xl font-medium">ประเมินการทำงาน</h5>
@@ -22,7 +22,7 @@ function EvaluatePage() {
         </div>
       </div>
       <EvaluateList />
-    </div>
+    </>
   );
 }
 

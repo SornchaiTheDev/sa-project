@@ -40,6 +40,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
     resolver: zodResolver(announcementSchema),
     defaultValues: {
       name: "",
+      description: "",
       position: [
         {
           name: "",
@@ -188,8 +189,12 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
                           <SelectValue placeholder="เลือกประเภทงาน" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="full-time">Full-time</SelectItem>
-                          <SelectItem value="part-time">Part-time</SelectItem>
+                          <SelectItem value="full-time">
+                            งานประจำ (Full-time)
+                          </SelectItem>
+                          <SelectItem value="part-time">
+                            งานพิเศษ (Part-time)
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -226,21 +231,23 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="1">
-                          ต่ำกว่า 10,000 ต่อเดือน
+                          ต่ำกว่า 10,001 ต่อเดือน
                         </SelectItem>
                         <SelectItem value="2">
-                          20,000-30,000 บาทต่อเดือน
+                          10,001 - 20,000 ต่อเดือน
                         </SelectItem>
                         <SelectItem value="3">
-                          30,001-40,000 บาทต่อเดือน
+                          20,001 - 30,000 ต่อเดือน
                         </SelectItem>
                         <SelectItem value="4">
-                          40,001-50,000 บาทต่อเดือน
+                          30,001 - 40,000 ต่อเดือน
                         </SelectItem>
                         <SelectItem value="5">
+                          40,001 - 50,000 ต่อเดือน
+                        </SelectItem>
+                        <SelectItem value="6">
                           มากกว่า 50,000 บาทต่อเดือน
                         </SelectItem>
-                        <SelectItem value="6">สามารถเจรจาต่อรองได้</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />

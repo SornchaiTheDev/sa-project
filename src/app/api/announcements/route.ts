@@ -1,6 +1,5 @@
-import { replace } from "lodash";
 import { query } from "~/lib/db";
-import { JobAnnouncement } from "~/types/DTO/jobAnnouncement";
+import { JobAnnouncement, Position } from "~/types/DTO/jobAnnouncement";
 
 export const GET = async (req: Request) => {
   const queryString = `SELECT DISTINCT
@@ -64,15 +63,28 @@ WHERE
 
   for (const r of res) {
     const queryString = `SELECT 
+"Job_Position_ID" AS id,
 "Position_Name" AS name,
-"Position_Amount" AS amount
+"Position_Amount" AS amount,
+"Job_Position_Detail" AS description,
+"Job_Mode" AS jobmode,
+"Job_Earnings" AS earnings,
+"Job_Position_Qualifications" AS qualification,
+"Job_Position_Welfare" AS welfare
 FROM "POSITION"
 WHERE "Job_Announce_ID" = $1`;
 
     const positions = await query(queryString, [r.id]);
-    const positionList = positions.map((p) => ({
+    const positionList: Position[] = positions.map((p) => ({
+      id: p.id,
+      announceId: p.announceId,
       name: p.name,
       amount: p.amount,
+      description: p.description,
+      jobMode: p.jobmode,
+      earnings: p.earnings,
+      qualification: p.qualification,
+      welfare: p.welfare,
     }));
 
     announcements.push({

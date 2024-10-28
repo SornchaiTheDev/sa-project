@@ -10,6 +10,19 @@ services:
       - ./sql:/sql
     ports:
       - "5432:5432"
+  storage:
+    image: quay.io/minio/minio
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+      - ./data:/data
+    command: server /data --console-address ":9001"
+    user: 1001:1001
+    restart: always
 
 volumes:
   pgdata:

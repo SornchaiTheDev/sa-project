@@ -5,11 +5,10 @@ export interface Position {
   announceId: string;
   name: string;
   jobMode: 0 | 1;
+  earnings: string;
   amount: number;
-  detail: string;
-  qualificationDetail: string;
+  qualification: string;
   welfare: string;
-  studentUsername: string;
 }
 
 interface Address {

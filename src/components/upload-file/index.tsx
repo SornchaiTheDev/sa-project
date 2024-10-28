@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { v7 as uuid } from "uuid";
 import { UploadedFile } from "./types/uploadded-file";
 import FileRestore from "./file-restore";
+import axios from "axios";
 
 interface FilePreview {
   id: string;
@@ -17,6 +18,7 @@ interface Props {
   accept: Record<string, string[]>;
   value: UploadedFile[];
   onChange: (file: UploadedFile[]) => void;
+  uploadApiEndpoint: string;
   disabled?: boolean;
   maxFiles?: number;
   maxSize?: number;
@@ -29,13 +31,21 @@ function UploadFile({
   disabled,
   maxFiles = 1,
   maxSize,
+  uploadApiEndpoint,
 }: Props) {
   const [files, setFiles] = useState<FilePreview[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(value);
 
-  const handleOnRemove = (id: string) => {
+  const handleOnRemove = async (id: string) => {
     setFiles((prev) => prev.filter((file) => file.id !== id));
     setUploadedFiles((prev) => prev.filter((file) => file.id !== id));
+
+    const uploadedFile = uploadedFiles.find((file) => file.id === id);
+    if (uploadedFile === undefined) return;
+
+    const objectName = uploadedFile.objectName;
+
+    await axios.delete(`${uploadApiEndpoint}?objectName=${objectName}`);
   };
 
   const addFiles = (files: File[]) => {
@@ -104,7 +114,7 @@ function UploadFile({
             key={id}
             onRemove={handleOnRemove}
             onUploaded={onUploaded}
-            {...{ file, id }}
+            {...{ file, id, uploadApiEndpoint }}
           />
         ))}
       </div>

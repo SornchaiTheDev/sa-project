@@ -21,6 +21,7 @@ const assertThaiId = (thaiId: string): boolean => {
 const uploadedFile = z.object({
   id: z.string(),
   name: z.string(),
+  objectName: z.string(),
   url: z.string(),
   size: z.number(),
   type: z.string(),

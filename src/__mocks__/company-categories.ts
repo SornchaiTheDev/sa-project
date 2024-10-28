@@ -1,10 +1,10 @@
 export const companyCategories: { name: string; id: string }[] = [
   {
     name: "เกษตรกรรม",
-    id: "agriculture",
+    id: "เกษตรกรรม",
   },
   {
     name: "สัตว์เลี้ยง",
-    id: "animal-husbandry",
+    id: "สัตว์เลี้ยง",
   },
 ];

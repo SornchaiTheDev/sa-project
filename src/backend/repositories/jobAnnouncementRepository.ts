@@ -4,6 +4,23 @@ import {
   JobAnnouncementPreview,
 } from "../DTO/jobAnnouncementDTO";
 
+const mapEarningType = (type: number) => {
+  switch (type) {
+    case 1:
+      return "ต่ำกว่า 10,001 ต่อเดือน";
+    case 2:
+      return "10,001 - 20,000 ต่อเดือน";
+    case 3:
+      return "20,001 - 30,000 ต่อเดือน";
+    case 4:
+      return "30,001 - 40,000 ต่อเดือน";
+    case 5:
+      return "40,001 - 50,000 ต่อเดือน";
+    case 6:
+      return "มากกว่า 50,000 บาทต่อเดือน";
+  }
+};
+
 export class JobAnnouncementRepository {
   public async countMissingAnnouncement(recentJobAID: string): Promise<number> {
     const text = `SELECT COUNT(*) AS MissingCount
@@ -77,9 +94,10 @@ export class JobAnnouncementRepository {
       "Position_Amount",
       "Job_Position_Detail",
       "Job_Position_Qualifications",
-      "Job_Position_Welfare"
+      "Job_Position_Welfare",
+      "Job_Earnings"
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
 `;
 
     for (const position of jobA.positions) {
@@ -91,6 +109,7 @@ export class JobAnnouncementRepository {
         position.description,
         position.qualification,
         position.welfare,
+        mapEarningType(position.salary),
       ];
 
       await query(createPositionText, values);

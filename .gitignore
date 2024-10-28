@@ -44,3 +44,6 @@ next-env.d.ts
 
 # Vim
 *-E
+
+# Minio
+docker/data

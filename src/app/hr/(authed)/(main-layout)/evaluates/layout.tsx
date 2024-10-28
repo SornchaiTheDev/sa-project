@@ -30,7 +30,7 @@ export default function EvaluateLayout({
               href="#"
               className={cn(
                 "flex gap-4 items-center p-2 px-4 mx-2",
-                i === 1 && "bg-primary rounded-md text-white",
+                i === 0 && "bg-primary rounded-md text-white",
               )}
             >
               <div className="w-16 aspect-square rounded-lg overflow-hidden relative">
@@ -50,7 +50,7 @@ export default function EvaluateLayout({
         </div>
       </div>
 
-      <div className="rounded-lg bg-zinc-100 p-4 mt-0 ml-[400px] h-full mb-2">
+      <div className="rounded-lg bg-zinc-100 p-4 mt-0 ml-[400px] mb-2">
         {children}
       </div>
     </>
