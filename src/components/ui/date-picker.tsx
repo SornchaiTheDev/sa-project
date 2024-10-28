@@ -1,4 +1,6 @@
-import * as React from "react";
+"use client";
+
+import { useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "~/lib/utils";
@@ -34,6 +36,8 @@ export default function DatePicker({
   value,
   onChange,
 }: Props) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const hasDropdown = fromYear && toYear;
   const diffYears = hasDropdown
     ? toYear.getFullYear() - fromYear.getFullYear() + 1
@@ -57,8 +61,13 @@ export default function DatePicker({
     );
   };
 
+  const handleOnSelect = (day: Date) => {
+    onChange(day);
+    setIsOpen(false);
+  };
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
@@ -129,7 +138,7 @@ export default function DatePicker({
           mode="single"
           fromYear={!!fromYear ? fromYear.getFullYear() : undefined}
           toYear={!!toYear ? toYear.getFullYear() : undefined}
-          onSelect={(day) => onChange(day)}
+          onSelect={handleOnSelect}
           month={value}
           onMonthChange={(day) => onChange(day)}
           initialFocus
