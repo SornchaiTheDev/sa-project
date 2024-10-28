@@ -3,31 +3,56 @@ import React, { useEffect, useState } from "react";
 import { fileSizeCalc } from "~/lib";
 import { Button } from "../ui/button";
 import { UploadedFile } from "./types/uploadded-file";
+import axios from "axios";
 
 interface Props {
   file: File;
   id: string;
   onRemove: (id: string) => void;
   onUploaded: (uploaded: UploadedFile) => void;
+  uploadApiEndpoint: string;
 }
 
-function FilePreview({ file, id, onRemove, onUploaded }: Props) {
+function FilePreview({
+  file,
+  id,
+  onRemove,
+  onUploaded,
+  uploadApiEndpoint,
+}: Props) {
   const { name, type, size } = file;
   const isImage = type.startsWith("image");
   const [progress, setProgress] = useState(0);
+  const [objectName, setObjectName] = useState<string>("");
+  const [objectURL, setObjectURL] = useState<string>("");
   const isUploaded = progress >= 100;
 
   useEffect(() => {
-    if (progress >= 100) return;
-    const interval = setInterval(() => setProgress((prev) => prev + 20), 1000);
-    return () => clearInterval(interval);
-  }, [progress]);
+    const upload = async () => {
+      const formData = new FormData();
+      formData.append("file", file);
+      const { data } = await axios.put<{ dest: string; objectName: string }>(
+        uploadApiEndpoint,
+        formData,
+        {
+          onUploadProgress: (event) => {
+            if (event.progress === undefined) return;
+            setProgress(Math.round(event.progress * 100));
+          },
+        },
+      );
+      setObjectName(data.objectName);
+      setObjectURL(data.dest);
+    };
+    upload();
+  }, [file, uploadApiEndpoint]);
 
   useEffect(() => {
+    if (objectURL === "" || objectName === "") return;
     if (progress >= 100) {
-      onUploaded({ id, name, url: "https://example.com", size, type });
+      onUploaded({ id, name, url: objectURL, objectName, size, type });
     }
-  }, [progress, onUploaded, id, name, size, type]);
+  }, [progress, onUploaded, id, name, size, type, objectName, objectURL]);
 
   return (
     <div className="flex justify-between items-center flex-row gap-4">

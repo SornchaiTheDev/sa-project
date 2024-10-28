@@ -32,6 +32,11 @@ export const env = createEnv({
     POSTGRES_DB: z.string().min(1),
     POSTGRES_HOST: z.string().min(1),
     POSTGRES_PORT: z.string().min(1).default("5432"),
+    MINIO_ACCESS_KEY: z.string().min(1),
+    MINIO_SECRET_KEY: z.string().min(1),
+    MINIO_SSL: z.string().min(1).default("false"),
+    MINIO_ENDPOINT: z.string().min(1),
+    MINIO_PORT: z.string().min(1).default("9000"),
   },
 
   /**
@@ -56,5 +61,10 @@ export const env = createEnv({
     KU_ALL_LOGIN_REDIRECT_URI: process.env.KU_ALL_LOGIN_REDIRECT_URI,
     KU_ALL_LOGIN_CLIENT_SECRET: process.env.KU_ALL_LOGIN_CLIENT_SECRET,
     KU_ALL_LOGIN_CODE_VERIFIER: process.env.KU_ALL_LOGIN_CODE_VERIFIER,
+    MINIO_ENDPOINT: process.env.MINIO_ENDPOINT,
+    MINIO_PORT: process.env.MINIO_PORT,
+    MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
+    MINIO_SSL: process.env.MINIO_SSL,
   },
 });
