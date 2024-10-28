@@ -3,155 +3,161 @@ import pool from "../../lib/db";
 export async function GET(req: Request) {
   try {
     const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS "STUDENT" (
-          "STU_Username" VARCHAR(50) PRIMARY KEY,
-          "STU_Title" VARCHAR(50) NOT NULL,
-          "STU_First_Name" VARCHAR(100) NOT NULL,
-          "STU_Last_Name" VARCHAR(100) NOT NULL,
-          "STU_Email_Google" VARCHAR(50) UNIQUE NOT NULL,
-          "STU_Is_Active" INT NOT NULL DEFAULT 1,
-          "STU_Activity_Hours" INT,
-          "STU_Phone_Number" VARCHAR(10),
-          "STU_Description" TEXT,
-          "STU_GPAX" FLOAT
-      );
+    CREATE TABLE "USER" (
+        "Username" VARCHAR(100) PRIMARY KEY,
+        "Title" VARCHAR(6) NOT NULL,
+        "First_Name" VARCHAR(100) NOT NULL,
+        "Last_Name" VARCHAR(100) NOT NULL,
+        "Phone_Number" VARCHAR(10) NOT NULL,
+        "Email_Google" VARCHAR(100) NOT NULL,
+        "Is_Active" INT NOT NULL CHECK ("Is_Active" IN (0, 1))
+    );
 
-      CREATE TABLE IF NOT EXISTS "JOB_ANNOUNCER" (
-          "JOBA_Username" VARCHAR(50) PRIMARY KEY,
-          "Company_ID" uuid NOT NULL,
-          "JOBA_Title" VARCHAR(50) NOT NULL,
-          "JOBA_First_Name" VARCHAR(100) NOT NULL,
-          "JOBA_Last_Name" VARCHAR(100) NOT NULL,
-          "JOBA_Is_Active" INT NOT NULL DEFAULT 1,
-          "JOBA_Phone_Number" VARCHAR(10)
-      );
+    CREATE TABLE "KU_SD" (
+        "Username" VARCHAR(100) PRIMARY KEY
+    );
 
-      CREATE TABLE IF NOT EXISTS "KUSD" (
-          "KUSD_Username" VARCHAR(50) PRIMARY KEY,
-          "KUSD_Title" VARCHAR(50) NOT NULL,
-          "KUSD_First_Name" VARCHAR(100) NOT NULL,
-          "KUSD_Last_Name" VARCHAR(100) NOT NULL,
-          "KUSD_Email_Google" VARCHAR(50) UNIQUE NOT NULL,
-          "KUSD_Is_Active" INT NOT NULL DEFAULT 1
-      );
+    CREATE TABLE "APPROVED_COMPANY" (
+        "Company_ID" UUID PRIMARY KEY,
+        "Company_Name" VARCHAR(100) NOT NULL,
+        "Company_Address" JSONB NOT NULL,
+        "Company_Image" TEXT,
+        "Tax_ID" VARCHAR(13) NOT NULL,
+        "Requested_File" TEXT NOT NULL,
+        "Company_Is_Active" INT NOT NULL CHECK ("Company_Is_Active" IN (0, 1)),
+        "Last_Update_Date" TIMESTAMP
+    );
 
-      CREATE TABLE IF NOT EXISTS "APPROVED_COMPANY" (
-          "Company_ID" uuid PRIMARY KEY,
-          "Company_Name" VARCHAR(100),
-          "Company_Address" json NOT NULL,
-          "Tax_ID" VARCHAR(13) NOT NULL
-      );
+    CREATE TABLE "JOB_ANNOUNCER" (
+        "Username" VARCHAR(100) PRIMARY KEY,
+        "Company_ID" UUID NOT NULL,
+        "Password" VARCHAR(100) NOT NULL,
+        "Last_Update_Date" TIMESTAMP,
+        "Approve_Request_Date" TIMESTAMP,
+        "Validated_By" VARCHAR(100)
+    );
 
-      CREATE TABLE IF NOT EXISTS "JOB_ANNOUNCEMENT" (
-          "Job_Announce_ID" uuid PRIMARY KEY,
-          "JOBA_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in JOB_ANNOUNCER
-          "Job_Announce_Date_Time" TIMESTAMP UNIQUE NOT NULL,
-          "Job_Announce_Title" VARCHAR(100) NOT NULL,
-          "Job_Announce_Description" VARCHAR(100) NOT NULL
-      );
+    CREATE TABLE "STUDENT" (
+        "Username" VARCHAR(100) PRIMARY KEY,
+        "Description" TEXT,
+        "Activity_Hours" JSON,
+        "GPAX" VARCHAR(4)
+    );
 
-      CREATE TABLE IF NOT EXISTS "POSITION" (
-          "Job_Position_ID" uuid PRIMARY KEY,
-          "Job_Announce_ID" uuid,
-          "Job_Mode" INT,
-          "Position_Name" VARCHAR(100),
-          "Position_Amount" INT,
-          "Job_Position_Detail" uuid
-      );
+    CREATE TABLE "POSITION" (
+        "Position_ID" UUID PRIMARY KEY,
+        "Job_Mode" INT NOT NULL,
+        "Job_Name" VARCHAR(100) NOT NULL,
+        "Job_Position_Detail" TEXT NOT NULL,
+        "Job_Amount" INT NOT NULL,
+        "Job_Position_Qualifications" TEXT NOT NULL,
+        "Job_Position_Welfare" TEXT NOT NULL,
+        "Job_Earnings" VARCHAR(30) NOT NULL,
+        "STU_Username" VARCHAR(100) NULL,
+        "JOB_Announce_ID" UUID NULL
+    );
 
-      CREATE TABLE IF NOT EXISTS "EVALUATION" (
-          "Eval_ID" uuid PRIMARY KEY,
-          "STU_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in STUDENT
-          "JOBA_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in JOB_ANNOUNCER
-          "Eval_Result" INT NOT NULL,
-          "Eval_Date_Time" TIMESTAMP UNIQUE NOT NULL
-      );
+    CREATE TABLE "JOB_ANNOUNCEMENT" (
+        "JOB_Announce_ID" UUID PRIMARY KEY,
+        "JOB_Announce_Title" VARCHAR(100) NOT NULL,
+        "JOB_Announce_Description" TEXT NOT NULL,
+        "JOB_Announce_Date_Time" TIMESTAMP NOT NULL,
+        "JOBA_Username" VARCHAR(100) NOT NULL
+    );
 
-      CREATE TABLE IF NOT EXISTS "QUALIFICATION_ANNOUNCEMENT" (
-          "Qualify_Announce_ID" uuid PRIMARY KEY,
-          "JOBA_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in JOB_ANNOUNCER
-          "Qualify_Result" INT NOT NULL,
-          "Qualify_Date_Time" TIMESTAMP UNIQUE NOT NULL
-      );
+    CREATE TABLE "JOB_RECRUITMENT" (
+        "Job_Recruit_ID" UUID PRIMARY KEY,
+        "JOBA_Username" VARCHAR(100) NOT NULL,
+        "Position_ID" UUID NOT NULL,
+        "STU_Username" VARCHAR(100) NOT NULL,
+        "JOB_Announce_ID" UUID NOT NULL,
+        "Company_ID" UUID NOT NULL
+    );
 
-      CREATE TABLE IF NOT EXISTS "EXAMINATION" (
-          "Examination_ID" uuid PRIMARY KEY,
-          "STU_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in STUDENT
-          "Exam_Result" INT NOT NULL,
-          "Examination_Date_Time" TIMESTAMP UNIQUE NOT NULL
-      );
+    CREATE TABLE "JOBA_VALIDATION" (
+        "KUSD_Username" VARCHAR(100),
+        "JOBA_Username" VARCHAR(100),
+        "Validated_Expired_Date_Time" TIMESTAMP NOT NULL,
+        PRIMARY KEY ("KUSD_Username", "JOBA_Username")
+    );
 
-      CREATE TABLE IF NOT EXISTS "JOB_RECRUIT" (
-          "Job_Recruit_ID" uuid PRIMARY KEY,
-          "STU_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in STUDENT
-          "JOBA_Username" VARCHAR(50) NOT NULL,  -- Change to match data type in JOB_ANNOUNCER
-          "Recruit_Position" VARCHAR(100) NOT NULL,
-          "Recruit_Start_Date" TIMESTAMP NOT NULL,
-          "Recruit_End_Date" TIMESTAMP NOT NULL,
-          "Recruit_Date_Time" TIMESTAMP UNIQUE NOT NULL
-      );
+    CREATE TABLE "QUALIFICATION_ANNOUNCEMENT" (
+        "Qualification_Announce_ID" UUID PRIMARY KEY,
+        "Qualify_Date_Time" TIMESTAMP NOT NULL,
+        "JOBA_Username" VARCHAR(100) NOT NULL
+    );
 
-      CREATE TABLE IF NOT EXISTS "TAG" (
-          "Tag_Name" VARCHAR(20) PRIMARY KEY
-      );
+    CREATE TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" (
+        "Qualification_Announce_ID" UUID,
+        "STU_Username" VARCHAR(100),
+        "Qualify_Result" INT NOT NULL,
+        "Qualification_Expired_Date_Time" TIMESTAMP NOT NULL,
+        "Is_STU_Confirm" INT NOT NULL,
+        "Job_Recruit_ID" UUID NOT NULL,
+        PRIMARY KEY ("Qualification_Announce_ID", "STU_Username")
+    );
 
-      CREATE TABLE IF NOT EXISTS "RELATION_TAGGED" (
-          "Company_ID" uuid,
-          "Tag_Name" VARCHAR(20),
-          PRIMARY KEY ("Company_ID", "Tag_Name")
-      );
+    CREATE TABLE "EVALUATION" (
+        "Eval_ID" UUID PRIMARY KEY,
+        "Eval_Result" JSONB NOT NULL,
+        "Eval_Date_Time" TIMESTAMP NOT NULL,
+        "Position_ID" UUID NOT NULL,
+        "JOBA_Username" VARCHAR(100) NOT NULL
+    );
 
-      CREATE TABLE IF NOT EXISTS "RELATION_RECEIVE_QUALIFICATION" (
-          "STU_Username" VARCHAR(50),
-          "Qualify_Announce_ID" uuid,
-          PRIMARY KEY ("STU_Username", "Qualify_Announce_ID")
-      );
+    CREATE TABLE "TAG" (
+        "Tag_Name" VARCHAR(20) PRIMARY KEY
+    );
 
-      CREATE TABLE IF NOT EXISTS "RELATION_PROVIDE_EXAM" (
-          "JOBA_Username" VARCHAR(50),
-          "Examination_ID" uuid,
-          PRIMARY KEY ("JOBA_Username", "Examination_ID")
-      );
+    CREATE TABLE "TAGGING" (
+        "Tag_Name" VARCHAR(20),
+        "Company_ID" UUID,
+        PRIMARY KEY ("Tag_Name", "Company_ID")
+    );
 
-      CREATE TABLE IF NOT EXISTS "RELATION_VALIDATE" (
-          "JOBA_Username" VARCHAR(50),  -- Change to match data type in JOB_ANNOUNCER
-          "KUSD_Username" VARCHAR(50),   -- Change to match data type in KUSD
-          PRIMARY KEY ("JOBA_Username", "KUSD_Username")
-      );
+    ALTER TABLE "KU_SD"
+        ADD CONSTRAINT fk_kusd_user FOREIGN KEY ("Username") REFERENCES "USER"("Username");
 
-      ALTER TABLE "JOB_ANNOUNCER" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
+    ALTER TABLE "JOB_ANNOUNCER"
+        ADD CONSTRAINT fk_announcer_user FOREIGN KEY ("Username") REFERENCES "USER"("Username"),
+        ADD CONSTRAINT fk_announcer_company FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
 
-      ALTER TABLE "RELATION_TAGGED" ADD FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY" ("Company_ID");
+    ALTER TABLE "STUDENT"
+        ADD CONSTRAINT fk_student_user FOREIGN KEY ("Username") REFERENCES "USER"("Username");
 
-      ALTER TABLE "RELATION_TAGGED" ADD FOREIGN KEY ("Tag_Name") REFERENCES "TAG" ("Tag_Name");
+    ALTER TABLE "POSITION"
+        ADD CONSTRAINT fk_position_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
+        ADD CONSTRAINT fk_position_announcement FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID");
 
-      ALTER TABLE "RELATION_VALIDATE" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
+    ALTER TABLE "JOB_ANNOUNCEMENT"
+        ADD CONSTRAINT fk_announcement_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
-      ALTER TABLE "RELATION_VALIDATE" ADD FOREIGN KEY ("KUSD_Username") REFERENCES "KUSD" ("KUSD_Username");
+    ALTER TABLE "JOB_RECRUITMENT"
+        ADD CONSTRAINT fk_recruitment_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username"),
+        ADD CONSTRAINT fk_recruitment_position FOREIGN KEY ("Position_ID") REFERENCES "POSITION"("Position_ID"),
+        ADD CONSTRAINT fk_recruitment_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
+        ADD CONSTRAINT fk_recruitment_job_announce_id FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID"),
+        ADD CONSTRAINT fk_recruitment_company_id FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
 
-      ALTER TABLE "JOB_ANNOUNCEMENT" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
+    ALTER TABLE "JOBA_VALIDATION"
+        ADD CONSTRAINT fk_validation_kusd FOREIGN KEY ("KUSD_Username") REFERENCES "KU_SD"("Username"),
+        ADD CONSTRAINT fk_validation_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
-      ALTER TABLE "POSITION" ADD FOREIGN KEY ("Job_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT" ("Job_Announce_ID");
+    ALTER TABLE "QUALIFICATION_ANNOUNCEMENT"
+        ADD CONSTRAINT fk_qualification_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
-      ALTER TABLE "EVALUATION" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
+    ALTER TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT"
+        ADD CONSTRAINT fk_stu_qual_announcement FOREIGN KEY ("Qualification_Announce_ID") REFERENCES "QUALIFICATION_ANNOUNCEMENT"("Qualification_Announce_ID"),
+        ADD CONSTRAINT fk_stu_qual_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
+        ADD CONSTRAINT fk_stu_job_recruit_id FOREIGN KEY ("Job_Recruit_ID") REFERENCES "JOB_RECRUITMENT"("Job_Recruit_ID");
 
-      ALTER TABLE "EVALUATION" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
+    ALTER TABLE "EVALUATION"
+        ADD CONSTRAINT fk_evaluation_position FOREIGN KEY ("Position_ID") REFERENCES "POSITION"("Position_ID"),
+        ADD CONSTRAINT fk_evaluation_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
-      ALTER TABLE "QUALIFICATION_ANNOUNCEMENT" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
-
-      ALTER TABLE "RELATION_RECEIVE_QUALIFICATION" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
-
-      ALTER TABLE "RELATION_RECEIVE_QUALIFICATION" ADD FOREIGN KEY ("Qualify_Announce_ID") REFERENCES "QUALIFICATION_ANNOUNCEMENT" ("Qualify_Announce_ID");
-
-      ALTER TABLE "EXAMINATION" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
-
-      ALTER TABLE "JOB_RECRUIT" ADD FOREIGN KEY ("STU_Username") REFERENCES "STUDENT" ("STU_Username");
-
-      ALTER TABLE "JOB_RECRUIT" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
-
-      ALTER TABLE "RELATION_PROVIDE_EXAM" ADD FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER" ("JOBA_Username");
-
-      ALTER TABLE "RELATION_PROVIDE_EXAM" ADD FOREIGN KEY ("Examination_ID") REFERENCES "EXAMINATION" ("Examination_ID");
+    ALTER TABLE "TAGGING"
+        ADD CONSTRAINT fk_tagging_tag FOREIGN KEY ("Tag_Name") REFERENCES "TAG"("Tag_Name"),
+        ADD CONSTRAINT fk_tagging_company FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
     `;
 
     await pool.query(createTableQuery);

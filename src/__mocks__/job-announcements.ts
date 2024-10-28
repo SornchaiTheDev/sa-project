@@ -6,12 +6,18 @@ export const jobAnnouncements: JobAnnouncement[] = [
     id: "1",
     companyName: "Google",
     companyImage: JobLogo,
+    companyAddress: {
+      place: "",
+      province: "",
+      amphur: "",
+      tambon: ""
+    },
     title: "Software Engineer",
     positions: [
       {
         id: "1",
         announceId: "1",
-        jobMode: "งานประจำ",
+        jobMode: 0,
         name: "Test",
         amount: 1,
         detail: "This is a test detail.",
