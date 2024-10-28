@@ -77,6 +77,7 @@ WHERE "Job_Announce_ID" = $1`;
     const positions = await query(queryString, [r.id]);
     const positionList: Position[] = positions.map((p) => ({
       id: p.id,
+      announceId: p.announceId,
       name: p.name,
       amount: p.amount,
       description: p.description,

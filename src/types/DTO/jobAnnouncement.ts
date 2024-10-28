@@ -2,11 +2,11 @@ import type { StaticImageData } from "next/image";
 
 export interface Position {
   id: string;
+  announceId: string;
   name: string;
   jobMode: 0 | 1;
   earnings: string;
   amount: number;
-  description: string;
   qualification: string;
   welfare: string;
 }
