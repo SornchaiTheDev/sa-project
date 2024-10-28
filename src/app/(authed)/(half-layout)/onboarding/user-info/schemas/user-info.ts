@@ -5,7 +5,7 @@ const fromYear = dayjs().add(-25, "year");
 const toYear = fromYear.add(10, "year");
 
 export const userInfo = z.object({
-  prefix: z
+  title: z
     .string()
     .min(1, "กรุณาเลือกคำนำหน้า")
     .refine((val) => val !== "none", "กรุณาเลือกคำนำหน้า"),

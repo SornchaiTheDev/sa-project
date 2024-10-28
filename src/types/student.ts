@@ -2,7 +2,7 @@ export interface Student {
   username: string;
   phoneNumber: string;
   description: string;
-  activityHour: string;
+  activityHours: string;
   gpax: string;
   dateOfBirth: Date;
   faculty: string;

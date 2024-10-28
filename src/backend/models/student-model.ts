@@ -1,29 +1,47 @@
 import { query } from "~/lib/db";
-import { Student } from "~/types/student";
+import type { StudentOnboarding } from "~/types/requests/student-onboarding";
+import type { Student } from "~/types/student";
 
-export const createStudent = async (student: Student): Promise<void> => {
+export const createStudent = async (
+  student: StudentOnboarding,
+): Promise<void> => {
   const {
     username,
+    title,
+    firstName,
+    lastName,
+    email,
     phoneNumber,
     description,
     gpax,
     dateOfBirth,
-    activityHour,
+    activityHours,
+    faculty,
+    major,
   } = student;
 
-  const queryString = `INSERT INTO "STUDENT" ("Username","Date_Of_Birth","Description","Activity_Hour","GPAX") VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+  const createUser = `INSERT INTO "USER" ("Username","Title","First_Name","Last_Name","Email_Google","Phone_Number","Is_Active") VALUES ($1, $2, $3, $4, $5, $6, 1) RETURNING *`;
+
+  await query(createUser, [
+    username,
+    title,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+  ]);
+
+  const queryString = `INSERT INTO "STUDENT" ("Username","Date_Of_Birth","Description","Activity_Hours","GPAX","Faculty","Major") VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`;
 
   await query(queryString, [
     username,
     dateOfBirth,
     description,
-    activityHour,
+    activityHours,
     gpax,
+    faculty,
+    major,
   ]);
-
-  const editStudent = `UPDATE "USER" SET "Phone_Number" = $1 WHERE "Username" = $2`;
-
-  await query(editStudent, [phoneNumber, username]);
 };
 
 export const getStudent = async (username: string): Promise<Student> => {

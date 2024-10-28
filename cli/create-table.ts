@@ -43,7 +43,8 @@ export const createTable = async () => {
         "Activity_Hours" JSON,
         "GPAX" VARCHAR(4) NOT NULL,
         "Faculty" VARCHAR(100) NOT NULL,
-        "Major" VARCHAR(100) NOT NULL
+        "Major" VARCHAR(100) NOT NULL,
+        "Date_Of_Birth" Date NOT NULL
     );
 
     CREATE TABLE "POSITION" (

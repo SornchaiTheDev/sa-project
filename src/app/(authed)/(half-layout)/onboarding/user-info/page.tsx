@@ -47,7 +47,7 @@ function UserInfoFormPage() {
   const form = useForm<UserInfo>({
     resolver: zodResolver(userInfo),
     defaultValues: {
-      prefix: onboard.prefix.length > 0 ? onboard.prefix : thaiPreName,
+      title: onboard.title.length > 0 ? onboard.title : thaiPreName,
       firstName: onboard.firstName.length > 0 ? onboard.firstName : thFirstName,
       lastName: onboard.lastName.length > 0 ? onboard.lastName : thSurName,
       email: onboard.lastName.length > 0 ? onboard.email : googleMail,
@@ -96,7 +96,7 @@ function UserInfoFormPage() {
             >
               <FormField
                 control={form.control}
-                name="prefix"
+                name="title"
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">คำนำหน้า</FormLabel>

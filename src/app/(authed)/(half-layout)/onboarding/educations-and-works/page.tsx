@@ -46,7 +46,7 @@ function EducationAndWorksForm() {
       major: onboard.major,
       gpax: onboard.gpax,
       description: onboard.description,
-      activitiyHour: onboard.activitiyHour,
+      activityHours: onboard.activityHours,
     },
   });
 
@@ -188,7 +188,7 @@ function EducationAndWorksForm() {
               />
               <FormField
                 control={form.control}
-                name="activitiyHour"
+                name="activityHours"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">

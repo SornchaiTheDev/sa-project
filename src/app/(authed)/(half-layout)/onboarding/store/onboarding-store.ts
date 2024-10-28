@@ -5,14 +5,14 @@ import { atom } from "jotai";
 export const onboardingAtom = atomWithStorage<Onboarding>(
   "onboarding",
   {
-    prefix: "",
+    title: "",
     firstName: "",
     lastName: "",
     email: "",
     dateOfBirth: new Date(),
     phoneNumber: "",
     gpax: "",
-    activitiyHour: "",
+    activityHours: "",
     faculty: "",
     major: "",
     description: "",
@@ -23,14 +23,14 @@ export const onboardingAtom = atomWithStorage<Onboarding>(
 
 export const resetOnboardingAtom = atom(null, (_, set) => {
   set(onboardingAtom, {
-    prefix: "",
+    title: "",
     firstName: "",
     lastName: "",
     email: "",
     dateOfBirth: new Date(),
     phoneNumber: "",
     gpax: "",
-    activitiyHour: "",
+    activityHours: "",
     faculty: "",
     major: "",
     description: "",
