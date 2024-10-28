@@ -7,6 +7,7 @@ import { getJobAnnouncementFn } from "./queryFns/getJobAnnouncementFn";
 import { Skeleton } from "~/components/ui/skeleton";
 import PositionComponent from "./_components/Position";
 import EnrollSection from "./_components/EnrollSection";
+import { ConfirmDialog } from "./_components/ConfirmDialog";
 
 function JobDetailPage({ params }: { params: { jobId: string } }) {
   const { jobId } = params;
@@ -19,6 +20,7 @@ function JobDetailPage({ params }: { params: { jobId: string } }) {
 
   return (
     <>
+      <ConfirmDialog />
       <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 pt-32">
         <div className="relative rounded-xl w-32 h-32">
           {!isLoading && data !== undefined && (

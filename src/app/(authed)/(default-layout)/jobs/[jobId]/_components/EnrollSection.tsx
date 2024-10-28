@@ -1,7 +1,7 @@
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import React from "react";
 import { Button } from "~/components/ui/button";
-import { positionAtom } from "../store/positionStore";
+import { confirmEnrollAtom, positionAtom } from "../store/positionStore";
 
 function EnrollSection() {
   const selectedPositions = useAtomValue(positionAtom);
@@ -12,8 +12,9 @@ function EnrollSection() {
     .map((position) => position.name)
     .join(", ");
 
+  const setIsOpen = useSetAtom(confirmEnrollAtom);
   const handleEnroll = () => {
-    console.log(selectedPositions);
+    setIsOpen(true);
   };
 
   return (

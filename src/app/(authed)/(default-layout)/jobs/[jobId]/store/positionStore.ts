@@ -6,3 +6,5 @@ interface SelectedPosition {
 }
 
 export const positionAtom = atom<SelectedPosition[]>([]);
+
+export const confirmEnrollAtom = atom<boolean>(false);
