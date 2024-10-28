@@ -16,7 +16,7 @@ export const getUser = async (username: string): Promise<User> => {
                  	      "Title" AS title,
 	                      "First_Name" AS "firstName",
 			      "Last_Name" AS "lastName",
-    			      "Google_Email" AS email,
+    			      "Email_Google" AS email,
 			      "Phone_Number" AS "phoneNumber",
                               "Is_Active" AS "isActive"
 	               FROM "USER"`;
@@ -34,4 +34,11 @@ export const getUser = async (username: string): Promise<User> => {
     title: user.title,
     isActive: user.isActive,
   };
+};
+
+export const isUserExists = async (username: string): Promise<boolean> => {
+  const queryString = `SELECT EXISTS(SELECT 1 FROM "USER" WHERE "Username" = $1)`;
+  const res = await query(queryString, [username]);
+
+  return res.rows[0].exists;
 };

@@ -1,8 +1,3 @@
-export interface KUSD {
-  username: string;
-  title: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  isActive: boolean;
-}
+import { User } from "./user";
+
+export type KUSD = Omit<User, "phoneNumber" | "isActive">;

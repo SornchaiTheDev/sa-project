@@ -25,11 +25,16 @@ export const createStudent = async (student: Student): Promise<void> => {
 
   await query(editStudent, [phoneNumber, username]);
 };
+
 export const getStudent = async (username: string): Promise<Student> => {
   const queryString = `SELECT "Username" AS username,
                               "Description" AS description,
-                              "Activity_Hour" AS activity_hour,
+                              "Activity_Hour" AS "activity_hour",
                               "GPAX" AS gpax,
+                              "Faculty" AS faculty,
+                              "Major" AS major,
+                              "Phone_Number" AS "phone_number",
+                              "Date_Of_Birth" AS "date_of_birth"
                        FROM "STUDENT" WHERE username = $1
                        LIMIT 1`;
 
@@ -42,6 +47,10 @@ export const getStudent = async (username: string): Promise<Student> => {
     description: student.description,
     activityHour: student.activity_hour,
     gpax: student.gpax,
+    faculty: student.faculty,
+    major: student.major,
+    phoneNumber: student.phone_number,
+    dateOfBirth: student.date_of_birth,
   };
 };
 

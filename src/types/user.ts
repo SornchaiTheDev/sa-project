@@ -5,5 +5,5 @@ export interface User {
   lastName: string;
   phoneNumber: string;
   email: string;
-  isActive: boolean;
+  isActive: 0 | 1;
 }

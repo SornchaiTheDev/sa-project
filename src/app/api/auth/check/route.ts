@@ -1,12 +1,10 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getStudent, isStudentExists } from "~/backend/models/student-model";
-import { createUser, getUser } from "~/backend/models/user-model";
+import { createKUSD } from "~/backend/models/kusd-model";
+import { isStudentExists } from "~/backend/models/student-model";
+import { isUserExists } from "~/backend/models/user-model";
 import { env } from "~/configs/env";
 import { getPayload, verifyJwt } from "~/lib/jwt";
-import { KUSD } from "~/types/kusd";
-import { Student } from "~/types/student";
-import { User } from "~/types/user";
 import { UserInfo } from "~/types/userInfo";
 
 export const dynamic = "force-dynamic";
@@ -25,22 +23,6 @@ const nisitFlow = async (payload: UserInfo) => {
   //   redirect("/auth/sign-in?error=UNAUTHORIZED");
   // }
 
-  try {
-    const isExists = await isStudentExists(payload.uid);
-
-    if (!isExists) {
-      await createUser({
-        username: payload.uid,
-        title: payload.thaiPreName ?? "นาย",
-        firstName: payload.thFirstName,
-        lastName: payload.thSurName,
-        email: payload.googleMail,
-      });
-    }
-  } catch (err) {
-    console.error("Failed to create student in the database", err);
-  }
-
   const isCompletedForm = await isStudentExists(payload.uid);
   if (!isCompletedForm) {
     redirect("/onboarding/user-info");
@@ -48,36 +30,30 @@ const nisitFlow = async (payload: UserInfo) => {
   redirect("/");
 };
 
-// const kusdFlow = async (payload: UserInfo) => {
-//   let kusd: KUSD | undefined;
-//   const kusdRepo = new KUSDRepository();
-//   try {
-//     kusd = await kusdRepo.getByUsername(payload.uid);
-//   } catch (err) {
-//     console.error("Failed to fetch student in the database", err);
-//   }
-//
-//   // TODO: Check if user is kusd department
-//   // if (payload.faculty !== "กองพัฒนานิสิต") {
-//   //   clearAuthCookies();
-//   //   redirect("/auth/sign-in?error=UNAUTHORIZED");
-//   // }
-//
-//   if (kusd === undefined) {
-//     try {
-//       await kusdRepo.create({
-//         username: payload.uid,
-//         title: payload.thaiPreName ?? "นาย",
-//         firstName: payload.thFirstName,
-//         lastName: payload.thSurName,
-//         email: payload.googleMail,
-//       });
-//     } catch (err) {
-//       console.error("Failed to create kusd in the database", err);
-//     }
-//   }
-//   redirect("/kusd");
-// };
+const kusdFlow = async (payload: UserInfo) => {
+  // TODO: Check if user is kusd department
+  // if (payload.faculty !== "กองพัฒนานิสิต") {
+  //   clearAuthCookies();
+  //   redirect("/auth/sign-in?error=UNAUTHORIZED");
+  // }
+
+  const isKUSDExists = await isUserExists(payload.uid);
+
+  if (!isKUSDExists) {
+    try {
+      await createKUSD({
+        username: payload.uid,
+        title: payload.thaiPreName ?? "นาย",
+        firstName: payload.thFirstName,
+        lastName: payload.thSurName,
+        email: payload.googleMail,
+      });
+    } catch (err) {
+      console.error("Failed to create kusd in the database", err);
+    }
+  }
+  redirect("/kusd");
+};
 
 export const GET = async () => {
   const accessToken = cookies().get("access_token")?.value;
@@ -98,9 +74,9 @@ export const GET = async () => {
     case "3":
       await nisitFlow(payload);
       break;
-    // case "2":
-    //   await kusdFlow(payload);
-    //   break;
+    case "2":
+      await kusdFlow(payload);
+      break;
   }
 
   clearAuthCookies();
