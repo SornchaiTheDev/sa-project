@@ -1,11 +1,11 @@
-import { execute } from "~/lib/db";
+import { query } from "~/lib/db";
 
 const reset = async () => {
-  const query = `
+  const queryString = `
         DROP SCHEMA "ku-job" CASCADE;
         CREATE SCHEMA "ku-job";
 `;
-  await execute(query);
+  await query(queryString);
   console.log("Reset database successfully");
   process.exit(0);
 };

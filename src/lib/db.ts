@@ -13,16 +13,6 @@ const pool = new Pool({
 export const query = async (text: string, params?: unknown[]) => {
   const client = await pool.connect();
   try {
-    const result = await client.query(text, params);
-    return result.rows;
-  } finally {
-    client.release();
-  }
-};
-
-export const execute = async (text: string, params?: unknown[]) => {
-  const client = await pool.connect();
-  try {
     return await client.query(text, params);
   } finally {
     client.release();

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import React from "react";
-import { StudentRepository } from "~/backend/repositories/studentRepository";
+import { isStudentExists } from "~/backend/models/student-model";
 import { getUserInfo } from "~/lib/getUserInfo";
 
 export default async function OnboardingLayout({
@@ -10,11 +10,9 @@ export default async function OnboardingLayout({
 }) {
   const userInfo = await getUserInfo();
 
-  const studentRepo = new StudentRepository();
+  const isCompletedForm = await isStudentExists(userInfo.uid);
 
-  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.uid);
-
-  if (hasCompleteForm) {
+  if (isCompletedForm) {
     redirect("/");
   }
 

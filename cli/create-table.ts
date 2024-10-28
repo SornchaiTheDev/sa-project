@@ -1,4 +1,4 @@
-import pool from "~/lib/db";
+import { query } from "~/lib/db";
 
 export const createTable = async () => {
   try {
@@ -8,7 +8,7 @@ export const createTable = async () => {
         "Title" VARCHAR(6) NOT NULL,
         "First_Name" VARCHAR(100) NOT NULL,
         "Last_Name" VARCHAR(100) NOT NULL,
-        "Phone_Number" VARCHAR(10) NOT NULL,
+        "Phone_Number" VARCHAR(10),
         "Email_Google" VARCHAR(100) NOT NULL,
         "Is_Active" INT NOT NULL CHECK ("Is_Active" IN (0, 1))
     );
@@ -41,7 +41,9 @@ export const createTable = async () => {
         "Username" VARCHAR(100) PRIMARY KEY,
         "Description" TEXT,
         "Activity_Hours" JSON,
-        "GPAX" VARCHAR(4)
+        "GPAX" VARCHAR(4) NOT NULL,
+        "Faculty" VARCHAR(100) NOT NULL,
+        "Major" VARCHAR(100) NOT NULL
     );
 
     CREATE TABLE "POSITION" (
@@ -160,7 +162,7 @@ export const createTable = async () => {
         ADD CONSTRAINT fk_tagging_company FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
     `;
 
-    await pool.query(createTableQuery);
+    await query(createTableQuery);
 
     console.log("Created all tables!");
     process.exit(0);

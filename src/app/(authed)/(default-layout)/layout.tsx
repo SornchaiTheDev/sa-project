@@ -1,17 +1,15 @@
 import { type ReactNode } from "react";
 import Navbar from "~/components/nav-bar";
-import JobAlert from "./_components/JobAlert";
-import { StudentRepository } from "~/backend/repositories/studentRepository";
 import { getUserInfo } from "~/lib/getUserInfo";
 import { redirect } from "next/navigation";
+import { isStudentExists } from "~/backend/models/student-model";
 
 async function AuthedLayout({ children }: { children: ReactNode }) {
   const userInfo = await getUserInfo();
-  const studentRepo = new StudentRepository();
 
-  const hasCompleteForm = await studentRepo.hasCompletedForm(userInfo.uid);
+  const isCompletedForm = await isStudentExists(userInfo.uid);
 
-  if (!hasCompleteForm) {
+  if (!isCompletedForm) {
     redirect("/onboarding/user-info");
   }
 
