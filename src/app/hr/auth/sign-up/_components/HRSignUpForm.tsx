@@ -20,7 +20,6 @@ import { hrSignUpAtom } from "../../store/hr-sign-up-store";
 import axios from "axios";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import _ from "lodash";
 
 const PasswordRequirements = dynamic(() => import("./PasswordRequirements"), {
   ssr: false,
