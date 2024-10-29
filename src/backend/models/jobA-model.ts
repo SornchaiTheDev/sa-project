@@ -16,13 +16,13 @@ export const createJobA = async (payload: CreateJobA) => {
                                  "Company_ID",
                                  "Password", 
                                  "Last_Update_Date",
-                                 "Approved_Request_Date",
+                                 "Approve_Request_Date"
                      ) VALUES (
                               $1,
                               $2,
                               $3,
                               CURRENT_TIMESTAMP,
-                              NULL,
+                              NULL
                      )`;
 
   await query(queryString, [username, companyId, hashedPassword]);

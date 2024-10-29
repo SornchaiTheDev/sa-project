@@ -48,7 +48,7 @@ export const POST = async (req: Request) => {
         phoneNumber: phone,
       });
     } catch (err) {
-      throw new Error("Cannot create Job announcer");
+      throw new Error("Cannot create user");
     }
 
     let companyId: string | undefined;

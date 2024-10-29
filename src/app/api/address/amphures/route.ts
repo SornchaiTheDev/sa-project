@@ -13,7 +13,7 @@ export const GET = async (req: Request) => {
                         WHERE name_th = $1
                     )`;
   const queryParams = [provinceName];
-  const res = (await query(selected, queryParams)) as Province[];
+  const res = (await query(selected, queryParams)).rows as Province[];
 
   return Response.json({
     amphures: res,

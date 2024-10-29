@@ -3,6 +3,8 @@ import { query } from "~/lib/db";
 export const createTable = async () => {
   try {
     const createTableQuery = `
+    CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
     CREATE TABLE "USER" (
         "Username" VARCHAR(100) PRIMARY KEY,
         "Title" VARCHAR(6) NOT NULL,
@@ -18,7 +20,7 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "APPROVED_COMPANY" (
-        "Company_ID" UUID PRIMARY KEY,
+        "Company_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "Company_Name" VARCHAR(100) NOT NULL,
         "Company_Address" JSONB NOT NULL,
         "Company_Image" TEXT,
@@ -48,7 +50,7 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "POSITION" (
-        "Position_ID" UUID PRIMARY KEY,
+        "Position_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "Job_Mode" INT NOT NULL,
         "Job_Name" VARCHAR(100) NOT NULL,
         "Job_Position_Detail" TEXT NOT NULL,
@@ -61,7 +63,7 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "JOB_ANNOUNCEMENT" (
-        "JOB_Announce_ID" UUID PRIMARY KEY,
+        "JOB_Announce_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "JOB_Announce_Title" VARCHAR(100) NOT NULL,
         "JOB_Announce_Description" TEXT NOT NULL,
         "JOB_Announce_Date_Time" TIMESTAMP NOT NULL,
@@ -69,7 +71,7 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "JOB_RECRUITMENT" (
-        "Job_Recruit_ID" UUID PRIMARY KEY,
+        "Job_Recruit_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "JOBA_Username" VARCHAR(100) NOT NULL,
         "Position_ID" UUID NOT NULL,
         "STU_Username" VARCHAR(100) NOT NULL,
@@ -85,13 +87,13 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "QUALIFICATION_ANNOUNCEMENT" (
-        "Qualification_Announce_ID" UUID PRIMARY KEY,
+        "Qualification_Announce_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "Qualify_Date_Time" TIMESTAMP NOT NULL,
         "JOBA_Username" VARCHAR(100) NOT NULL
     );
 
     CREATE TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" (
-        "Qualification_Announce_ID" UUID,
+        "Qualification_Announce_ID" UUID DEFAULT gen_random_uuid(),
         "STU_Username" VARCHAR(100),
         "Qualify_Result" INT NOT NULL,
         "Qualification_Expired_Date_Time" TIMESTAMP NOT NULL,
@@ -101,7 +103,7 @@ export const createTable = async () => {
     );
 
     CREATE TABLE "EVALUATION" (
-        "Eval_ID" UUID PRIMARY KEY,
+        "Eval_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "Eval_Result" JSONB NOT NULL,
         "Eval_Date_Time" TIMESTAMP NOT NULL,
         "Position_ID" UUID NOT NULL,
