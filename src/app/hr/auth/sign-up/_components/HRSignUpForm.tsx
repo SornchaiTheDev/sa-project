@@ -18,7 +18,7 @@ import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { hrSignUpAtom } from "../../store/hr-sign-up-store";
 import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import _ from "lodash";
 
@@ -52,37 +52,7 @@ function HRSignUpForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isUsernameChecked, setIsUsernameChecked] = useState(false);
-  const debouncedCheckUsername = useMemo(
-    () =>
-      _.debounce(async (email: string) => {
-        setIsUsernameChecked(false);
-        try {
-          const isExists = await isUsernameExists(email);
-          if (isExists) {
-            form.setError("username", {
-              type: "manual",
-              message: "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว",
-            });
-          } else {
-            form.clearErrors("username");
-          }
-        } catch (err) {
-        } finally {
-          setIsUsernameChecked(true);
-        }
-      }, 500),
-    [form],
-  );
-
-  const usernameField = form.watch("username");
-
-  useEffect(() => {
-    debouncedCheckUsername(usernameField);
-  }, [debouncedCheckUsername, usernameField]);
-
   const handleOnSubmit = async (data: HRSignUpSchema) => {
-    if (!isUsernameChecked) return;
     try {
       setIsSubmitting(true);
       const isExists = await isUsernameExists(data.username);
@@ -165,7 +135,7 @@ function HRSignUpForm() {
           />
           <Button
             isLoading={isSubmitting}
-            disabled={isSubmitting || !isUsernameChecked}
+            disabled={isSubmitting}
             variant="ghost"
             className="flex gap-2 items-center float-end hover:text-zinc-500 self-end"
           >
