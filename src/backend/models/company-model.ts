@@ -60,3 +60,20 @@ export const createCompany = async (
 
   return companyId;
 };
+
+export const getCompanyByTaxID = async (taxId: string) => {
+  const queryString = `SELECT 
+                          "Company_Name",
+                          "Company_Address",
+                          "Company_Image",
+                          "Tax_ID",
+                          "Requested_File",
+                          "Company_Is_Active",
+                          "Last_Update_Date"
+                       FROM "APPROVED_COMPANY" 
+                       WHERE "Tax_ID" = $1`;
+
+  const res = await query(queryString, [taxId]);
+
+  return res.rows[0];
+};
