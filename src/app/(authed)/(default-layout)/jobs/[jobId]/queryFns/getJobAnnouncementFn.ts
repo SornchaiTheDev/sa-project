@@ -1,5 +1,5 @@
 import axios from "axios";
-import { JobAnnouncement } from "~/types/DTO/jobAnnouncement";
+import { JobAnnouncement } from "~/types/jobAnnouncement";
 
 export const getJobAnnouncementFn = async (jobId: string) => {
   const { data } = await axios.get<{ announcement: JobAnnouncement }>(

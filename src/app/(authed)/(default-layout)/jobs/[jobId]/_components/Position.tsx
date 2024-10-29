@@ -2,9 +2,9 @@ import { useAtom } from "jotai";
 import { Clock, HandCoins, Users } from "lucide-react";
 import React from "react";
 import { Button } from "~/components/ui/button";
-import type { Position } from "~/types/DTO/jobAnnouncement";
 import { positionAtom } from "../store/positionStore";
 import { cn } from "~/lib";
+import { Position } from "~/types/jobAnnouncement";
 
 function PositionComponent({
   jobMode,
@@ -12,7 +12,7 @@ function PositionComponent({
   order,
   amount,
   earnings,
-  detail,
+  description,
   qualification,
   welfare,
   id,
@@ -62,7 +62,7 @@ function PositionComponent({
         <h6 className="text-sm">{earnings}</h6>
       </div>
       <h5 className="text-lg font-medium">รายละเอียดงาน</h5>
-      <p className="font-light">{detail}</p>
+      <p className="font-light">{description}</p>
       <h5 className="text-lg font-medium">คุณสมบัติ</h5>
       <p className="font-light">{qualification}</p>
       <h5 className="text-lg font-medium">สวัสดิการ</h5>

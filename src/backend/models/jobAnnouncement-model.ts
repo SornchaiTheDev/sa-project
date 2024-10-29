@@ -110,17 +110,14 @@ WHERE "JOB_Announce_ID" = $1`;
   return announcements;
 };
 
-export const getJobAnnouncementsByCompanyID = async (
-  companyId: string,
-  search?: string,
-) => {
+export const getJobAnnouncementsByCompanyID = async (companyId: string) => {
   const queryString = `SELECT "JOB_Announce_ID" AS id, "JOB_Announce_Title" as title
 FROM "JOB_ANNOUNCEMENT"
 JOIN "JOB_ANNOUNCER" ON "JOB_ANNOUNCEMENT"."JOBA_Username" = "JOB_ANNOUNCER"."Username"
 JOIN "APPROVED_COMPANY" ON "JOB_ANNOUNCER"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
-WHERE "APPROVED_COMPANY"."Company_ID" = $1 AND "JOB_Announce_Title" LIKE $2`;
+WHERE "APPROVED_COMPANY"."Company_ID" = $1`;
 
-  const res = await query(queryString, [companyId, `%${search}%`]);
+  const res = await query(queryString, [companyId]);
   return res.rows.map((row) => ({ id: row["id"], name: row["title"] }));
 };
 

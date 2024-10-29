@@ -1,9 +1,13 @@
 import axios from "axios";
-import type { JobAnnouncementPreview } from "~/backend/DTO/jobAnnouncementDTO";
 
-export const fetchAnnouncementsFn = async (search: string) => {
+interface JobAnnouncementPreview {
+  id: string;
+  name: string;
+}
+
+export const fetchAnnouncementsFn = async () => {
   const res = await axios.get<{ announcements: JobAnnouncementPreview[] }>(
-    `/api/hr/announcements?search=${search}`,
+    `/api/hr/announcements`,
   );
 
   return res.data;

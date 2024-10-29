@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -29,6 +27,7 @@ interface Props {
   value: Date;
   onChange: (date: Date | undefined) => void;
 }
+
 export default function DatePicker({
   className,
   fromYear,
@@ -61,7 +60,7 @@ export default function DatePicker({
     );
   };
 
-  const handleOnSelect = (day: Date) => {
+  const handleOnSelect = (day: Date | undefined) => {
     onChange(day);
     setIsOpen(false);
   };
@@ -138,7 +137,7 @@ export default function DatePicker({
           mode="single"
           fromYear={!!fromYear ? fromYear.getFullYear() : undefined}
           toYear={!!toYear ? toYear.getFullYear() : undefined}
-          onSelect={handleOnSelect}
+          onSelect={(day) => handleOnSelect(day)}
           month={value}
           onMonthChange={(day) => onChange(day)}
           initialFocus

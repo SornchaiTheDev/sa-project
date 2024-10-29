@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { Button } from "~/components/ui/button";
-import { BriefcaseBusiness, Heart, Users } from "lucide-react";
-import { JobAnnouncement } from "~/types/DTO/jobAnnouncement";
+import { BriefcaseBusiness, Users } from "lucide-react";
 import dayjs from "~/lib/dayjs";
 import Link from "next/link";
+import { JobAnnouncement } from "~/types/jobAnnouncement";
 
 export default function ResultCard({
   title,

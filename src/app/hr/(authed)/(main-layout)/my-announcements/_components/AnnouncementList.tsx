@@ -1,20 +1,16 @@
 "use client";
 
-import { CirclePlus, SearchIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { CirclePlus } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import AnnouncementLink from "./AnnouncementLink";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "~/components/ui/skeleton";
 import { fetchAnnouncementsFn } from "../_queryFns/fetchAnnouncementFn";
 
 function AnnouncementList() {
-  const [search, setSearch] = useState("");
-
-  const { isLoading, data, refetch } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["announcements"],
-    queryFn: () => fetchAnnouncementsFn(search),
+    queryFn: fetchAnnouncementsFn,
   });
 
   const isNotFound = !isLoading && data?.announcements.length === 0;
@@ -28,20 +24,6 @@ function AnnouncementList() {
             <CirclePlus size="1rem" />
           </Button>
         </div>
-      </div>
-      <div className="flex rounded-lg overflow-hidden border border-primary mt-2">
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="rounded-none border-none"
-        />
-        <Button
-          onClick={() => refetch()}
-          className="rounded-none w-10"
-          size="icon"
-        >
-          <SearchIcon />
-        </Button>
       </div>
       <div className="mt-6 h-full overflow-hidden space-y-4">
         {isLoading &&

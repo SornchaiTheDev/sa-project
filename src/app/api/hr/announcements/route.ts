@@ -17,14 +17,8 @@ export const POST = jobAMiddleware(async (hrInfo, req) => {
   });
 });
 
-export const GET = jobAMiddleware(async (hrInfo, req) => {
-  const searchParam = new URL(req.url).searchParams;
-  const search = searchParam.get("search") ?? "";
-
-  const announcements = await getJobAnnouncementsByCompanyID(
-    hrInfo.companyId,
-    search,
-  );
+export const GET = jobAMiddleware(async (hrInfo) => {
+  const announcements = await getJobAnnouncementsByCompanyID(hrInfo.companyId);
 
   return Response.json({
     announcements,
