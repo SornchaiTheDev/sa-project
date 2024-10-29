@@ -47,7 +47,7 @@ export const createStudent = async (
 export const getStudent = async (username: string): Promise<Student> => {
   const queryString = `SELECT "Username" AS username,
                               "Description" AS description,
-                              "Activity_Hour" AS "activity_hour",
+                              "Activity_Hours" AS "activity_hours",
                               "GPAX" AS gpax,
                               "Faculty" AS faculty,
                               "Major" AS major,
@@ -63,7 +63,7 @@ export const getStudent = async (username: string): Promise<Student> => {
   return {
     username: student.username,
     description: student.description,
-    activityHour: student.activity_hour,
+    activityHours: student.activity_hours,
     gpax: student.gpax,
     faculty: student.faculty,
     major: student.major,
