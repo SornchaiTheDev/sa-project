@@ -1,38 +1,91 @@
-import { JobAAndCompanyRepository } from "~/backend/repositories/jobAAndCompanyRepository";
+import { createCompany } from "~/backend/models/company-model";
+import { createJobA } from "~/backend/models/jobA-model";
+import { createUserIncludePhoneNumber } from "~/backend/models/user-model";
+import type { Address } from "~/types/address";
 
 export const POST = async (req: Request) => {
   const body = await req.json();
 
-  const jobAnCompany = new JobAAndCompanyRepository();
+  const {
+    title,
+    firstName,
+    lastName,
+    email,
+    username,
+    category,
+    password,
+    phone,
+    place,
+    province,
+    amphur,
+    tambon,
+    bookUrl,
+    logoUrl,
+    taxId,
+    name,
+    isVerified,
+  } = body;
+
+  const logoURL = logoUrl[0].url;
+  const requestedFileURL = bookUrl[0].url;
+
+  const companyAddress: Address = {
+    place,
+    province,
+    amphur,
+    tambon,
+  };
+
   try {
-    await jobAnCompany.create({
-      title: body.title,
-      firstName: body.firstName,
-      lastName: body.lastName,
-      email: body.email,
-      username: body.username,
-      category: body.category,
-      place: body.place,
-      province: body.province,
-      amphur: body.amphur,
-      tambon: body.tambon,
-      bookUrl: body.bookUrl[0].url,
-      logoUrl: body.logoUrl[0].url,
-      taxId: body.taxId,
-      name: body.name,
-      password: body.password,
-      phone: body.phone,
-      confirmPassword: body.confirmPassword,
-      isVerified: body.isVerified,
-    });
+    try {
+      await createUserIncludePhoneNumber({
+        username,
+        title,
+        lastName,
+        firstName,
+        email,
+        isActive: isVerified,
+        phoneNumber: phone,
+      });
+    } catch (err) {
+      throw new Error("Cannot create Job announcer");
+    }
+
+    let companyId: string | undefined;
+
+    try {
+      companyId = await createCompany({
+        requestedFile: requestedFileURL,
+        isActive: isVerified,
+        taxId,
+        image: logoURL,
+        name,
+        address: companyAddress,
+        category,
+      });
+    } catch (err) {
+      throw new Error("Cannot create company");
+    }
+
+    try {
+      await createJobA({
+        username,
+        password,
+        companyId,
+      });
+    } catch (err) {
+      throw new Error("Cannot create Job announcer");
+    }
   } catch (err) {
-    return Response.json(
-      {
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Error creating Job announcer and company",
-      },
-      { status: 500 },
-    );
+    if (err instanceof Error) {
+      return Response.json(
+        {
+          code: "INTERNAL_SERVER_ERROR",
+          message: err.message,
+        },
+        { status: 500 },
+      );
+    }
   }
 
   return Response.json({
