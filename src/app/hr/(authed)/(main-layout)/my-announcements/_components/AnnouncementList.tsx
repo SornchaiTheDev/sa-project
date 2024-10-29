@@ -21,7 +21,7 @@ function AnnouncementList() {
         <div className="flex items-center gap-2">
           <h5 className="text-lg">ประกาศงาน</h5>
           <Button variant="ghost" size="icon" className="w-8 h-8">
-            <CirclePlus size="1rem" />
+            <CirclePlus size="1rem" className="text-primary" />
           </Button>
         </div>
       </div>
