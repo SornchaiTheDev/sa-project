@@ -1,10 +1,14 @@
-import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepository";
+import { isUserExists } from "~/backend/models/user-model";
 
-export const GET = async (_:Request,{params }: {params: {username : string}}) => {
+export const GET = async (
+  _: Request,
+  { params }: { params: { username: string } },
+) => {
   const { username } = params;
-  const jobA = new JobAnnouncerRepository();
   try {
-    const status = await jobA.checkUsername(username);
+    const isExists = await isUserExists(username);
+    const status = isExists ? "USERNAME_EXISTS" : "AVAILABLE";
+
     return Response.json({
       status,
     });
@@ -12,4 +16,4 @@ export const GET = async (_:Request,{params }: {params: {username : string}}) =>
     console.log(err);
   }
   return Response.json({ message: "Failed to get user" });
-}
+};

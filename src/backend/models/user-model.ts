@@ -1,14 +1,47 @@
 import { query } from "~/lib/db";
 import type { User } from "~/types/user";
 
-type CreateUser = Omit<User, "isActive" | "phoneNumber">;
+type CreateUser = Omit<User, "phoneNumber">;
 
-export const createUser = async (user: CreateUser): Promise<void> => {
-  const queryString = `INSERT INTO "USER" ("Username","Title","First_Name","Last_Name","Email_Google","Is_Active") VALUES ($1, $2, $3, $4, $5, 1) RETURNING *`;
+export const createUser = async (user: CreateUser): Promise<string> => {
+  const queryString = `INSERT INTO "USER" (
+                                        "Username",
+                                        "Title",
+                                        "First_Name",
+                                        "Last_Name",
+                                        "Email_Google",
+                                        "Is_Active"
+                       ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING "Username"`;
 
-  const { email, title, firstName, lastName, username } = user;
+  const { email, title, firstName, lastName, username, isActive } = user;
 
-  await query(queryString, [username, title, firstName, lastName, email]);
+  const _isActive = isActive ? 1 : 0;
+
+  const res = await query(queryString, [
+    username,
+    title,
+    firstName,
+    lastName,
+    email,
+    _isActive,
+  ]);
+
+  return res.rows[0].Username;
+};
+
+export const createUserIncludePhoneNumber = async (
+  user: User,
+): Promise<string> => {
+  const { username, isActive, email, firstName, lastName, title, phoneNumber } =
+    user;
+
+  await createUser({ username, isActive, email, firstName, lastName, title });
+
+  const queryString = `UPDATE "USER" SET "Phone_Number" = $1 WHERE "Username" = $2 RETURNING "Username"`;
+
+  const res = await query(queryString, [phoneNumber, username]);
+
+  return res.rows[0].Username;
 };
 
 export const getUser = async (username: string): Promise<User> => {
@@ -39,6 +72,13 @@ export const getUser = async (username: string): Promise<User> => {
 export const isUserExists = async (username: string): Promise<boolean> => {
   const queryString = `SELECT EXISTS(SELECT 1 FROM "USER" WHERE "Username" = $1)`;
   const res = await query(queryString, [username]);
+
+  return res.rows[0].exists;
+};
+
+export const isEmailExists = async (email: string): Promise<boolean> => {
+  const queryString = `SELECT EXISTS(SELECT 1 FROM "USER" WHERE "Email_Google" = $1)`;
+  const res = await query(queryString, [email]);
 
   return res.rows[0].exists;
 };

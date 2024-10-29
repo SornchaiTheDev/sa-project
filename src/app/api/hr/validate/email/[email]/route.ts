@@ -1,13 +1,14 @@
-import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepository";
+import { isEmailExists } from "~/backend/models/user-model";
 
 export const GET = async (
   _: Request,
   { params }: { params: { email: string } },
 ) => {
   const { email } = params;
-  const jobA = new JobAnnouncerRepository();
   try {
-    const status = await jobA.checkEmail(email);
+    const isExists = await isEmailExists(email);
+    const status = isExists ? "EMAIL_EXISTS" : "AVAILABLE";
+
     return Response.json({
       status,
     });
