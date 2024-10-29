@@ -44,7 +44,7 @@ export const createUserIncludePhoneNumber = async (
   return res.rows[0].Username;
 };
 
-export const getUser = async (username: string): Promise<User> => {
+export const getUser = async (username: string): Promise<User | null> => {
   const queryString = `SELECT "Username" AS username,
                  	      "Title" AS title,
 	                      "First_Name" AS "firstName",
@@ -56,6 +56,10 @@ export const getUser = async (username: string): Promise<User> => {
 	               WHERE "Username" = $1`;
 
   const res = await query(queryString, [username]);
+
+  if (res.rows.length === 0) {
+    return null;
+  }
 
   const user = res.rows[0];
 

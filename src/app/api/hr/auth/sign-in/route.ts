@@ -19,7 +19,7 @@ export const POST = async (req: Request) => {
     const jobA = await getJobAByUsername(body.username);
     const user = await getUser(body.username);
 
-    if (user === null) {
+    if (user === null || jobA === null) {
       throw new Error("UNAUTHORIZED");
     }
 

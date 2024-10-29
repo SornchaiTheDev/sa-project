@@ -31,7 +31,7 @@ export const createJobA = async (payload: CreateJobA) => {
 
 export const getJobAByUsername = async (
   username: string,
-): Promise<JobAnnouncer> => {
+): Promise<JobAnnouncer | null> => {
   const queryString = `SELECT
                           "Username" AS "username",
                           "Company_ID" AS "companyId",
@@ -42,6 +42,11 @@ export const getJobAByUsername = async (
                        WHERE "Username" = $1`;
 
   const res = await query(queryString, [username]);
+
+  if (res.rows.length === 0) {
+    return null;
+  }
+
   const jobA = res.rows[0];
 
   return {
