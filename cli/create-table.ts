@@ -58,7 +58,6 @@ export const createTable = async () => {
         "Job_Position_Qualifications" TEXT NOT NULL,
         "Job_Position_Welfare" TEXT NOT NULL,
         "Job_Earnings" VARCHAR(30) NOT NULL,
-        "STU_Username" VARCHAR(100) NULL,
         "JOB_Announce_ID" UUID NULL
     );
 
@@ -77,13 +76,6 @@ export const createTable = async () => {
         "STU_Username" VARCHAR(100) NOT NULL,
         "JOB_Announce_ID" UUID NOT NULL,
         "Company_ID" UUID NOT NULL
-    );
-
-    CREATE TABLE "JOBA_VALIDATION" (
-        "KUSD_Username" VARCHAR(100),
-        "JOBA_Username" VARCHAR(100),
-        "Validated_Expired_Date_Time" TIMESTAMP NOT NULL,
-        PRIMARY KEY ("KUSD_Username", "JOBA_Username")
     );
 
     CREATE TABLE "QUALIFICATION_ANNOUNCEMENT" (
@@ -131,7 +123,6 @@ export const createTable = async () => {
         ADD CONSTRAINT fk_student_user FOREIGN KEY ("Username") REFERENCES "USER"("Username");
 
     ALTER TABLE "POSITION"
-        ADD CONSTRAINT fk_position_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
         ADD CONSTRAINT fk_position_announcement FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID");
 
     ALTER TABLE "JOB_ANNOUNCEMENT"
@@ -143,10 +134,6 @@ export const createTable = async () => {
         ADD CONSTRAINT fk_recruitment_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
         ADD CONSTRAINT fk_recruitment_job_announce_id FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID"),
         ADD CONSTRAINT fk_recruitment_company_id FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
-
-    ALTER TABLE "JOBA_VALIDATION"
-        ADD CONSTRAINT fk_validation_kusd FOREIGN KEY ("KUSD_Username") REFERENCES "KU_SD"("Username"),
-        ADD CONSTRAINT fk_validation_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
     ALTER TABLE "QUALIFICATION_ANNOUNCEMENT"
         ADD CONSTRAINT fk_qualification_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
