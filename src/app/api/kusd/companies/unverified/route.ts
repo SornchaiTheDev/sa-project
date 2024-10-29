@@ -1,11 +1,10 @@
 import { kusdMiddleware } from "~/app/api/_middlewares/kusdMiddleware";
-import { ApprovedCompanyRepository } from "~/backend/repositories/approvedCompanyRepository";
+import { getAllUnverifyCompanies } from "~/backend/models/company-model";
 
 export const dynamic = "force-dynamic";
 
 export const GET = kusdMiddleware(async () => {
-  const companyRepo = new ApprovedCompanyRepository();
-  const companies = await companyRepo.getAllUnverified();
+  const companies = await getAllUnverifyCompanies();
 
   return Response.json({
     companies,

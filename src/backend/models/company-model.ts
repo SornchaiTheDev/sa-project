@@ -77,3 +77,47 @@ export const getCompanyByTaxID = async (taxId: string) => {
 
   return res.rows[0];
 };
+
+export const getAllUnverifyCompanies = async () => {
+  const queryString = `SELECT 
+                          "Company_ID" AS "id",
+                          "Company_Name" AS "companyName",
+                          "Company_Address" AS "companyAddress",
+                          "Company_Image" AS "companyImage",
+                          "Tax_ID" AS "taxId",
+                          "Requested_File" AS "requestedFile",
+                          "Company_Is_Active" AS "isActive",
+                          "Last_Update_Date" AS "lastUpdateDate"
+                       FROM "APPROVED_COMPANY" 
+                       WHERE "Company_Is_Active" = 0`;
+
+  const res = await query(queryString);
+
+  return res.rows;
+};
+
+export const getAllVerifyCompanies = async () => {
+  const queryString = `SELECT 
+                          "Company_ID" AS "id",
+                          "Company_Name" AS "companyName",
+                          "Company_Address" AS "companyAddress",
+                          "Company_Image" AS "companyImage",
+                          "Tax_ID" AS "taxId",
+                          "Requested_File" AS "requestedFile",
+                          "Company_Is_Active" AS "isActive",
+                          "Last_Update_Date" AS "lastUpdateDate"
+                       FROM "APPROVED_COMPANY" 
+                       WHERE "Company_Is_Active" = 1`;
+
+  const res = await query(queryString);
+
+  return res.rows;
+};
+
+export const approveCompany = async (companyId: string): Promise<void> => {
+  const queryString = `UPDATE "APPROVED_COMPANY"
+      SET "Company_Is_Active" = 1
+      WHERE "Company_ID" = $1`;
+
+  await query(queryString, [companyId]);
+};

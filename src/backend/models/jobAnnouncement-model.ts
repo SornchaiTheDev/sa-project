@@ -1,4 +1,5 @@
 import { query } from "~/lib/db";
+import { JobAnnouncement, Position } from "~/types/jobAnnouncement";
 
 export const getRecentJobAnnouncement = async (companyId: string) => {
   const recentJobAnnouncementQuery = `SELECT "Job_Announce_ID" AS ID
@@ -10,4 +11,198 @@ export const getRecentJobAnnouncement = async (companyId: string) => {
   const res = await query(recentJobAnnouncementQuery, [companyId]);
 
   return res.rows[0].id;
+};
+
+interface JobAnnouncementPayload {
+  province: string;
+  amphur: string;
+  tambon: string;
+  positions: string[];
+  category: string;
+  jobType: number;
+}
+export const getAllJobAnnouncements = async (
+  payload: JobAnnouncementPayload,
+): Promise<JobAnnouncement[]> => {
+  const queryString = `SELECT DISTINCT
+    "JOB_ANNOUNCEMENT"."JOB_Announce_ID" AS id,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Title" AS title,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Description" AS description,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Date_Time" AS createdAt,
+    "APPROVED_COMPANY"."Company_Name" AS companyName,
+    "APPROVED_COMPANY"."Company_Address" AS companyAddress,
+    "APPROVED_COMPANY"."Company_Image" AS companyImage
+FROM
+    "JOB_ANNOUNCEMENT"
+    JOIN "JOB_ANNOUNCER" ON "JOB_ANNOUNCEMENT"."JOBA_Username" = "JOB_ANNOUNCER"."Username"
+    JOIN "APPROVED_COMPANY" ON "JOB_ANNOUNCER"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
+    JOIN "TAGGING" ON "TAGGING"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
+    JOIN "POSITION" ON "POSITION"."JOB_Announce_ID" = "JOB_ANNOUNCEMENT"."JOB_Announce_ID"
+WHERE
+    CASE
+     WHEN array_length($1::text[],1) != 0 THEN "POSITION"."Job_Name" = ANY($1)
+     ELSE TRUE
+    END
+    AND
+    "APPROVED_COMPANY"."Company_Address" ->> 'province' LIKE COALESCE(NULLIF($2,''),'%%')  AND
+    "APPROVED_COMPANY"."Company_Address" ->> 'amphur' LIKE COALESCE(NULLIF($3,''),'%%') AND
+    "APPROVED_COMPANY"."Company_Address" ->> 'tambon' LIKE COALESCE(NULLIF($4,''),'%%') AND
+    "TAGGING"."Tag_Name" LIKE COALESCE(NULLIF($5,''),'%%') AND
+    CASE 
+        WHEN NULLIF($6,-1) IS NOT NULL 
+        THEN "POSITION"."Job_Mode" = $6 
+        ELSE TRUE 
+    END 
+`;
+
+  const { province, category, positions, amphur, tambon, jobType } = payload;
+  const params: (number | string | string[])[] = [
+    positions,
+    province,
+    amphur,
+    tambon,
+    category,
+    jobType,
+  ];
+
+  const res = await query(queryString, params);
+
+  const announcements: JobAnnouncement[] = [];
+
+  for (const r of res.rows) {
+    const queryString = `SELECT 
+"Job_Position_ID" AS id,
+"Position_Name" AS name,
+"Position_Amount" AS amount,
+"Job_Position_Detail" AS description,
+"Job_Mode" AS jobmode,
+"Job_Earnings" AS earnings,
+"Job_Position_Qualifications" AS qualification,
+"Job_Position_Welfare" AS welfare
+FROM "POSITION"
+WHERE "Job_Announce_ID" = $1`;
+
+    const positions = await query(queryString, [r.id]);
+    const positionList: Position[] = positions.rows.map((p) => ({
+      id: p.id,
+      name: p.name,
+      amount: p.amount,
+      description: p.description,
+      jobMode: p.jobmode,
+      earnings: p.earnings,
+      qualification: p.qualification,
+      welfare: p.welfare,
+    }));
+
+    announcements.push({
+      id: r.id,
+      title: r.title,
+      description: r.description,
+      companyName: r.companyname,
+      companyAddress: r.companyaddress,
+      companyImage: r.companyimage,
+      createdAt: r.createdat,
+      positions: positionList,
+    });
+  }
+
+  return announcements;
+};
+
+export const getJobAnnouncementsByCompanyID = async (
+  companyId: string,
+  search?: string,
+) => {
+  const queryString = `SELECT "JOB_Announce_ID" AS id, "JOB_Announce_Title" as title
+FROM "JOB_ANNOUNCEMENT"
+JOIN "JOB_ANNOUNCER" ON "JOB_ANNOUNCEMENT"."JOBA_Username" = "JOB_ANNOUNCER"."Username"
+JOIN "APPROVED_COMPANY" ON "JOB_ANNOUNCER"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
+WHERE "APPROVED_COMPANY"."Company_ID" = $1 AND "JOB_Announce_Title" LIKE $2`;
+
+  const res = await query(queryString, [companyId, `%${search}%`]);
+  return res.rows.map((row) => ({ id: row["id"], name: row["title"] }));
+};
+
+const mapEarningType = (type: number) => {
+  switch (type) {
+    case 1:
+      return "ต่ำกว่า 10,001 ต่อเดือน";
+    case 2:
+      return "10,001 - 20,000 ต่อเดือน";
+    case 3:
+      return "20,001 - 30,000 ต่อเดือน";
+    case 4:
+      return "30,001 - 40,000 ต่อเดือน";
+    case 5:
+      return "40,001 - 50,000 ต่อเดือน";
+    case 6:
+      return "มากกว่า 50,000 บาทต่อเดือน";
+  }
+};
+
+interface CreatePosition {
+  name: string;
+  type: "full-time" | "part-time";
+  amount: number;
+  earnings: number;
+  description: string;
+  qualification: string;
+  welfare: string;
+}
+
+export interface CreateJobAnnouncement {
+  name: string;
+  description: string;
+  positions: CreatePosition[];
+}
+
+export const createJobAnnouncement = async (
+  jobAUsername: string,
+  payload: CreateJobAnnouncement,
+): Promise<void> => {
+  const { positions, name, description } = payload;
+  const createJobAnnouncement = `
+      INSERT INTO "JOB_ANNOUNCEMENT" (
+      "Job_Announce_Title",
+      "Job_Announce_Description",
+      "Job_Announce_Date_Time",
+      "JOBA_Username"
+      )
+      VALUES ($1, $2, CURRENT_TIMESTAMP, $3)
+      RETURNING "Job_Announce_ID"
+    `;
+
+  const values: string[] = [name, description, jobAUsername];
+
+  const jobAnnouncementRes = await query(createJobAnnouncement, values);
+  const jobAnnouncementID = jobAnnouncementRes.rows[0]["Job_Announce_ID"];
+
+  const createPositionText = `
+      INSERT INTO "POSITION" (
+      "Job_Mode",
+      "Job_Name",
+      "Job_Position_Detail",
+      "Job_Amount",
+      "Job_Position_Qualifications",
+      "Job_Position_Welfare",
+      "Job_Earnings",
+      "Job_Announce_ID"
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
+`;
+
+  for (const position of positions) {
+    const values: string[] = [
+      position.type === "full-time" ? 0 : 1,
+      position.name,
+      position.description,
+      position.amount,
+      position.qualification,
+      position.welfare,
+      mapEarningType(position.earnings),
+      jobAnnouncementID,
+    ];
+
+    await query(createPositionText, values);
+  }
 };
