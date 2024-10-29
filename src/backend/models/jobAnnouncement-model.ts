@@ -21,6 +21,7 @@ interface JobAnnouncementPayload {
   category: string;
   jobType: number;
 }
+
 export const getAllJobAnnouncements = async (
   payload: JobAnnouncementPayload,
 ): Promise<JobAnnouncement[]> => {
@@ -121,6 +122,30 @@ WHERE "APPROVED_COMPANY"."Company_ID" = $1 AND "JOB_Announce_Title" LIKE $2`;
 
   const res = await query(queryString, [companyId, `%${search}%`]);
   return res.rows.map((row) => ({ id: row["id"], name: row["title"] }));
+};
+
+type JobAnnouncementDetail = Omit<JobAnnouncement, "positions">;
+
+export const getJobAnnouncementsById = async (
+  id: string,
+): Promise<JobAnnouncementDetail | null> => {
+  const queryString = `SELECT "JOB_ANNOUNCEMENT"."JOB_Announce_Title" AS "title",
+                              "JOB_ANNOUNCEMENT"."JOB_Announce_Description" AS "description",
+                              "APPROVED_COMPANY"."Company_Name" AS "companyName",
+                              "APPROVED_COMPANY"."Company_Image" AS "companyImage",
+                              "APPROVED_COMPANY"."Company_Address" AS "companyAddress",
+                              "JOB_ANNOUNCEMENT"."JOB_Announce_Date_Time" AS "createdAt"
+                       FROM "JOB_ANNOUNCEMENT" 
+                       JOIN "JOB_ANNOUNCER" ON "JOB_ANNOUNCEMENT"."JOBA_Username" = "JOB_ANNOUNCER"."Username"
+                       JOIN "APPROVED_COMPANY" ON "APPROVED_COMPANY"."Company_ID" = "JOB_ANNOUNCER"."Company_ID"
+                       WHERE "JOB_Announce_ID" = $1`;
+
+  const announcementRes = await query(queryString, [id]);
+  if (announcementRes.rows.length === 0) {
+    return null;
+  }
+
+  return announcementRes.rows[0];
 };
 
 const mapEarningType = (type: number) => {
