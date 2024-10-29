@@ -18,6 +18,7 @@ export const createStudent = async (
     activityHours,
     faculty,
     major,
+    profileImage,
   } = student;
 
   const createUser = `INSERT INTO "USER" ("Username","Title","First_Name","Last_Name","Email_Google","Phone_Number","Is_Active") VALUES ($1, $2, $3, $4, $5, $6, 1) RETURNING *`;
@@ -31,7 +32,7 @@ export const createStudent = async (
     phoneNumber,
   ]);
 
-  const queryString = `INSERT INTO "STUDENT" ("Username","Date_Of_Birth","Description","Activity_Hours","GPAX","Faculty","Major") VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`;
+  const queryString = `INSERT INTO "STUDENT" ("Username","Date_Of_Birth","Description","Activity_Hours","GPAX","Faculty","Major","Profile_Image") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
 
   await query(queryString, [
     username,
@@ -41,6 +42,7 @@ export const createStudent = async (
     gpax,
     faculty,
     major,
+    profileImage[0].url,
   ]);
 };
 

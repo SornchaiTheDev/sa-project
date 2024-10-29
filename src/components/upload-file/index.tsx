@@ -58,9 +58,13 @@ function UploadFile({
     ]);
   };
 
-  const onUploaded = useCallback((uploaded: UploadedFile) => {
-    setUploadedFiles((prev) => [...prev, uploaded]);
-  }, []);
+  const onUploaded = useCallback(
+    (uploaded: UploadedFile) => {
+      if (uploadedFiles.length >= maxFiles) return;
+      setUploadedFiles((prev) => [...prev, uploaded]);
+    },
+    [maxFiles, uploadedFiles.length],
+  );
 
   useEffect(() => {
     onChange(uploadedFiles);

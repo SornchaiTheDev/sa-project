@@ -27,6 +27,7 @@ import { CalendarIcon, ChevronRight } from "lucide-react";
 import { useAtom } from "jotai";
 import { onboardingAtom } from "../store/onboarding-store";
 import dynamic from "next/dynamic";
+import UploadFile from "~/components/upload-file";
 
 const DatePicker = dynamic(() => import("~/components/ui/date-picker"), {
   ssr: false,
@@ -53,6 +54,7 @@ function UserInfoFormPage() {
       email: onboard.lastName.length > 0 ? onboard.email : googleMail,
       dateOfBirth: new Date(onboard.dateOfBirth),
       phoneNumber: onboard.phoneNumber,
+      profileImage: onboard.profileImage,
     },
   });
 
@@ -66,6 +68,8 @@ function UserInfoFormPage() {
     setOnboard((prev) => ({ ...prev, ...formData }));
     router.push("/onboarding/educations-and-works");
   };
+
+  console.log(form.getValues());
 
   return (
     <div className="mt-20">
@@ -193,6 +197,28 @@ function UserInfoFormPage() {
                       className="h-12 bg-zinc-100"
                       {...field}
                       placeholder="เบอร์ติดต่อ"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="profileImage"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel className="font-normal">
+                      อัปโหลดรูปโปรไฟล์
+                    </FormLabel>
+                    <UploadFile
+                      uploadApiEndpoint="/api/nisit/onboarding/upload/profile"
+                      maxFiles={1}
+                      accept={{
+                        "image/*": [".png", ".jpg", ".jpeg"],
+                        "application/pdf": [".pdf"],
+                      }}
+                      {...field}
                     />
                     <FormMessage />
                   </FormItem>

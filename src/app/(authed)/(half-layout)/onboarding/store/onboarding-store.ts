@@ -16,6 +16,7 @@ export const onboardingAtom = atomWithStorage<Onboarding>(
     faculty: "",
     major: "",
     description: "",
+    profileImage: [],
   },
   undefined,
   { getOnInit: true },
@@ -34,6 +35,7 @@ export const resetOnboardingAtom = atom(null, (_, set) => {
     faculty: "",
     major: "",
     description: "",
+    profileImage: [],
   });
 
   localStorage.removeItem("onboarding");
