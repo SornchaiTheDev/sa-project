@@ -1,10 +1,9 @@
 import React from "react";
-import CandidateCard from "./_components/CandidateCard";
-import FilterSection from "./_components/FilterSection";
 import axios from "axios";
 import { JobAnnouncement } from "~/types/jobAnnouncement";
 import { BriefcaseBusiness, Users } from "lucide-react";
 import { env } from "~/configs/env";
+import CandidateSection from "./_components/CandidateSection";
 
 async function AnnouncementDetailPage({
   params,
@@ -47,20 +46,7 @@ async function AnnouncementDetailPage({
             ))}
           </div>
         </div>
-        <FilterSection />
-        <div className="mt-6 space-y-4">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <CandidateCard
-              key={index}
-              image="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg/220px-Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg"
-              name="นางสาววิมุดากร กิจเตชะพานิช"
-              faculty="วิทยาศาสตร์"
-              major="วิทยาการคอมพิวเตอร์"
-              gpax={3.81}
-              status="interview-accepted"
-            />
-          ))}
-        </div>
+        <CandidateSection {...{ announcementId }} />
       </div>
     </>
   );

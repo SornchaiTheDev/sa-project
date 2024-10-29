@@ -18,3 +18,13 @@ export const getPositionsByJobAnnouncementID = async (
 
   return positionRes.rows;
 };
+
+export const getAllPositionByAnnouncementID = async (
+  announcementId: string,
+): Promise<{ name: string }[]> => {
+  const queryString = `SELECT "Job_Name" AS "name" FROM "POSITION" WHERE "JOB_Announce_ID" = $1;`;
+
+  const res = await query(queryString, [announcementId]);
+
+  return res.rows;
+};
