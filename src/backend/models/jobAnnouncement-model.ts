@@ -2,10 +2,10 @@ import { query } from "~/lib/db";
 import { JobAnnouncement, Position } from "~/types/jobAnnouncement";
 
 export const getRecentJobAnnouncement = async (companyId: string) => {
-  const recentJobAnnouncementQuery = `SELECT "Job_Announce_ID" AS ID
+  const recentJobAnnouncementQuery = `SELECT "JOB_Announce_ID" AS ID
                   FROM "JOB_ANNOUNCEMENT"
                   WHERE "JOBA_Username" = $1
-                  ORDER BY "Job_Announce_Date_Time"
+                  ORDER BY "JOB_Announce_Date_Time"
                   DESC LIMIT 1`;
 
   const res = await query(recentJobAnnouncementQuery, [companyId]);
