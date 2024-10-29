@@ -78,6 +78,23 @@ export const getCompanyByTaxID = async (taxId: string) => {
   return res.rows[0];
 };
 
+export const getCompanyByName = async (name: string) => {
+  const queryString = `SELECT 
+                          "Company_Name" AS name,
+                          "Company_Address" AS address,
+                          "Company_Image" AS companyImage,
+                          "Tax_ID" AS "taxId",
+                          "Requested_File" AS "requestedFile",
+                          "Company_Is_Active" AS "isActive",
+                          "Last_Update_Date" AS "lastUpdateDate"
+                       FROM "APPROVED_COMPANY" 
+                       WHERE "Company_Name" LIKE $1`;
+
+  const res = await query(queryString, [`%${name}%`]);
+
+  return res.rows;
+};
+
 export const getAllUnverifyCompanies = async () => {
   const queryString = `SELECT 
                           "Company_ID" AS "id",
