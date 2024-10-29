@@ -10,3 +10,8 @@ export interface JobAnnouncer {
 }
 
 export type JobAnnouncerWithUser = JobAnnouncer & User;
+
+export type ConnectJobAWithCompany = Omit<
+  JobAnnouncerWithUser,
+  "lastUpdateDate" | "approveRequestDate" | "validatedDate" | "isActive"
+>;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { kusdMiddleware } from "~/app/api/_middlewares/kusdMiddleware";
-import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepository";
+import { rejectJobA } from "~/backend/models/jobA-model";
 
 const requestSchema = z.object({
   usernames: z.array(z.string()),
@@ -26,10 +26,8 @@ export const POST = kusdMiddleware(async (_, req) => {
     );
   }
 
-  const jobAnnouncerRepo = new JobAnnouncerRepository();
-
   try {
-    await jobAnnouncerRepo.rejectMembers(usernames);
+    await rejectJobA(usernames);
 
     return Response.json({
       message: "Members rejected",

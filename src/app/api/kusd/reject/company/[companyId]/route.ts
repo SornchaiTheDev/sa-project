@@ -1,11 +1,10 @@
 import { kusdMiddleware } from "~/app/api/_middlewares/kusdMiddleware";
-import { ApprovedCompanyRepository } from "~/backend/repositories/approvedCompanyRepository";
+import { rejectCompany } from "~/backend/models/company-model";
 
 export const POST = kusdMiddleware(async (_, __, { params }) => {
   const { companyId } = params;
-  const companyRepo = new ApprovedCompanyRepository();
   try {
-    await companyRepo.reject(companyId);
+    await rejectCompany(companyId);
     return Response.json({ message: "Company rejected", code: "SUCCESS" });
   } catch (err) {
     console.error("Failed to reject company", err);

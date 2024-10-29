@@ -1,6 +1,5 @@
 import { ChevronsDown, Clock, HandCoins, UsersRound } from "lucide-react";
 import React from "react";
-import { Switch } from "~/components/ui/switch";
 import CandidateCard from "./_components/CandidateCard";
 import FilterSection from "./_components/FilterSection";
 
@@ -10,11 +9,6 @@ function AnnouncementDetailPage() {
       <div className="flex justify-between items-center">
         <h4 className="text-xl">Software Development, Web development</h4>
         <button className="text-xs">แก้ไข</button>
-      </div>
-      <div className="flex gap-2 items-center mt-2">
-        <Switch checked />
-        <div className="w-2 h-2 rounded-full bg-primary"></div>
-        <p className="text-xs text-primary">เปิดรับสมัคร</p>
       </div>
       <div className="mt-4">
         <div className="flex items-center gap-2">

@@ -16,14 +16,12 @@ export const createJobA = async (payload: CreateJobA) => {
                                  "Username",
                                  "Company_ID",
                                  "Password", 
-                                 "Last_Update_Date",
-                                 "Approve_Request_Date"
+                                 "Last_Update_Date"
                      ) VALUES (
                               $1,
                               $2,
                               $3,
-                              CURRENT_TIMESTAMP,
-                              NULL
+                              CURRENT_TIMESTAMP
                      )`;
 
   await query(queryString, [username, companyId, hashedPassword]);
@@ -108,4 +106,16 @@ export const approveJobA = async (usernames: string[], approver: string) => {
                         WHERE "Username" = ANY($1)`;
 
   await query(updateUsers, [usernames]);
+};
+
+export const rejectJobA = async (usernames: string[]) => {
+  const deleteJobAnnouncer = `DELETE FROM "JOB_ANNOUNCER"
+                       WHERE "Username" = ANY($1)`;
+
+  await query(deleteJobAnnouncer, [usernames]);
+
+  const deleteUser = `DELETE FROM "USER"
+                       WHERE "Username" = ANY($1)`;
+
+  await query(deleteUser, [usernames]);
 };

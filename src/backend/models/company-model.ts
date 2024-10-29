@@ -80,6 +80,7 @@ export const getCompanyByTaxID = async (taxId: string) => {
 
 export const getCompanyByName = async (name: string) => {
   const queryString = `SELECT 
+                          "Company_ID" AS "id",
                           "Company_Name" AS name,
                           "Company_Address" AS address,
                           "Company_Image" AS companyImage,
@@ -135,6 +136,12 @@ export const approveCompany = async (companyId: string): Promise<void> => {
   const queryString = `UPDATE "APPROVED_COMPANY"
       SET "Company_Is_Active" = 1
       WHERE "Company_ID" = $1`;
+
+  await query(queryString, [companyId]);
+};
+
+export const rejectCompany = async (companyId: string): Promise<void> => {
+  const queryString = `DELETE FROM "APPROVED_COMPANY" WHERE "Company_ID" = $1`;
 
   await query(queryString, [companyId]);
 };
