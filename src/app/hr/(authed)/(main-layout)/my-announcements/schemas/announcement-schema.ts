@@ -9,7 +9,7 @@ const positionSchema = z.object({
     .regex(/^[0-9]*$/, {
       message: "กรุณากรอกจำนวนรับสมัครเป็นตัวเลขเท่านั้น",
     }),
-  salary: z
+  earnings: z
     .string()
     .min(1, "กรุณากรอกรายได้")
     .regex(/^[0-9]*$/, {
@@ -23,7 +23,7 @@ const positionSchema = z.object({
 export const announcementSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อประกาศ"),
   description: z.string().min(1, "กรุณากรอกรายละเอียดประกาศ"),
-  position: z.array(positionSchema),
+  positions: z.array(positionSchema),
 });
 
 export type Announcement = z.infer<typeof announcementSchema>;

@@ -28,8 +28,8 @@ import { useState } from "react";
 import SuspensedAlert from "./_components/SuspensedAlert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAnnouncementFn } from "./_mutationFns/createAnnouncementFn";
-import { JobAnnouncementDTO } from "~/backend/DTO/jobAnnouncementDTO";
 import { toast } from "sonner";
+import { CreateJobAnnouncement } from "~/backend/models/jobAnnouncement-model";
 
 interface Props {
   isSuspensed: boolean;
@@ -41,11 +41,11 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
     defaultValues: {
       name: "",
       description: "",
-      position: [
+      positions: [
         {
           name: "",
           description: "",
-          salary: "0",
+          earnings: "0",
           type: "full-time",
           amount: "0",
           welfare: "",
@@ -57,14 +57,14 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "position",
+    name: "positions",
   });
 
   const addPosition = () => {
     append({
       name: "",
       description: "",
-      salary: "0",
+      earnings: "0",
       type: "full-time",
       amount: "0",
       welfare: "",
@@ -88,11 +88,11 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
 
   const handleOnSubmit = (data: Announcement) => {
     setIsConfirmOpen(true);
-    const payload: JobAnnouncementDTO = {
+    const payload: CreateJobAnnouncement = {
       ...data,
-      positions: data.position.map((pos) => ({
+      positions: data.positions.map((pos) => ({
         ...pos,
-        salary: parseInt(pos.salary),
+        earnings: parseInt(pos.earnings),
         amount: parseInt(pos.amount),
       })),
     };
@@ -164,7 +164,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               </div>
               <FormField
                 control={form.control}
-                name={`position.${i}.name`}
+                name={`positions.${i}.name`}
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">ตำแหน่งงาน</FormLabel>
@@ -180,7 +180,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               <div className="flex gap-2">
                 <FormField
                   control={form.control}
-                  name={`position.${i}.type`}
+                  name={`positions.${i}.type`}
                   render={({ field: { value, onChange } }) => (
                     <FormItem className="mb-4 flex-1">
                       <FormLabel className="font-normal">ประเภทงาน</FormLabel>
@@ -203,7 +203,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
                 />
                 <FormField
                   control={form.control}
-                  name={`position.${i}.amount`}
+                  name={`positions.${i}.amount`}
                   render={({ field }) => (
                     <FormItem className="mb-4 flex-1">
                       <FormLabel className="font-normal">
@@ -221,7 +221,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               </div>
               <FormField
                 control={form.control}
-                name={`position.${i}.salary`}
+                name={`positions.${i}.earnings`}
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">รายได้</FormLabel>
@@ -256,7 +256,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               />
               <FormField
                 control={form.control}
-                name={`position.${i}.description`}
+                name={`positions.${i}.description`}
                 render={({ field }) => (
                   <FormItem className="mb-4 flex-1">
                     <FormLabel className="font-normal">รายละเอียดงาน</FormLabel>
@@ -272,7 +272,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               />
               <FormField
                 control={form.control}
-                name={`position.${i}.qualification`}
+                name={`positions.${i}.qualification`}
                 render={({ field }) => (
                   <FormItem className="mb-4 flex-1">
                     <FormLabel className="font-normal">
@@ -290,7 +290,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
               />
               <FormField
                 control={form.control}
-                name={`position.${i}.welfare`}
+                name={`positions.${i}.welfare`}
                 render={({ field }) => (
                   <FormItem className="mb-4 flex-1">
                     <FormLabel className="font-normal">สวัสดิการ</FormLabel>

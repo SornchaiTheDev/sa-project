@@ -1,14 +1,16 @@
-import { JobAnnouncementRepository } from "~/backend/repositories/jobAnnouncementRepository";
+import {
+  CreateJobAnnouncement,
+  createJobAnnouncement,
+  getJobAnnouncementsByCompanyID,
+} from "~/backend/models/jobAnnouncement-model";
 import { jobAMiddleware } from "../../_middlewares/jobAMiddlware";
-import { JobAnnouncementDTO } from "~/backend/DTO/jobAnnouncementDTO";
 
-const jobAnnouncementRepo = new JobAnnouncementRepository();
 export const POST = jobAMiddleware(async (hrInfo, req) => {
-  const body = (await req.json()) as JobAnnouncementDTO;
+  const { username } = hrInfo;
 
-  const { username, companyId } = hrInfo;
+  const body = (await req.json()) as CreateJobAnnouncement;
 
-  await jobAnnouncementRepo.create(body, username, companyId);
+  await createJobAnnouncement(username, body);
 
   return Response.json({
     message: "OK",
@@ -19,11 +21,10 @@ export const GET = jobAMiddleware(async (hrInfo, req) => {
   const searchParam = new URL(req.url).searchParams;
   const search = searchParam.get("search") ?? "";
 
-  const announcements =
-    await jobAnnouncementRepo.getAllJobAnnouncementByCompanyID(
-      hrInfo.companyId,
-      search,
-    );
+  const announcements = await getJobAnnouncementsByCompanyID(
+    hrInfo.companyId,
+    search,
+  );
 
   return Response.json({
     announcements,

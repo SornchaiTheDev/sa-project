@@ -163,19 +163,19 @@ export const createJobAnnouncement = async (
   const { positions, name, description } = payload;
   const createJobAnnouncement = `
       INSERT INTO "JOB_ANNOUNCEMENT" (
-      "Job_Announce_Title",
-      "Job_Announce_Description",
-      "Job_Announce_Date_Time",
+      "JOB_Announce_Title",
+      "JOB_Announce_Description",
+      "JOB_Announce_Date_Time",
       "JOBA_Username"
       )
       VALUES ($1, $2, CURRENT_TIMESTAMP, $3)
-      RETURNING "Job_Announce_ID"
+      RETURNING "JOB_Announce_ID"
     `;
 
   const values: string[] = [name, description, jobAUsername];
 
   const jobAnnouncementRes = await query(createJobAnnouncement, values);
-  const jobAnnouncementID = jobAnnouncementRes.rows[0]["Job_Announce_ID"];
+  const jobAnnouncementID = jobAnnouncementRes.rows[0]["JOB_Announce_ID"];
 
   const createPositionText = `
       INSERT INTO "POSITION" (
@@ -186,7 +186,7 @@ export const createJobAnnouncement = async (
       "Job_Position_Qualifications",
       "Job_Position_Welfare",
       "Job_Earnings",
-      "Job_Announce_ID"
+      "JOB_Announce_ID"
       )
       VALUES ($1, $2, $3, $4, $5, $6, $7,$8)
 `;
