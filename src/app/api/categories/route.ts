@@ -1,9 +1,8 @@
-import { query } from "~/lib/db";
+import { getAllTags } from "~/backend/models/tag-model";
 
 export const GET = async () => {
-  const queryString = `SELECT "Tag_Name" As name FROM "TAG"`;
-  const res = await query(queryString);
+  const categories = await getAllTags();
   return Response.json({
-    category: res.map((item) => item.name),
+    category: categories.map((item) => item.name),
   });
 };
