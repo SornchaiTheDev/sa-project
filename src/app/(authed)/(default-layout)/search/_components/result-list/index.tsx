@@ -21,7 +21,7 @@ const getAnnouncements = async (params: AnnouncementsQueryParams) => {
   const { data } = await axios.get<{
     announcements: JobAnnouncement[];
   }>(
-    `${env.WEB_URL}/api/announcements?province=${province}&amphur=${amphur}&tambon=${tambon}&position=${position}&category=${category}&jobType=${jobType}`,
+    `http://localhost:3000/api/announcements?province=${province}&amphur=${amphur}&tambon=${tambon}&position=${position}&category=${category}&jobType=${jobType}`,
   );
   return data.announcements;
 };

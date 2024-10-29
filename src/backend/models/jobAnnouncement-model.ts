@@ -72,16 +72,16 @@ WHERE
 
   for (const r of res.rows) {
     const queryString = `SELECT 
-"Job_Position_ID" AS id,
-"Position_Name" AS name,
-"Position_Amount" AS amount,
-"Job_Position_Detail" AS description,
+"Position_ID" AS id,
 "Job_Mode" AS jobmode,
-"Job_Earnings" AS earnings,
+"Job_Name" AS name,
+"Job_Position_Detail" AS description,
+"Job_Amount" AS amount,
 "Job_Position_Qualifications" AS qualification,
-"Job_Position_Welfare" AS welfare
+"Job_Position_Welfare" AS welfare,
+"Job_Earnings" AS earnings
 FROM "POSITION"
-WHERE "Job_Announce_ID" = $1`;
+WHERE "JOB_Announce_ID" = $1`;
 
     const positions = await query(queryString, [r.id]);
     const positionList: Position[] = positions.rows.map((p) => ({

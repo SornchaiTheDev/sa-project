@@ -20,7 +20,7 @@ function JobDetailPage({ params }: { params: { jobId: string } }) {
 
   return (
     <>
-      <ConfirmDialog />
+      <ConfirmDialog jobAnnounceId={jobId} />
       <div className="container mx-auto max-w-5xl px-4 space-y-4 pb-36 pt-32">
         <div className="relative rounded-xl w-32 h-32">
           {!isLoading && data !== undefined && (
