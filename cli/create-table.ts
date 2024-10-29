@@ -81,7 +81,9 @@ export const createTable = async () => {
     CREATE TABLE "QUALIFICATION_ANNOUNCEMENT" (
         "Qualification_Announce_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         "Qualify_Date_Time" TIMESTAMP NOT NULL,
-        "JOBA_Username" VARCHAR(100) NOT NULL
+        "JOBA_Username" VARCHAR(100) NOT NULL,
+        "JOB_Announce_ID" UUID NOT NULL,
+        FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID")
     );
 
     CREATE TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" (
@@ -110,6 +112,16 @@ export const createTable = async () => {
         "Tag_Name" VARCHAR(20),
         "Company_ID" UUID,
         PRIMARY KEY ("Tag_Name", "Company_ID")
+    );
+
+    CREATE TABLE "POSITION_REGISTER" (
+        "Position_ID" UUID,
+        "STU_Username" VARCHAR(100),
+        "JOB_Announce_ID" UUID, 
+        PRIMARY KEY ("Position_ID", "STU_Username", "JOB_Announce_ID"),
+        FOREIGN KEY ("Position_ID") REFERENCES "POSITION"("Position_ID"),
+        FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
+        FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID")
     );
 
     ALTER TABLE "KU_SD"
