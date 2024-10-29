@@ -52,7 +52,8 @@ export const getUser = async (username: string): Promise<User> => {
     			      "Email_Google" AS email,
 			      "Phone_Number" AS "phoneNumber",
                               "Is_Active" AS "isActive"
-	               FROM "USER"`;
+	               FROM "USER"
+	               WHERE "Username" = $1`;
 
   const res = await query(queryString, [username]);
 

@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { comparePassword } from "~/backend/libs/bcrypt";
-import { JobAnnouncerRepository } from "~/backend/repositories/jobAnnouncerRepository";
+import { getJobAByUsername } from "~/backend/models/jobA-model";
+import { getUser } from "~/backend/models/user-model";
 import { env } from "~/configs/env";
 import { setHTTPOnlyCookie } from "~/lib/cookies";
 import { signJwt } from "~/lib/jwt";
@@ -15,8 +16,9 @@ export const POST = async (req: Request) => {
   const body = (await req.json()) as SignInRequest;
 
   try {
-    const jobAnnouncerRepo = new JobAnnouncerRepository();
-    const user = await jobAnnouncerRepo.getByUsername(body.username);
+    const jobA = await getJobAByUsername(body.username);
+    const user = await getUser(body.username);
+
     if (user === null) {
       throw new Error("UNAUTHORIZED");
     }
@@ -25,7 +27,7 @@ export const POST = async (req: Request) => {
       throw new Error("NOT_ACTIVE");
     }
 
-    const isSame = comparePassword(body.password, user.password);
+    const isSame = comparePassword(body.password, jobA.password);
     if (!isSame) {
       throw new Error("UNAUTHORIZED");
     }
@@ -35,8 +37,8 @@ export const POST = async (req: Request) => {
       title: user.title,
       firstName: user.firstName,
       lastName: user.lastName,
-      isActive: user.isActive,
-      companyId: user.companyId,
+      isActive: user.isActive === 1,
+      companyId: jobA.companyId,
       phoneNumber: user.phoneNumber ?? "",
       role: "JOB_ANNOUNCER",
     };
@@ -58,6 +60,7 @@ export const POST = async (req: Request) => {
 
     return Response.json({ message: "Login success", code: "OK" });
   } catch (err) {
+    console.log(err);
     if (err instanceof Error) {
       if (err.message === "UNAUTHORIZED") {
         return Response.json(

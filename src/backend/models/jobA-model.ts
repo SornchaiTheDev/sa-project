@@ -1,5 +1,6 @@
 import { query } from "~/lib/db";
 import { hashPassword } from "../libs/bcrypt";
+import { JobAnnouncer } from "~/types/jobAnnouncer";
 
 interface CreateJobA {
   username: string;
@@ -26,4 +27,29 @@ export const createJobA = async (payload: CreateJobA) => {
                      )`;
 
   await query(queryString, [username, companyId, hashedPassword]);
+};
+
+export const getJobAByUsername = async (
+  username: string,
+): Promise<JobAnnouncer> => {
+  const queryString = `SELECT
+                          "Username" AS "username",
+                          "Company_ID" AS "companyId",
+                          "Password" AS "password",
+                          "Last_Update_Date" AS "lastUpdateDate",
+                          "Approve_Request_Date" AS "approveRequestDate"
+                       FROM "JOB_ANNOUNCER"
+                       WHERE "Username" = $1`;
+
+  const res = await query(queryString, [username]);
+  const jobA = res.rows[0];
+
+  return {
+    companyId: jobA.companyId,
+    password: jobA.password,
+    username: jobA.username,
+    lastUpdateDate: jobA.lastUpdateDate,
+    approveRequestDate: jobA.approveRequestDate,
+    validatedDate: jobA.validatedDate,
+  };
 };
