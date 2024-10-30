@@ -47,7 +47,7 @@ function AnnouncementList() {
         {data?.announcements.map(({ id, name }) => (
           <AnnouncementLink
             key={id}
-            href={`my-announcements/${id}`}
+            href={`/hr/my-announcements/${id}`}
             {...{ name }}
           />
         ))}
