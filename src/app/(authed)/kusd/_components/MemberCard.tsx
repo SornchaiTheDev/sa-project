@@ -57,7 +57,7 @@ function MemberCard({ name, taxId, category, id }: ApprovedCompany) {
 
   return (
     <motion.div
-      animate={{ height: isExpanded ? 200 : 97.45 }}
+      animate={{ height: isExpanded ? '100%' : 97.45 }}
       className="rounded-lg border-2 border-primary bg-zinc-200/40 p-2 relative"
     >
       <div className="flex gap-2">
