@@ -24,7 +24,7 @@ import {
 } from "~/components/ui/select";
 import { Textarea } from "~/components/ui/textarea";
 import CreateAnnouncementAlert from "./_components/CreateAnnouncementAlert";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import SuspensedAlert from "./_components/SuspensedAlert";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createAnnouncementFn } from "./_mutationFns/createAnnouncementFn";
@@ -81,13 +81,18 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
     onSuccess: () => {
       toast.success("บันทึกสำเร็จ");
       form.reset();
+      setIsConfirmOpen(false);
       queryClient.invalidateQueries({ queryKey: ["announcements"] });
     },
     onError: () => toast.error("การเชื่อมต่อผิดพลาด"),
   });
 
-  const handleOnSubmit = (data: Announcement) => {
+  const handleOnSubmit = () => {
     setIsConfirmOpen(true);
+  };
+
+  const handleOnCreateAnnouncement = () => {
+    const data: Announcement = form.getValues();
     const payload: CreateJobAnnouncement = {
       ...data,
       positions: data.positions.map((pos) => ({
@@ -107,6 +112,7 @@ function CreateAnnouncementClient({ isSuspensed }: Props) {
       <CreateAnnouncementAlert
         isOpen={isConfirmOpen}
         onOpenChange={setIsConfirmOpen}
+        onConfirm={handleOnCreateAnnouncement}
       />
       <Form {...form}>
         <form
