@@ -1,24 +1,24 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { Button } from "~/components/ui/button";
+import { rejectFn } from "../mutateFns/rejectFn";
+import { acceptFn } from "../mutateFns/acceptFn";
+import { toast } from "sonner";
 
 interface Props {
+  id: string;
   image: string;
   name: string;
   faculty: string;
   major: string;
   gpax: number;
   description: string;
-  status:
-    | "interview-phrase"
-    | "interview-waiting"
-    | "interview-accepted"
-    | "interview-rejected"
-    | "job-waiting"
-    | "job-accepted"
-    | "job-rejected";
+  status: "qualify-phrase" | "job-waiting" | "job-accepted" | "job-rejected";
+  announcementId: string;
 }
 
 function CandidateCard({
+  id,
   image,
   name,
   faculty,
@@ -26,34 +26,49 @@ function CandidateCard({
   gpax,
   status,
   description,
+  announcementId,
 }: Props) {
+  const queryClient = useQueryClient();
+  const acceptCandidate = useMutation({
+    mutationFn: () => acceptFn(announcementId, id),
+    onSuccess: () => {
+      toast.success("ผ่านการคัดเลือก", { description: name });
+      queryClient.invalidateQueries({ queryKey: ["candidates"] });
+    },
+    onError: () => {
+      toast.error("เกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง");
+    },
+  });
+
+  const rejectCandidate = useMutation({
+    mutationFn: () => rejectFn(announcementId, id),
+    onSuccess: () => {
+      toast.warning("ไม่ผ่านการคัดเลือก", { description: name });
+    },
+    onError: () => {
+      toast.error("เกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง");
+    },
+  });
+
   const renderBottomSection = () => {
     switch (status) {
-      case "interview-phrase":
+      case "qualify-phrase":
         return (
           <>
-            <Button variant="outline" size="sm" className="w-24">
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-24"
+              onClick={() => rejectCandidate.mutate()}
+            >
               ปฏิเสธ
             </Button>
-            <Button className="w-24" size="sm">
+            <Button
+              className="w-24"
+              size="sm"
+              onClick={() => acceptCandidate.mutate()}
+            >
               ยอมรับ
-            </Button>
-          </>
-        );
-      case "interview-waiting":
-        return (
-          <h5 className="text-sm text-secondary">
-            กำลังรอผลยืนยันสิทธิ์เข้าทำงาน
-          </h5>
-        );
-      case "interview-accepted":
-        return (
-          <>
-            <Button variant="outline" size="sm" className="w-24">
-              ลบ
-            </Button>
-            <Button className="w-24" size="sm">
-              ผ่านการคัดเลือก
             </Button>
           </>
         );
@@ -64,7 +79,7 @@ function CandidateCard({
           </h6>
         );
       case "job-accepted":
-        return <h5 className="text-sm text-primary">ยอมรับการเข้าทำงาน</h5>;
+        return <h5 className="text-sm text-primary">ยืนยันการเข้าทำงาน</h5>;
       case "job-rejected":
         return <h5 className="text-sm text-red-500">ปฏิเสธการเข้าทำงาน</h5>;
       default:

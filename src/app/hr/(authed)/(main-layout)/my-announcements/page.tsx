@@ -13,6 +13,7 @@ export default async function MyAnnouncementPage() {
         Cookie: "access_token=" + accessToken,
       },
     });
+
     if (res.data.code === "SUSPENSED") {
       isSuspensed = true;
     }

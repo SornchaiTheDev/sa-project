@@ -1,4 +1,5 @@
 export interface Candidate {
+  id: string;
   title: string;
   firstName: string;
   lastName: string;

@@ -19,6 +19,7 @@ function CandidateSection({ announcementId }: Props) {
         {candidates?.map(
           (
             {
+              id,
               firstName,
               lastName,
               description,
@@ -33,8 +34,8 @@ function CandidateSection({ announcementId }: Props) {
               key={index}
               image={profileImage}
               name={firstName + " " + lastName}
-              {...{ description, faculty, major, gpax }}
-              status="interview-phrase"
+              {...{ id, description, faculty, major, gpax, announcementId }}
+              status="qualify-phrase"
             />
           ),
         )}

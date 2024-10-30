@@ -20,12 +20,15 @@ import { getAllPosition } from "../queryFns/getAllPosition";
 interface Props {
   announcementId: string;
 }
+
 function FilterSection({ announcementId }: Props) {
-  const [activeFilter, setActiveFilter] = useState<"waiting" | "all">("all");
+  const [activeFilter, setActiveFilter] = useState<"waiting" | "all">(
+    "waiting",
+  );
   const [position, setPosition] = useState<string>("all");
 
   const { data } = useQuery({
-    queryKey: ["candidates", announcementId, activeFilter],
+    queryKey: ["candidates", announcementId, activeFilter, position],
     queryFn: () => getCandidates(announcementId, position, activeFilter),
   });
 

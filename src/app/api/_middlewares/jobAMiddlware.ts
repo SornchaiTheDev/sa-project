@@ -1,10 +1,10 @@
 import { HRInfo } from "~/types/hrInfo";
-import { jwtMiddleware } from "./jwtMiddleware";
+import { jwtMiddleware, type Params } from "./jwtMiddleware";
 
 export const jobAMiddleware = (
-  next: (info: HRInfo, req: Request) => Promise<Response>,
+  next: (info: HRInfo, req: Request, params: Params) => Promise<Response>,
 ) =>
-  jwtMiddleware(async (info: HRInfo, req: Request) => {
+  jwtMiddleware(async (info: HRInfo, req: Request, params) => {
     if (info.role !== "JOB_ANNOUNCER") {
       return Response.json(
         {
@@ -14,5 +14,5 @@ export const jobAMiddleware = (
         { status: 401 },
       );
     }
-    return next(info, req);
+    return next(info, req, params);
   });

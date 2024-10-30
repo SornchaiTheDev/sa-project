@@ -3,8 +3,11 @@ import { Candidate } from "~/types/candidate";
 
 export const getAllCandidates = async (
   announcementId: string,
+  position: string,
 ): Promise<Candidate[]> => {
-  const queryString = `SELECT "Title" AS title, 
+  const queryString = `SELECT DISTINCT 
+                              S."Username" AS id,
+                              "Title" AS title, 
                               "First_Name" AS "firstName",
                               "Last_Name" AS "lastName",
                               "Faculty" AS "faculty",
@@ -12,14 +15,14 @@ export const getAllCandidates = async (
                               "GPAX" AS gpax, 
                               "Description" AS description, 
                               "Profile_Image" AS "profileImage"
-                        FROM "STUDENT" S
-                        JOIN "POSITION_REGISTER" P
-                        ON S."Username" = P."STU_Username"
-                        JOIN "USER" U
-                        ON S."Username" = U."Username"
-                        WHERE "JOB_Announce_ID" = $1;`;
+                      FROM "STUDENT" S
+                      JOIN "POSITION_REGISTER" P ON S."Username" = P."STU_Username"
+                      JOIN "USER" U ON S."Username" = U."Username"
+                      JOIN "POSITION" ON "POSITION"."Position_ID" = P."Position_ID"
+                      LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
+                      WHERE P."JOB_Announce_ID" = $1 AND "Job_Name" LIKE $2;`;
 
-  const res = await query(queryString, [announcementId]);
+  const res = await query(queryString, [announcementId, `%${position}%`]);
   return res.rows;
 };
 
@@ -27,24 +30,28 @@ export const getNotVerifyCandidates = async (
   announcementId: string,
   position: string,
 ): Promise<Candidate[]> => {
-  const queryString = `SELECT
-          "Title" AS title,
-          "First_Name" AS "firstName",
-          "Last_Name" AS "lastName",
-          "Faculty" AS "faculty",
-          "Major" AS "major",
-          "GPAX" AS gpax,
-          "Description" AS description,
-          "Profile_Image" AS "profileImage",
-          "Is_STU_Confirm" AS "isStuConfirm"
-      FROM
-          "STUDENT" S
-          JOIN "POSITION_REGISTER" P ON S."Username" = P."STU_Username"
-          JOIN "USER" U ON S."Username" = U."Username"
-          LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
-      WHERE
-          "JOB_Announce_ID" = $1 AND STQA."Is_STU_Confirm" IS NULL; AND "Job_Name" = $2`;
-  const res = await query(queryString, [announcementId, position]);
+  const queryString = `SELECT DISTINCT 
+    S."Username" AS id,
+    "Title" AS title,
+    "First_Name" AS "firstName",
+    "Last_Name" AS "lastName",
+    "Faculty" AS "faculty",
+    "Major" AS "major",
+    "GPAX" AS gpax,
+    "Description" AS description,
+    "Profile_Image" AS "profileImage",
+    "Is_STU_Confirm" AS "isStuConfirm"
+FROM
+    "STUDENT" S
+    JOIN "POSITION_REGISTER" P ON S."Username" = P."STU_Username"
+    JOIN "USER" U ON S."Username" = U."Username"
+    JOIN "POSITION" ON "POSITION"."Position_ID" = P."Position_ID"
+    LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
+WHERE
+    P."JOB_Announce_ID" = $1 
+    AND STQA."Is_STU_Confirm" IS NULL
+    AND "Job_Name" LIKE $2;`;
+  const res = await query(queryString, [announcementId, `%${position}%`]);
   return res.rows;
 };
 
@@ -77,3 +84,10 @@ export const enrollToPosition = async (payload: EnrollToPosition) => {
     await query(queryString, [username, positionId, jobAnnounceId]);
   }
 };
+
+export const acceptCandidate = async (
+  username: string,
+  jobAnnounceId: string,
+  companyId: string,
+  positionId: string,
+) => {};

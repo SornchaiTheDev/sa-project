@@ -1,6 +1,5 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import _ from "lodash";
@@ -18,10 +17,8 @@ import {
 } from "~/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { ApprovedCompany } from "~/types/approvedCompany";
-import { createJobAnnouncer } from "./apiFns/createJobAnnouncer";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { hrSignUpAtom } from "~/app/hr/auth/store/hr-sign-up-store";
-import { toast } from "sonner";
 
 type Selected = "already-has" | "not-yet" | "none";
 
@@ -37,35 +34,26 @@ function HRSignUpPage() {
   const [selected, setSelected] = useState<Selected>("none");
   const [companyName, setCompanyName] = useState<string>("");
   const [companies, setCompanies] = useState<ApprovedCompany[]>([]);
-  const [selectedCompany, setSelectedCompany] =
-    useState<ApprovedCompany | null>(null);
 
-  const createJobA = useMutation({
-    mutationFn: createJobAnnouncer,
-    onSuccess: () => {
-      router.push("/hr/onboarding/waiting");
-    },
-    onError: () => toast.error("เกิดข้อผิดพลาดในการสร้างบัญชี"),
-  });
+  const [{ name, taxId }, setSignUp] = useAtom(hrSignUpAtom);
+  const [selectedCompany, setSelectedCompany] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!taxId || !name) return;
+    setSelected("already-has");
+    setCompanyName(name);
+    setSelectedCompany({ id: taxId, name });
+  }, [taxId, name]);
 
   const router = useRouter();
-
-  const { username, title, password, email, phone, firstName, lastName } =
-    useAtomValue(hrSignUpAtom);
 
   const handleNext = () => {
     if (selected === "already-has") {
       if (!selectedCompany) return;
-      createJobA.mutate({
-        username,
-        title,
-        password,
-        email,
-        phoneNumber: phone,
-        companyId: selectedCompany.id,
-        firstName,
-        lastName,
-      });
+      router.push("/hr/onboarding/verify");
     } else if (selected === "not-yet") {
       router.push("company/create");
     }
@@ -87,9 +75,19 @@ function HRSignUpPage() {
     [],
   );
 
-  const handleSelectCompany = (company: ApprovedCompany) => {
-    setCompanyName(company.name);
-    setSelectedCompany(company);
+  const handleSelectCompany = ({ id, name }: ApprovedCompany) => {
+    setCompanyName(name);
+
+    setSignUp((prev) => ({
+      ...prev,
+      taxId: id,
+      name: name,
+    }));
+
+    setSelectedCompany({
+      id,
+      name,
+    });
   };
 
   useEffect(() => {
