@@ -99,7 +99,7 @@ export const getCompanyByName = async (name: string) => {
 export const getAllUnverifyCompanies = async () => {
   const queryString = `SELECT 
                           "Company_ID" AS "id",
-                          "Company_Name" AS "companyName",
+                          "Company_Name" AS "name",
                           "Company_Address" AS "companyAddress",
                           "Company_Image" AS "companyImage",
                           "Tax_ID" AS "taxId",
@@ -117,7 +117,7 @@ export const getAllUnverifyCompanies = async () => {
 export const getAllVerifyCompanies = async () => {
   const queryString = `SELECT 
                           "Company_ID" AS "id",
-                          "Company_Name" AS "companyName",
+                          "Company_Name" AS "name",
                           "Company_Address" AS "companyAddress",
                           "Company_Image" AS "companyImage",
                           "Tax_ID" AS "taxId",
