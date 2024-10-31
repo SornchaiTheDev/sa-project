@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const env = createEnv({
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
   onValidationError: (error: ZodError) => {
     console.error(
       "❌ Invalid environment variables:",
