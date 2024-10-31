@@ -256,7 +256,7 @@ FROM
 WHERE
     JA."JOBA_Username" = $1 
     AND JA."JOB_Announce_ID" = $2 
-    AND PR."STU_Username" != ANY($3)`;
+    AND PR."STU_Username" != ALL($3)`;
 
   const res = await query(queryString, [
     jobAUsername,

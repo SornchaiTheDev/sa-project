@@ -11,13 +11,15 @@ export const GET = jwtMiddleware(async (info: HRInfo) => {
   const jobId = await getRecentJobAnnouncement(info.username);
   if (jobId !== null) {
     const allRecruited = await getAllRecruitedCandidatesByAnnouncementId(jobId);
-
+ 
+    console.log(allRecruited);
     const remainingCandidates = await getRemainingCandidatesByAnnouncementId(
       username,
       jobId,
       allRecruited,
     );
 
+    console.log(remainingCandidates);
     const count = remainingCandidates.length;
 
     if (count > 0) {

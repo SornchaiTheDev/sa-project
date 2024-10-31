@@ -101,12 +101,15 @@ function CandidateCard({
     }
   };
 
-  const _activityHours = Object.entries(activityHours).map(([name, value]) => ({
-    name,
-    value,
-  }));
+  const isQualifyPhrase = status === "qualify-phrase";
 
-  console.log(_activityHours);
+  const _activityHours = !isQualifyPhrase
+    ? Object.entries(activityHours).map(([name, value]) => ({
+        name,
+        value,
+      }))
+    : null;
+
   return (
     <div className="rounded-lg p-2 border-2 border-primary">
       <div className="flex justify-between items-center">
@@ -135,19 +138,25 @@ function CandidateCard({
             <h6 className="text-sm font-medium">ประสบการณ์ทำงาน</h6>
             <p>{description}</p>
           </div>
-          <div>
-            <h6 className="text-sm font-medium">ชั่วโมงกิจกรรม</h6>
-            <ul>
-              {_activityHours.map(({ name, value }) => (
-                <li key={name} className="text-sm">
-                  {name} : {value} ชั่วโมง
-                </li>
-              ))}
-            </ul>
-          </div>
+          {!isQualifyPhrase && (
+            <div>
+              <h6 className="text-sm font-medium">ชั่วโมงกิจกรรม</h6>
+              <ul>
+                {_activityHours?.map(({ name, value }) => (
+                  <li key={name} className="text-sm">
+                    {name} : {value} ชั่วโมง
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
-        <h6 className="text-sm font-medium">เบอร์ติดต่อ</h6>
-        <p>- {phoneNumber}</p>
+        {!isQualifyPhrase && (
+          <>
+            <h6 className="text-sm font-medium">เบอร์ติดต่อ</h6>
+            <p>- {phoneNumber}</p>
+          </>
+        )}
       </div>
       <div className="flex justify-end items-center gap-3 p-2">
         {renderBottomSection()}
