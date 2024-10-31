@@ -57,7 +57,7 @@ function MemberCard({ name, taxId, category, id }: ApprovedCompany) {
 
   return (
     <motion.div
-      animate={{ height: isExpanded ? '100%' : 97.45 }}
+      animate={{ height: isExpanded ? "100%" : 97.45 }}
       className="rounded-lg border-2 border-primary bg-zinc-200/40 p-2 relative"
     >
       <div className="flex gap-2">
@@ -96,7 +96,6 @@ function MemberCard({ name, taxId, category, id }: ApprovedCompany) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="mt-2 flex gap-2 items-baseline">
               <h4>รายชื่อสมาชิกรอดำเนินการอนุมัติ</h4>
-              <p className="text-sm text-red-600">กรุณาเลือกรายชื่ออนุมัติ</p>
             </div>
             <div className="pl-4 space-y-1">
               {data?.members.map(({ username, name, email, phone }) => (

@@ -1,6 +1,70 @@
 import { query } from "~/lib/db";
 import { JobAnnouncement, Position } from "~/types/jobAnnouncement";
 
+export const getRecentJobAnnouncements = async () => {
+  const queryString = `SELECT DISTINCT
+    "JOB_ANNOUNCEMENT"."JOB_Announce_ID" AS id,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Title" AS title,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Description" AS description,
+    "JOB_ANNOUNCEMENT"."JOB_Announce_Date_Time" AS createdAt,
+    "APPROVED_COMPANY"."Company_Name" AS companyName,
+    "APPROVED_COMPANY"."Company_Address" AS companyAddress,
+    "APPROVED_COMPANY"."Company_Image" AS companyImage
+FROM
+    "JOB_ANNOUNCEMENT"
+    JOIN "JOB_ANNOUNCER" ON "JOB_ANNOUNCEMENT"."JOBA_Username" = "JOB_ANNOUNCER"."Username"
+    JOIN "APPROVED_COMPANY" ON "JOB_ANNOUNCER"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
+    JOIN "TAGGING" ON "TAGGING"."Company_ID" = "APPROVED_COMPANY"."Company_ID"
+    JOIN "POSITION" ON "POSITION"."JOB_Announce_ID" = "JOB_ANNOUNCEMENT"."JOB_Announce_ID"
+ORDER BY "JOB_ANNOUNCEMENT"."JOB_Announce_Date_Time" DESC
+LIMIT 10
+`;
+
+
+  const res = await query(queryString);
+
+  const announcements: JobAnnouncement[] = [];
+
+  for (const r of res.rows) {
+    const queryString = `SELECT 
+"Position_ID" AS id,
+"Job_Mode" AS jobmode,
+"Job_Name" AS name,
+"Job_Position_Detail" AS description,
+"Job_Amount" AS amount,
+"Job_Position_Qualifications" AS qualification,
+"Job_Position_Welfare" AS welfare,
+"Job_Earnings" AS earnings
+FROM "POSITION"
+WHERE "JOB_Announce_ID" = $1`;
+
+    const positions = await query(queryString, [r.id]);
+    const positionList: Position[] = positions.rows.map((p) => ({
+      id: p.id,
+      name: p.name,
+      amount: p.amount,
+      description: p.description,
+      jobMode: p.jobmode,
+      earnings: p.earnings,
+      qualification: p.qualification,
+      welfare: p.welfare,
+    }));
+
+    announcements.push({
+      id: r.id,
+      title: r.title,
+      description: r.description,
+      companyName: r.companyname,
+      companyAddress: r.companyaddress,
+      companyImage: r.companyimage,
+      createdAt: r.createdat,
+      positions: positionList,
+    });
+  }
+
+  return announcements;
+};
+
 export const getRecentJobAnnouncement = async (companyId: string) => {
   const recentJobAnnouncementQuery = `SELECT "JOB_Announce_ID" AS ID
                   FROM "JOB_ANNOUNCEMENT"

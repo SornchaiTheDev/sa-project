@@ -12,9 +12,9 @@ interface Menu {
 
 const menus: Menu[] = [
   { label: "ประกาศงานของฉัน", href: "" },
-  { label: "ประเมินนิสิต", href: "evaluates" },
+  { label: "ประเมินนิสิต", href: "/hr/evaluates" },
   // { label: "สถิติ", href: "statistics" },
-  { label: "ประวิติการรับสมัครงาน", href: "histories" },
+  { label: "ประวิติการรับสมัครงาน", href: "/hr/histories" },
 ];
 function HRNavbar() {
   const pathname = usePathname();
@@ -31,7 +31,7 @@ function HRNavbar() {
             href={`/hr/${href}`}
             className={cn(
               "hover:text-zinc-800",
-              pathname?.includes(href) && "text-primary font-medium",
+              pathname == href && "text-primary font-medium",
             )}
           >
             {label}

@@ -16,34 +16,28 @@ export default function EvaluateLayout({
       <div className="fixed top-20 bottom-2 w-[384px] rounded-lg bg-zinc-100 flex flex-col">
         <div className="p-4">
           <h5 className="text-lg">นิสิตผ่านเข้าทำงาน</h5>
-          <div className="flex rounded-lg overflow-hidden border border-primary mt-2 min-h-fit">
-            <Input className="rounded-none border-none" />
-            <Button className="rounded-none w-10" size="icon">
-              <SearchIcon />
-            </Button>
-          </div>
         </div>
         <div className="overflow-y-auto mb-4">
-          {Array.from({ length: 10 }, (_, i) => (
+          {Array.from({ length: 1 }, (_, i) => (
             <Link
               key={i}
               href="#"
               className={cn(
                 "flex gap-4 items-center p-2 px-4 mx-2",
-                i === 0 && "bg-primary rounded-md text-white",
+                // i === 0 && "bg-primary rounded-md text-white",
               )}
             >
               <div className="w-16 aspect-square rounded-lg overflow-hidden relative">
                 <Image
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Sam_Altman_CropEdit_James_Tamim.jpg/1200px-Sam_Altman_CropEdit_James_Tamim.jpg"
+                  src="http://localhost:9000/ku-job/nisit/profile/1730369718787_final.jpg"
                   alt="Sam Altman picture"
                   fill
                   className="object-center object-cover"
                 />
               </div>
               <div>
-                <h5 className="font-medium">นางสาววิมุดากร กิจเตชะพานิช</h5>
-                <h6 className="text-sm">Software Developer</h6>
+                <h5 className="font-medium">นางสาวภาดา แสงตะวัน</h5>
+                <h6 className="text-sm">Content Creator</h6>
               </div>
             </Link>
           ))}

@@ -47,15 +47,18 @@ export const createStudent = async (
 };
 
 export const getStudent = async (username: string): Promise<Student> => {
-  const queryString = `SELECT "Username" AS username,
+  const queryString = `SELECT "USER"."Username" AS username,
                               "Description" AS description,
                               "Activity_Hours" AS "activity_hours",
                               "GPAX" AS gpax,
                               "Faculty" AS faculty,
                               "Major" AS major,
                               "Phone_Number" AS "phone_number",
-                              "Date_Of_Birth" AS "date_of_birth"
-                       FROM "STUDENT" WHERE username = $1
+                              "Date_Of_Birth" AS "date_of_birth",
+                              "Profile_Image" AS "profile_image"
+                       FROM "STUDENT" 
+                       JOIN "USER" ON "STUDENT"."Username" = "USER"."Username"
+                       WHERE "USER"."Username" = $1
                        LIMIT 1`;
 
   const res = await query(queryString, [username]);
@@ -71,6 +74,7 @@ export const getStudent = async (username: string): Promise<Student> => {
     major: student.major,
     phoneNumber: student.phone_number,
     dateOfBirth: student.date_of_birth,
+    profileImage: student.profile_image,
   };
 };
 
