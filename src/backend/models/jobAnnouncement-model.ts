@@ -228,3 +228,40 @@ export const createJobAnnouncement = async (
     await query(createPositionText, values);
   }
 };
+
+export const getAllRecruitedCandidatesByAnnouncementId = async (
+  announcementId: string,
+) => {
+  const queryString = `SELECT "STU_Username" AS username
+FROM "JOB_RECRUITMENT" JR
+WHERE 
+JR."JOB_Announce_ID" = $1`;
+
+  const res = await query(queryString, [announcementId]);
+
+  return res.rows.map((row) => row.username);
+};
+
+export const getRemainingCandidatesByAnnouncementId = async (
+  jobAUsername: string,
+  announcementId: string,
+  studentUsernames: string[],
+) => {
+  const queryString = `SELECT
+    PR."STU_Username" AS username
+FROM
+    "POSITION_REGISTER" PR
+    JOIN "JOB_ANNOUNCEMENT" JA ON PR."JOB_Announce_ID" = JA."JOB_Announce_ID"
+    LEFT JOIN "JOB_RECRUITMENT" JR ON JR."STU_Username" = PR."STU_Username"
+WHERE
+    JA."JOBA_Username" = $1 
+    AND JA."JOB_Announce_ID" = $2 
+    AND PR."STU_Username" != ANY($3)`;
+
+  const res = await query(queryString, [
+    jobAUsername,
+    announcementId,
+    studentUsernames,
+  ]);
+  return res.rows.map((row) => row.username);
+};
