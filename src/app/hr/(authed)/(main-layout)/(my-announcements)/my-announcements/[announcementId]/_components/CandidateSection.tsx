@@ -3,12 +3,24 @@
 import { useAtomValue } from "jotai";
 import { candidateAtom } from "../store/candidate-store";
 import FilterSection from "./FilterSection";
-import CandidateCard from "./CandidateCard";
+import CandidateCard, { type CandidateStatus } from "./CandidateCard";
 
 interface Props {
   announcementId: string;
 }
 
+const mapStatus = (isStdConfirm: -1 | 0 | 1 | null): CandidateStatus => {
+  switch (isStdConfirm) {
+    case 0:
+      return "job-rejected";
+    case 1:
+      return "job-accepted";
+    case null:
+      return "job-waiting";
+    default:
+      return "qualify-phrase";
+  }
+};
 function CandidateSection({ announcementId }: Props) {
   const candidates = useAtomValue(candidateAtom);
 
@@ -20,6 +32,8 @@ function CandidateSection({ announcementId }: Props) {
           (
             {
               id,
+              positionID,
+              positionName,
               firstName,
               lastName,
               description,
@@ -27,6 +41,9 @@ function CandidateSection({ announcementId }: Props) {
               major,
               profileImage,
               gpax,
+              isStdConfirm,
+              phoneNumber,
+              activityHours,
             },
             index,
           ) => (
@@ -34,8 +51,19 @@ function CandidateSection({ announcementId }: Props) {
               key={index}
               image={profileImage}
               name={firstName + " " + lastName}
-              {...{ id, description, faculty, major, gpax, announcementId }}
-              status="qualify-phrase"
+              stdId={id}
+              {...{
+                description,
+                faculty,
+                major,
+                gpax,
+                announcementId,
+                positionID,
+                positionName,
+                activityHours,
+                phoneNumber,
+              }}
+              status={mapStatus(isStdConfirm)}
             />
           ),
         )}

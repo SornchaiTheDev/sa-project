@@ -5,20 +5,30 @@ import { rejectFn } from "../mutateFns/rejectFn";
 import { acceptFn } from "../mutateFns/acceptFn";
 import { toast } from "sonner";
 
+export type CandidateStatus =
+  | "qualify-phrase"
+  | "job-waiting"
+  | "job-accepted"
+  | "job-rejected";
+
 interface Props {
-  id: string;
+  stdId: string;
+  positionName: string;
+  positionID: string;
   image: string;
   name: string;
   faculty: string;
   major: string;
   gpax: number;
   description: string;
-  status: "qualify-phrase" | "job-waiting" | "job-accepted" | "job-rejected";
+  status: CandidateStatus;
+  phoneNumber?: string;
+  activityHours: Record<string, number>;
   announcementId: string;
 }
 
 function CandidateCard({
-  id,
+  stdId,
   image,
   name,
   faculty,
@@ -27,10 +37,14 @@ function CandidateCard({
   status,
   description,
   announcementId,
+  positionID,
+  positionName,
+  phoneNumber,
+  activityHours,
 }: Props) {
   const queryClient = useQueryClient();
   const acceptCandidate = useMutation({
-    mutationFn: () => acceptFn(announcementId, id),
+    mutationFn: () => acceptFn(stdId, announcementId, positionID),
     onSuccess: () => {
       toast.success("ผ่านการคัดเลือก", { description: name });
       queryClient.invalidateQueries({ queryKey: ["candidates"] });
@@ -41,7 +55,7 @@ function CandidateCard({
   });
 
   const rejectCandidate = useMutation({
-    mutationFn: () => rejectFn(announcementId, id),
+    mutationFn: () => rejectFn(stdId, announcementId, positionID),
     onSuccess: () => {
       toast.warning("ไม่ผ่านการคัดเลือก", { description: name });
     },
@@ -86,6 +100,13 @@ function CandidateCard({
         return null;
     }
   };
+
+  const _activityHours = Object.entries(activityHours).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  console.log(_activityHours);
   return (
     <div className="rounded-lg p-2 border-2 border-primary">
       <div className="flex justify-between items-center">
@@ -98,6 +119,7 @@ function CandidateCard({
             <h6 className="text-sm">
               คณะ {faculty} สาขา {major}
             </h6>
+            <h6 className="text-sm">ตำแหน่ง : {positionName}</h6>
           </div>
         </div>
         <div className="flex gap-2">
@@ -108,8 +130,24 @@ function CandidateCard({
         </div>
       </div>
       <div className="mt-8">
-        <h6 className="text-sm font-medium">ประสบการณ์ทำงาน</h6>
-        <p>{description}</p>
+        <div className="flex gap-20">
+          <div>
+            <h6 className="text-sm font-medium">ประสบการณ์ทำงาน</h6>
+            <p>{description}</p>
+          </div>
+          <div>
+            <h6 className="text-sm font-medium">ชั่วโมงกิจกรรม</h6>
+            <ul>
+              {_activityHours.map(({ name, value }) => (
+                <li key={name} className="text-sm">
+                  {name} : {value} ชั่วโมง
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <h6 className="text-sm font-medium">เบอร์ติดต่อ</h6>
+        <p>- {phoneNumber}</p>
       </div>
       <div className="flex justify-end items-center gap-3 p-2">
         {renderBottomSection()}

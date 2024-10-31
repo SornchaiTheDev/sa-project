@@ -79,20 +79,12 @@ export const createTable = async () => {
         "Company_ID" UUID NOT NULL
     );
 
-    CREATE TABLE "QUALIFICATION_ANNOUNCEMENT" (
-        "Qualification_Announce_ID" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        "Qualify_Date_Time" TIMESTAMP NOT NULL,
-        "JOBA_Username" VARCHAR(100) NOT NULL,
-        "JOB_Announce_ID" UUID NOT NULL,
-        FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID")
-    );
-
     CREATE TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" (
         "Qualification_Announce_ID" UUID DEFAULT gen_random_uuid(),
         "STU_Username" VARCHAR(100),
         "Qualify_Result" INT NOT NULL,
         "Qualification_Expired_Date_Time" TIMESTAMP NOT NULL,
-        "Is_STU_Confirm" INT NOT NULL,
+        "Is_STU_Confirm" INT,
         "Job_Recruit_ID" UUID NOT NULL,
         PRIMARY KEY ("Qualification_Announce_ID", "STU_Username")
     );
@@ -148,11 +140,8 @@ export const createTable = async () => {
         ADD CONSTRAINT fk_recruitment_job_announce_id FOREIGN KEY ("JOB_Announce_ID") REFERENCES "JOB_ANNOUNCEMENT"("JOB_Announce_ID"),
         ADD CONSTRAINT fk_recruitment_company_id FOREIGN KEY ("Company_ID") REFERENCES "APPROVED_COMPANY"("Company_ID");
 
-    ALTER TABLE "QUALIFICATION_ANNOUNCEMENT"
-        ADD CONSTRAINT fk_qualification_announcer FOREIGN KEY ("JOBA_Username") REFERENCES "JOB_ANNOUNCER"("Username");
 
     ALTER TABLE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT"
-        ADD CONSTRAINT fk_stu_qual_announcement FOREIGN KEY ("Qualification_Announce_ID") REFERENCES "QUALIFICATION_ANNOUNCEMENT"("Qualification_Announce_ID"),
         ADD CONSTRAINT fk_stu_qual_student FOREIGN KEY ("STU_Username") REFERENCES "STUDENT"("Username"),
         ADD CONSTRAINT fk_stu_job_recruit_id FOREIGN KEY ("Job_Recruit_ID") REFERENCES "JOB_RECRUITMENT"("Job_Recruit_ID");
 

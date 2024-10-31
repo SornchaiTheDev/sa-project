@@ -8,4 +8,9 @@ export interface Candidate {
   gpax: number;
   description: string;
   profileImage: string;
+  isStdConfirm: 0 | 1 | null;
+  positionID: string;
+  positionName: string;
+  activityHours: string;
+  phoneNumber: string;
 }
