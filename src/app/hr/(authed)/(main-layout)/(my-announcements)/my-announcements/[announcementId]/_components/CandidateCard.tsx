@@ -58,6 +58,7 @@ function CandidateCard({
     mutationFn: () => rejectFn(stdId, announcementId, positionID),
     onSuccess: () => {
       toast.warning("ไม่ผ่านการคัดเลือก", { description: name });
+      queryClient.invalidateQueries({ queryKey: ["candidates"] });
     },
     onError: () => {
       toast.error("เกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง");
