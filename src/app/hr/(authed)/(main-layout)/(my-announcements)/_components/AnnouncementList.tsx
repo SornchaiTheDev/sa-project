@@ -18,7 +18,7 @@ function AnnouncementList() {
 
   const router = useRouter();
   const createNewAnnouncement = () => {
-    router.push("/hr/my-announcements");
+    router.push("/hr");
   };
 
   return (

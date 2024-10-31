@@ -11,7 +11,7 @@ interface Menu {
 }
 
 const menus: Menu[] = [
-  { label: "ประกาศงานของฉัน", href: "my-announcements" },
+  { label: "ประกาศงานของฉัน", href: "" },
   { label: "ประเมินนิสิต", href: "evaluates" },
   // { label: "สถิติ", href: "statistics" },
   { label: "ประวิติการรับสมัครงาน", href: "histories" },

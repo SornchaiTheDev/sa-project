@@ -1,9 +1,9 @@
 "use client";
 
 import { useAtomValue } from "jotai";
-import CandidateCard from "~/app/hr/(authed)/(main-layout)/my-announcements/[announcementId]/_components/CandidateCard";
-import FilterSection from "~/app/hr/(authed)/(main-layout)/my-announcements/[announcementId]/_components/FilterSection";
 import { candidateAtom } from "../store/candidate-store";
+import FilterSection from "./FilterSection";
+import CandidateCard from "./CandidateCard";
 
 interface Props {
   announcementId: string;
