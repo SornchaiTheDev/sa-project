@@ -3,7 +3,6 @@ import ResultCard from "./result-card";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { env } from "~/configs/env";
 import { JobAnnouncement } from "~/types/jobAnnouncement";
 
 interface AnnouncementsQueryParams {
@@ -21,7 +20,7 @@ const getAnnouncements = async (params: AnnouncementsQueryParams) => {
   const { data } = await axios.get<{
     announcements: JobAnnouncement[];
   }>(
-    `http://localhost:3000/api/announcements?province=${province}&amphur=${amphur}&tambon=${tambon}&position=${position}&category=${category}&jobType=${jobType}`,
+    `/api/announcements?province=${province}&amphur=${amphur}&tambon=${tambon}&position=${position}&category=${category}&jobType=${jobType}`,
   );
   return data.announcements;
 };
