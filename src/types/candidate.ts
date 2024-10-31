@@ -11,6 +11,6 @@ export interface Candidate {
   isStdConfirm: 0 | 1 | null;
   positionID: string;
   positionName: string;
-  activityHours: string;
+  activityHours: Record<string, number>;
   phoneNumber: string;
 }
