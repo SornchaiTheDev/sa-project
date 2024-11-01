@@ -5,7 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { getAllEmployeesFn } from "./queryFns/getAllEmployeesFn";
 import { Employee } from "~/types/employee";
-import { getJobAnnouncerFn } from "./queryFns/getJobAnnouncerFn";
+import { getJobAnnouncerFn } from "~/globalQueryFns/getJobAnnouncerFn";
 
 const EmployeeCard = ({
   firstName,
