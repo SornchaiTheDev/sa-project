@@ -5,7 +5,6 @@ import Image from "next/image";
 import React from "react";
 import { getAllEmployeesFn } from "./queryFns/getAllEmployeesFn";
 import { Employee } from "~/types/employee";
-import { getJobAnnouncerFn } from "./queryFns/getJobAnnouncerFn";
 
 const EmployeeCard = ({
   firstName,
@@ -36,30 +35,23 @@ const EmployeeCard = ({
   );
 };
 
-function HistoryPage() {
-  const { data: jobA } = useQuery({
-    queryKey: ["job-announcer"],
-    queryFn: getJobAnnouncerFn,
-  });
-
+interface Props {
+  companyID: string;
+}
+function HistoryPage({ companyID }: Props) {
   const { data } = useQuery({
     queryKey: ["employee-history"],
-    queryFn: () => getAllEmployeesFn(jobA?.companyId ?? ""),
-    enabled: !!jobA,
+    queryFn: () => getAllEmployeesFn(companyID),
   });
-
-  console.log(jobA);
 
   const total = data?.length ?? 0;
   return (
     <div>
       <h3 className="text-xl">ประวัติการรับสมัครงาน</h3>
       <h4 className="text-lg">{total} คน</h4>
-      <div className="mt-4 space-y-4">
-        {data?.map((employee) => (
-          <EmployeeCard key={employee.username} {...employee} />
-        ))}
-      </div>
+      {data?.map((employee) => (
+        <EmployeeCard key={employee.username} {...employee} />
+      ))}
     </div>
   );
 }
