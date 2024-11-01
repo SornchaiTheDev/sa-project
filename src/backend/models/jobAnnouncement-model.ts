@@ -20,8 +20,11 @@ ORDER BY "JOB_ANNOUNCEMENT"."JOB_Announce_Date_Time" DESC
 LIMIT 10
 `;
 
-
   const res = await query(queryString);
+
+  if (res.rows.length === 0) {
+    return [];
+  }
 
   const announcements: JobAnnouncement[] = [];
 
@@ -73,6 +76,10 @@ export const getRecentJobAnnouncement = async (companyId: string) => {
                   DESC LIMIT 1`;
 
   const res = await query(recentJobAnnouncementQuery, [companyId]);
+
+  if (res.rows.length === 0) {
+    return null;
+  }
 
   return res.rows[0].id;
 };
