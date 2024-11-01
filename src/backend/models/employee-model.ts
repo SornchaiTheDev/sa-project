@@ -9,7 +9,8 @@ U."Username" AS "username",
 S."Profile_Image" AS "profileImage",
 U."First_Name" AS "firstName",
 U."Last_Name" AS "lastName",
-P."Job_Name" AS "positionName"
+P."Job_Name" AS "positionName",
+P."Position_ID" AS "positionID"
 FROM "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA
 JOIN "JOB_RECRUITMENT" JR ON STQA."Job_Recruit_ID" = JR."Job_Recruit_ID"
 JOIN "USER" U ON U."Username" = JR."STU_Username"

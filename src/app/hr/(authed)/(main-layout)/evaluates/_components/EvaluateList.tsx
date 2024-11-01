@@ -3,7 +3,7 @@
 import { Textarea } from "~/components/ui/textarea";
 import EvaluateItem from "./EvaluateItem";
 import { Button } from "~/components/ui/button";
-import useEvaluate from "../../_hooks/useEvaluate";
+import useEvaluate from "./_hooks/useEvaluate";
 
 function EvaluateList() {
   const {

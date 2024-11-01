@@ -1,4 +1,9 @@
+import { useAtom, useAtomValue } from "jotai";
 import { useCallback, useEffect, useState } from "react";
+import { employeeAtom } from "../../store/employeeStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { evaluateFn } from "../../mutateFns/evaluateFn";
+import { toast } from "sonner";
 
 interface EvaluateType {
   name: string;
@@ -61,14 +66,46 @@ export default function useEvaluate() {
 
   const [comment, setComment] = useState("");
 
-  const handleOnSubmit = () => {
+  const [{ username, positionID }, setSelectedEmployee] = useAtom(employeeAtom);
+  const queryClient = useQueryClient();
+  const evaluate = useMutation({
+    mutationFn: (payload: Record<string, number>) =>
+      evaluateFn(username, positionID, payload),
+    mutationKey: ["evaluate"],
+    onSuccess: () => {
+      toast.success("ประเมินสำเร็จ");
+      setSelectedEmployee({
+        username: "",
+        positionID: "",
+        firstName: "",
+        positionName: "",
+        profileImage: "",
+        lastName: "",
+      });
+      queryClient.invalidateQueries({ queryKey: ["employee-history"] });
+    },
+    onError: () => {
+      toast.error("เกิดข้อผิดพลาด");
+    },
+  });
+
+  const handleOnSubmit = async () => {
     setIsSubmitted(true);
 
     const errs = validateFields();
     if (errs.length !== 0) return;
 
     setIsSubmitting(true);
-    setTimeout(() => setIsSubmitting(false), 2000);
+    const payload = fields.reduce(
+      (acc, type) => {
+        acc[type.name] = parseInt(type.value);
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+    await evaluate.mutateAsync(payload);
+
+    setIsSubmitting(false);
   };
 
   const onChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

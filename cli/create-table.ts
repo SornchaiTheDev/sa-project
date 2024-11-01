@@ -94,7 +94,9 @@ export const createTable = async () => {
         "Eval_Result" JSONB NOT NULL,
         "Eval_Date_Time" TIMESTAMP NOT NULL,
         "Position_ID" UUID NOT NULL,
-        "JOBA_Username" VARCHAR(100) NOT NULL
+        "JOBA_Username" VARCHAR(100) NOT NULL,
+        "STU_Username" VARCHAR(100) NOT NULL,
+        FOREIGN KEY ("Position_ID") REFERENCES "POSITION"("Position_ID")
     );
 
     CREATE TABLE "TAG" (
