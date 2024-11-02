@@ -15,7 +15,6 @@ export const createStudent = async (
     description,
     gpax,
     dateOfBirth,
-    activityHours,
     faculty,
     major,
     profileImage,
@@ -33,6 +32,12 @@ export const createStudent = async (
   ]);
 
   const queryString = `INSERT INTO "STUDENT" ("Username","Date_Of_Birth","Description","Activity_Hours","GPAX","Faculty","Major","Profile_Image") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`;
+
+  const activityHours = {
+    ด้านกิจกรรมมหาวิทยาลัย: Math.floor(Math.random() * 100 + 3),
+    ด้านกิจกรรมเพื่อเสริมสร้างสมรรถนะ: Math.floor(Math.random() * 100 + 20),
+    ด้านกิจกรรมเพื่อสังคม: Math.floor(Math.random() * 100 + 12),
+  };
 
   await query(queryString, [
     username,
