@@ -87,3 +87,4 @@ export const isEmailExists = async (email: string): Promise<boolean> => {
 
   return res.rows[0].exists;
 };
+

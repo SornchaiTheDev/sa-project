@@ -50,6 +50,7 @@ export const getStudent = async (username: string): Promise<Student> => {
   const queryString = `SELECT "USER"."Username" AS username,
                               "USER"."First_Name" AS firstname,
                               "USER"."Last_Name" AS lastname,
+                              "USER"."Email_Google" AS email,
                               "Description" AS description,
                               "Activity_Hours" AS "activity_hours",
                               "GPAX" AS gpax,
@@ -57,7 +58,8 @@ export const getStudent = async (username: string): Promise<Student> => {
                               "Major" AS major,
                               "Phone_Number" AS "phone_number",
                               "Date_Of_Birth" AS "date_of_birth",
-                              "Profile_Image" AS "profile_image"
+                              "Profile_Image" AS "profile_image",
+                              "Title" AS prefix
                        FROM "STUDENT" 
                        JOIN "USER" ON "STUDENT"."Username" = "USER"."Username"
                        WHERE "USER"."Username" = $1
@@ -68,6 +70,9 @@ export const getStudent = async (username: string): Promise<Student> => {
   const student = res.rows[0];
 
   return {
+    prefix: student.prefix,
+    email: student.email,
+    dob: student.date_of_birth,
     username: student.username,
     firstName: student.firstname,
     lastName: student.lastname,

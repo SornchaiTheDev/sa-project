@@ -1,7 +1,9 @@
 export interface Student {
   username: string;
+  prefix: string;
   firstName: string;
   lastName: string;
+  email: string;
   phoneNumber: string;
   description: string;
   activityHours: string;
@@ -10,4 +12,5 @@ export interface Student {
   dateOfBirth: Date;
   faculty: string;
   major: string;
+  dob: string;
 }

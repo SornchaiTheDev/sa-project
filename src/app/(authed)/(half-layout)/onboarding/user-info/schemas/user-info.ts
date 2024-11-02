@@ -37,7 +37,7 @@ export const userInfo = z
   })
   .refine((data) => data.profileImage.length === 1, {
     message: "กรุณาอัพโหลดโปรไฟล์",
-    path: ["bookUrl"],
+    path: ["profileImage"],
   })
   .refine(
     (data) =>
@@ -45,7 +45,7 @@ export const userInfo = z
       data.profileImage[0].size < 10 * 1024 * 1024,
     {
       message: "ขนาดโปรไฟล์ต้องไม่เกิน 10 MB",
-      path: ["bookUrl"],
+      path: ["profileImage"],
     },
   );
 
