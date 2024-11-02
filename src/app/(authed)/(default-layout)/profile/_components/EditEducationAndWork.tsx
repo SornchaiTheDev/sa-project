@@ -36,8 +36,6 @@ function EditEducationAndWork() {
     queryFn: getWorkInfoFn,
   });
 
-  console.log(data);
-
   const form = useForm<EducationAndWorks>({
     resolver: zodResolver(educationAndWorks),
     defaultValues: {

@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { useAllLoginSession } from "~/wrapper/AllLoginSessionWrapper";
-import { getStudent } from "../queryFn/getStudent";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { dayjs } from "~/lib";
@@ -27,12 +25,12 @@ import UploadFile from "~/components/upload-file";
 import { UserInfo, userInfo } from "../schemas/user-info";
 import { updateUserInfoFn } from "../mutateFns/updateUserInfoFn";
 import { toast } from "sonner";
+import { getStudent } from "~/globalQueryFns/getStudent";
 
 function EditUserInfo() {
-  const { uid } = useAllLoginSession();
   const { data, refetch } = useQuery({
-    queryKey: ["student", uid],
-    queryFn: () => getStudent(uid),
+    queryKey: ["student"],
+    queryFn: getStudent,
   });
 
   const form = useForm<UserInfo>({
@@ -73,7 +71,7 @@ function EditUserInfo() {
   };
 
   const updateUserInfo = useMutation({
-    mutationKey: ["update-user-info", uid],
+    mutationKey: ["update-user-info"],
     mutationFn: updateUserInfoFn,
     onSuccess: async () => {
       await refetch();
@@ -101,7 +99,7 @@ function EditUserInfo() {
           className="object-cover object-center"
         />
       </div>
-      <div className="flex justify-between items-center w-full">
+      <div className="flex justify-between items-center w-full mt-10">
         <h5 className="text-xl font-medium">ข้อมูลส่วนตัว</h5>
         <button
           onClick={handleOnEditUserInfo}
