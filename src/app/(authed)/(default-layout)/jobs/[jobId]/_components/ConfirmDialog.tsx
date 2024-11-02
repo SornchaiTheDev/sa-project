@@ -43,9 +43,11 @@ export const ConfirmDialog = (props: Props) => {
           toast.error("คุณได้สมัครงานนี้แล้ว");
           break;
       }
+      setIsOpen(false);
     },
     onError: () => {
       toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+      setIsOpen(false);
     },
   });
 
