@@ -6,7 +6,7 @@ export const getAllCandidates = async (
   announcementId: string,
   position: string,
 ): Promise<Candidate[]> => {
-  const queryString = `SELECT 
+  const queryString = `SELECT   
                               S."Username" AS id,
                               "Title" AS title, 
                               "First_Name" AS "firstName",
@@ -16,20 +16,20 @@ export const getAllCandidates = async (
                               "GPAX" AS gpax, 
                               "Description" AS description, 
                               "Profile_Image" AS "profileImage",
-                              "POSITION"."Position_ID" AS "positionID",
+                              P."Position_ID" AS "positionID",
                               STQA."Is_STU_Confirm" AS "isStdConfirm",
-                              "POSITION"."Job_Name" AS "positionName",
+                              P."Job_Name" AS "positionName",
                               U."Phone_Number" AS "phoneNumber",
                               S."Activity_Hours" AS "activityHours"
-                      FROM "STUDENT" S
-                      JOIN "POSITION_REGISTER" P ON S."Username" = P."STU_Username"
-                      JOIN "USER" U ON S."Username" = U."Username"
-                      JOIN "POSITION" ON "POSITION"."Position_ID" = P."Position_ID"
-                      LEFT JOIN "JOB_RECRUITMENT" JR ON JR."Position_ID" = P."Position_ID"
-                      LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
-                      WHERE P."JOB_Announce_ID" = $1 
-                      AND "Job_Name" LIKE $2
-                      AND JR."Position_ID" IS NOT NULL`;
+
+FROM "STUDENT" S
+JOIN "USER" U ON U."Username" = S."Username"
+JOIN "POSITION_REGISTER" PR ON S."Username" = PR."STU_Username"
+JOIN "POSITION" P ON P."Position_ID" = PR."Position_ID"
+LEFT JOIN "JOB_RECRUITMENT" JR ON JR."Position_ID" = PR."Position_ID" AND S."Username" = PR."STU_Username"
+LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username" AND JR."Job_Recruit_ID" = STQA."Job_Recruit_ID"
+WHERE JR."Job_Recruit_ID" IS NOT NULL
+AND PR."JOB_Announce_ID" = $1 AND P."Job_Name" LIKE $2`;
 
   const res = await query(queryString, [announcementId, `%${position}%`]);
   return res.rows;
@@ -39,7 +39,7 @@ export const getNotVerifyCandidates = async (
   announcementId: string,
   position: string,
 ): Promise<Candidate[]> => {
-  const queryString = `SELECT DISTINCT 
+  const queryString = `SELECT   
     S."Username" AS id,
     "Title" AS title,
     "First_Name" AS "firstName",
@@ -50,23 +50,16 @@ export const getNotVerifyCandidates = async (
     "Description" AS description,
     "Profile_Image" AS "profileImage",
     -1 AS "isStuConfirm",
-    "POSITION"."Position_ID" AS "positionID",
-    "POSITION"."Job_Name" AS "positionName"
-FROM
-    "STUDENT" S
-    JOIN "POSITION_REGISTER" P ON S."Username" = P."STU_Username"
-    JOIN "USER" U ON S."Username" = U."Username"
-    JOIN "POSITION" ON "POSITION"."Position_ID" = P."Position_ID"
-    LEFT JOIN "JOB_RECRUITMENT" JR ON JR."Position_ID" = P."Position_ID"
-    LEFT JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
-WHERE
-    P."JOB_Announce_ID" = $1 
-    AND "Job_Name" LIKE $2
-    AND  NOT (SELECT EXISTS(SELECT 1
-    FROM "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT"
-    WHERE "STU_Username" = S."Username")
-    )
-    ;`;
+    P."Position_ID" AS "positionID",
+    P."Job_Name" AS "positionName"
+
+FROM "STUDENT" S
+JOIN "USER" U ON U."Username" = S."Username"
+JOIN "POSITION_REGISTER" PR ON S."Username" = PR."STU_Username"
+JOIN "POSITION" P ON P."Position_ID" = PR."Position_ID"
+LEFT JOIN "JOB_RECRUITMENT" JR ON JR."Position_ID" = PR."Position_ID" AND S."Username" = PR."STU_Username"
+WHERE JR."Job_Recruit_ID" IS NULL
+AND PR."JOB_Announce_ID" = $1 AND P."Job_Name" LIKE $2`;
   const res = await query(queryString, [announcementId, `%${position}%`]);
   return res.rows;
 };

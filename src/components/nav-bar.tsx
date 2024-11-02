@@ -1,5 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,19 +21,27 @@ function Navbar() {
       <Link href="/">
         <Image src={KULogo} alt="KU Logo" width={48} height={48} />
       </Link>
-      {!isLoading && (
+      <div className="flex gap-4">
+        {!isLoading && (
+          <button
+            onClick={handleOnClickProfile}
+            className="w-10 h-10 rounded-full border-2 relative overflow-hidden"
+          >
+            <Image
+              src={data!.profileImage}
+              alt="user profile"
+              className="object-center object-cover"
+              fill
+            />
+          </button>
+        )}
         <button
-          onClick={handleOnClickProfile}
-          className="w-10 h-10 rounded-full border-2 relative overflow-hidden"
+          onClick={() => router.push("/api/logout")}
+          className="text-red-500"
         >
-          <Image
-            src={data!.profileImage}
-            alt="user profile"
-            className="object-center object-cover"
-            fill
-          />
+          <LogOut />
         </button>
-      )}
+      </div>
     </div>
   );
 }

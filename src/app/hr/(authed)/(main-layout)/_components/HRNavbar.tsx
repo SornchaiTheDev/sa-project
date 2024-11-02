@@ -1,7 +1,8 @@
 "use client";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { KULogo } from "~/configs/assets";
 import { cn } from "~/lib";
 
@@ -18,6 +19,8 @@ const menus: Menu[] = [
 ];
 function HRNavbar() {
   const pathname = usePathname();
+
+  const router = useRouter();
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-white px-4 py-2 flex justify-between items-center border-b border-zinc-200 z-40">
@@ -38,7 +41,16 @@ function HRNavbar() {
           </Link>
         ))}
       </div>
-      <div className="w-10 h-10 rounded-full border-2"></div>
+      <div className="flex gap-4">
+        <div className="w-10 h-10 rounded-full border-2"></div>
+
+        <button
+          onClick={() => router.push("/api/logout")}
+          className="text-red-500"
+        >
+          <LogOut />
+        </button>
+      </div>
     </div>
   );
 }

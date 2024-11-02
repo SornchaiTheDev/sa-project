@@ -46,26 +46,28 @@ function CandidateSection({ announcementId }: Props) {
               activityHours,
             },
             index,
-          ) => (
-            <CandidateCard
-              key={index}
-              image={profileImage}
-              name={firstName + " " + lastName}
-              stdId={id}
-              {...{
-                description,
-                faculty,
-                major,
-                gpax,
-                announcementId,
-                positionID,
-                positionName,
-                activityHours,
-                phoneNumber,
-              }}
-              status={mapStatus(isStdConfirm)}
-            />
-          ),
+          ) => {
+            return (
+              <CandidateCard
+                key={index}
+                image={profileImage}
+                name={firstName + " " + lastName}
+                stdId={id}
+                {...{
+                  description,
+                  faculty,
+                  major,
+                  gpax,
+                  announcementId,
+                  positionID,
+                  positionName,
+                  activityHours,
+                  phoneNumber,
+                }}
+                status={mapStatus(isStdConfirm)}
+              />
+            );
+          },
         )}
       </div>
     </>
