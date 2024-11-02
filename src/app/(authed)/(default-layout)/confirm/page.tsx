@@ -18,7 +18,7 @@ function ConfirmJobPage() {
   const [jobs, setJobs] = useState<ConfirmJob[]>([]);
 
   const { data } = useQuery({
-    queryKey: ["recent-job-announcements"],
+    queryKey: ["confirm-job"],
     queryFn: getRecentJobsFn,
   });
 
