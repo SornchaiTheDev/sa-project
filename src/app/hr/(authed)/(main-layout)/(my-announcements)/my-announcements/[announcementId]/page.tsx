@@ -22,7 +22,6 @@ async function AnnouncementDetailPage({
     <>
       <div className="flex justify-between items-center">
         <h4 className="text-xl">{title}</h4>
-        <button className="text-xs">แก้ไข</button>
       </div>
       <div className="mt-4">
         <div className="space-y-2">

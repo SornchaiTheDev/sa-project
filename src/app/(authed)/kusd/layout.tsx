@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import Navbar from "~/components/nav-bar";
 import { getUserInfo } from "~/lib/getUserInfo";
+import Navbar from "./_components/Navbar";
 
 export default async function MyAnnouncementLayout({
   children,
