@@ -1,10 +1,14 @@
-"use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   educationAndWorks,
-  type EducationAndWorks,
-} from "./schemas/education-and-works";
-import { zodResolver } from "@hookform/resolvers/zod";
+  EducationAndWorks,
+} from "~/app/(authed)/(half-layout)/onboarding/educations-and-works/schemas/education-and-works";
+import { Button } from "~/components/ui/button";
+import { useAllLoginSession } from "~/wrapper/AllLoginSessionWrapper";
+import { getWorkInfoFn } from "../queryFn/getWorkInfoFn";
 import {
   Form,
   FormField,
@@ -12,11 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -24,93 +23,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { motion } from "framer-motion";
-import { useAllLoginSession } from "~/wrapper/AllLoginSessionWrapper";
-import { Textarea } from "~/components/ui/textarea";
 import { faculties } from "~/constants/faculty";
-import { onboardingAtom, resetOnboardingAtom } from "../store/onboarding-store";
-import { useAtomValue, useSetAtom } from "jotai";
-import { useMutation } from "@tanstack/react-query";
-import { saveOnboardingInfo } from "./mutationFns/saveOnboardingInfo";
+import { Textarea } from "~/components/ui/textarea";
+import { Input } from "~/components/ui/input";
+import { updateWorkInfoFn } from "../mutateFns/updateWorkInfoFn";
+import { toast } from "sonner";
 
-function EducationAndWorksForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { faculty, uid } = useAllLoginSession();
-  const onboard = useAtomValue(onboardingAtom);
-  const resetOnboarding = useSetAtom(resetOnboardingAtom);
+function EditEducationAndWork() {
+  const { uid } = useAllLoginSession();
+  const { data, refetch } = useQuery({
+    queryKey: ["education-and-work", uid],
+    queryFn: getWorkInfoFn,
+  });
+
+  console.log(data);
 
   const form = useForm<EducationAndWorks>({
     resolver: zodResolver(educationAndWorks),
     defaultValues: {
-      faculty: "คณะ" + faculty,
-      major: onboard.major,
-      gpax: onboard.gpax,
-      description: onboard.description,
+      faculty: data?.faculty ?? "",
+      major: data?.major ?? "",
+      gpax: data?.gpax ?? "",
+      description: data?.description ?? "",
     },
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    if (!data) return;
 
-  const saveData = useMutation({
-    mutationFn: saveOnboardingInfo,
-    mutationKey: ["saveOnboardingInfo"],
-    onSuccess: () => {
-      resetOnboarding();
-      router.push("/");
+    form.reset({
+      faculty: data.faculty,
+      major: data.major,
+      gpax: data.gpax,
+      description: data.description,
+    });
+  }, [form, data]);
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  const updateWorkInfo = useMutation({
+    mutationFn: updateWorkInfoFn,
+    mutationKey: ["updateWorkInfo", uid],
+    onSuccess: async () => {
+      await refetch();
+      toast.success("บันทึกข้อมูลสำเร็จ");
+      setIsEdit(false);
     },
     onError: () => {
-      toast.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
-      setIsSubmitting(false);
+      toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
     },
   });
 
-  const handleOnSubmit = (formData: EducationAndWorks) => {
-    setIsSubmitting(true);
-
-    toast.promise(
-      async () =>
-        await saveData.mutateAsync({
-          ...onboard,
-          ...formData,
-          username: uid,
-        }),
-      {
-        loading: "กำลังบันทึกข้อมูล...",
-        success: "บันทึกข้อมูลสำเร็จ",
-      },
-    );
+  const handleOnSubmit = (data: EducationAndWorks) => {
+    updateWorkInfo.mutate(data);
+    form.reset();
   };
-
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
 
   const majors =
     faculties.find(({ name }) => name === form.watch("faculty"))?.majors ?? [];
 
   return (
-    <div className="mt-20">
-      <motion.h4
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="text-xl font-semibold"
-      >
-        ลงทะเบียน
-      </motion.h4>
-      <div className="mt-4 w-full">
-        <motion.h6
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-lg"
+    <div>
+      <div className="flex justify-between items-center mt-10">
+        <h5 className="text-xl font-medium">ข้อมูลประวัติการศึกษา และทำงาน</h5>
+        <button
+          onClick={() => setIsEdit(!isEdit)}
+          className="underline text-primary"
         >
-          ประวัติการศึกษาและประวัติการทำงาน
-        </motion.h6>
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="mt-4"
-        >
+          {isEdit ? "ยกเลิก" : "แก้ไข"}
+        </button>
+      </div>
+      <div className="space-y-4 mt-4">
+        {isEdit ? (
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleOnSubmit)}
@@ -122,14 +106,12 @@ function EducationAndWorksForm() {
                 render={({ field: { value, onChange } }) => (
                   <FormItem className="mb-4">
                     <FormLabel className="font-normal">คณะ</FormLabel>
-                    <Select disabled value={value} onValueChange={onChange}>
+                    <Select value={value} onValueChange={onChange}>
                       <SelectTrigger className="w-full h-12 bg-zinc-100">
                         <SelectValue placeholder="คณะ" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none" disabled>
-                          คณะ
-                        </SelectItem>
+                        <SelectItem value="none">คณะ</SelectItem>
                         {faculties.map(({ name }) => (
                           <SelectItem key={name} value={name}>
                             {name}
@@ -149,11 +131,7 @@ function EducationAndWorksForm() {
                     <FormLabel className="font-normal">ภาควิชา</FormLabel>
                     <Select value={value} onValueChange={onChange}>
                       <SelectTrigger className="w-full h-12 bg-zinc-100">
-                        {isLoading ? (
-                          "Loading"
-                        ) : (
-                          <SelectValue placeholder="ภาควิชา" />
-                        )}
+                        <SelectValue placeholder="ภาควิชา" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none" disabled>
@@ -194,7 +172,7 @@ function EducationAndWorksForm() {
                       ประวัติการทำงาน
                     </FormLabel>
                     <Textarea
-                      className=" bg-zinc-100"
+                      className="bg-zinc-100"
                       rows={6}
                       {...field}
                       value={(field.value as string) || ""}
@@ -204,15 +182,38 @@ function EducationAndWorksForm() {
                   </FormItem>
                 )}
               />
-              <Button className="h-10" isLoading={isSubmitting}>
-                บันทึกข้อมูล
+              <Button
+                disabled={!form.formState.isValid}
+                isLoading={false}
+                className="w-full"
+              >
+                บันทึก
               </Button>
             </form>
           </Form>
-        </motion.div>
+        ) : (
+          <>
+            <div className="">
+              <h6>คณะ</h6>
+              <h6 className="font-medium">{data?.faculty}</h6>
+            </div>
+            <div className="">
+              <h6>สาขา</h6>
+              <h6 className="font-medium">{data?.major}</h6>
+            </div>
+            <div className="">
+              <h6>เกรดเฉลี่ย</h6>
+              <h6 className="font-medium">{data?.gpax}</h6>
+            </div>
+            <div className="">
+              <h6>ประวัติการทำงาน</h6>
+              <h6 className="font-medium">{data?.description}</h6>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-export default EducationAndWorksForm;
+export default EditEducationAndWork;

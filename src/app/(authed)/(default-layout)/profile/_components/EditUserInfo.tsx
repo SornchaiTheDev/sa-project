@@ -94,9 +94,6 @@ function EditUserInfo() {
   return (
     <div className="flex flex-col items-center">
       <div className="rounded-full overflow-hidden w-32 h-32 relative">
-        {/* <div className="absolute w-32 h-32 bg-black/30 z-50 flex justify-center items-center"> */}
-        {/*   <Pencil className="text-white"/> */}
-        {/* </div> */}
         <Image
           src={data.profileImage}
           alt="profile image"

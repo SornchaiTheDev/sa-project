@@ -44,12 +44,14 @@ export const POST = jwtMiddleware(async (info: UserInfo, req) => {
     uid,
   ]);
 
-  const updateProfileImageString = `
+  if (body.profileImage.length !== 0) {
+    const updateProfileImageString = `
 	UPDATE "STUDENT"
 	SET "Profile_Image" = $1
 	WHERE "Username" = $2
 	`;
-  await query(updateProfileImageString, [body.profileImage[0].url, uid]);
+    await query(updateProfileImageString, [body.profileImage[0].url, uid]);
+  }
   return Response.json({
     code: "SUCCESS",
   });

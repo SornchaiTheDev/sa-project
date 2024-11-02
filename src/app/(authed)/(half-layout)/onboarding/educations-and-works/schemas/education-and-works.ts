@@ -7,7 +7,6 @@ export const educationAndWorks = z.object({
     .refine((val) => val !== "none", "กรุณาเลือกคณะ"),
   major: z.string().min(1, "กรุณาเลือกสาขา"),
   gpax: z.string().min(1, "กรุณากรอกเกรดเฉลี่ยสะสม"),
-  activityHours: z.string().min(1, "กรุณากรอกจำนวนชั่วโมงกจกรรม"),
   description: z.string(),
 });
 
