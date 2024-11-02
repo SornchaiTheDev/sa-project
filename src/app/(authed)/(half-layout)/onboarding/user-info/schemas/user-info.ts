@@ -35,9 +35,8 @@ export const userInfo = z
       .regex(/^[0-9]{9,10}$/, "กรุณากรอกเบอร์ติดต่อให้ถูกต้อง"),
     profileImage: z.array(uploadedFile),
   })
-
   .refine((data) => data.profileImage.length === 1, {
-    message: "กรุณาอัพโหลดหนังสือคำร้อง",
+    message: "กรุณาอัพโหลดโปรไฟล์",
     path: ["bookUrl"],
   })
   .refine(
@@ -45,7 +44,7 @@ export const userInfo = z
       data.profileImage.length === 1 &&
       data.profileImage[0].size < 10 * 1024 * 1024,
     {
-      message: "ขนาดไฟล์หนังสือคำร้องต้องไม่เกิน 10 MB",
+      message: "ขนาดโปรไฟล์ต้องไม่เกิน 10 MB",
       path: ["bookUrl"],
     },
   );
