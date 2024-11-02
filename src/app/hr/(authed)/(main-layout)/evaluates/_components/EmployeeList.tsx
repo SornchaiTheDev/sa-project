@@ -9,6 +9,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { useAtom } from "jotai";
 import { Employee } from "~/types/employee";
 import { employeeAtom } from "../store/employeeStore";
+import { useState } from "react";
 
 function EmployeeList() {
   const { data: jobA } = useQuery({
@@ -17,14 +18,16 @@ function EmployeeList() {
   });
 
   const { data, isLoading } = useQuery({
-    queryKey: ["employee-history"],
+    queryKey: ["employee-list"],
     queryFn: () => getUnEvaluatedEmployeesFn(jobA?.companyId ?? ""),
   });
 
-  const [selectedEmployee, setSelectedEmployee] = useAtom(employeeAtom);
+  const [_, setSelectedEmployee] = useAtom(employeeAtom);
+  const [selectedPosition, setSelectedPosition] = useState("");
 
   const handleChooseEmployee = (employee: Employee) => {
     setSelectedEmployee(employee);
+    setSelectedPosition(employee.positionID);
   };
   return (
     <div className="overflow-y-auto mb-4">
@@ -39,7 +42,7 @@ function EmployeeList() {
                 key={employee.username}
                 className={cn(
                   "flex gap-4 items-center p-2 px-4 w-full",
-                  employee.username === selectedEmployee.username &&
+                  employee.positionID === selectedPosition &&
                     "bg-primary rounded-md text-white",
                 )}
               >
@@ -53,11 +56,11 @@ function EmployeeList() {
                     className="object-center object-cover"
                   />
                 </div>
-                <div>
-                  <h5 className="font-medium">
+                <div className="">
+                  <h5 className="font-medium text-start">
                     {employee.firstName + " " + employee.lastName}
                   </h5>
-                  <h6 className="text-sm">{employee.positionName}</h6>
+                  <h6 className="text-sm text-start">{employee.positionName}</h6>
                 </div>
               </button>
             ))}
