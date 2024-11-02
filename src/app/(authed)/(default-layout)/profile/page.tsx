@@ -15,7 +15,6 @@ function ProfilePage() {
     queryFn: () => getStudent(uid),
   });
 
-  console.log(data);
   if (data === undefined) return null;
   return (
     <div className="mt-24 flex flex-col items-center">
@@ -112,7 +111,7 @@ function ProfilePage() {
               className="bg-gray-50 my-2 h-12 shadow-none"
             />
           </div>
-        <Button className="w-full">บันทึก</Button>
+          <Button className="w-full">บันทึก</Button>
         </div>
       </div>
     </div>

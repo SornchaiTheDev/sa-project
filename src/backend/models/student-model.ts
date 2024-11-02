@@ -88,3 +88,30 @@ export const isStudentExists = async (username: string): Promise<boolean> => {
 
   return res.rows[0].exists;
 };
+
+export const hasRemainingConfirmJob = async (username: string) => {
+  const queryString = `SELECT EXISTS(SELECT *
+FROM "STUDENT" S
+JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
+WHERE "STU_Username" = $1 AND STQA."Is_STU_Confirm" IS NULL AND STQA."Qualify_Result" = 1)`;
+
+  const res = await query(queryString, [username]);
+
+  return res.rows[0].exists;
+};
+
+export const getAllRemainingConfirmJob = async (username: string) => {
+  const queryString = `SELECT 
+STQA."Qualification_Announce_ID" AS "id",
+AC."Company_Name" AS "companyName",
+P."Job_Name" AS "jobName"
+FROM "STUDENT" S
+JOIN "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" STQA ON STQA."STU_Username" = S."Username"
+JOIN "JOB_RECRUITMENT" JR ON JR."Job_Recruit_ID" = STQA."Job_Recruit_ID"
+JOIN "POSITION" P ON P."Position_ID" = JR."Position_ID"
+JOIN "APPROVED_COMPANY" AC ON AC."Company_ID" = JR."Company_ID"
+WHERE STQA."STU_Username" = $1 AND STQA."Is_STU_Confirm" IS NULL AND STQA."Qualify_Result" = 1`;
+
+  const res = await query(queryString, [username]);
+  return res.rows;
+};

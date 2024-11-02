@@ -167,3 +167,9 @@ VALUES
     throw err;
   }
 };
+
+export const confirmJob = async (id: string, status: number) => {
+  const queryString = `UPDATE "STUDENT_TO_QUALIFICATION_ANNOUNCEMENT" SET "Is_STU_Confirm" = $1 WHERE "Qualification_Announce_ID" = $2`;
+
+  await query(queryString, [status, id]);
+};

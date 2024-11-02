@@ -34,7 +34,7 @@ export default function ResultCard({
         <div>
           <h6 className="text-sm font-medium">ตำแหน่งงาน/อัตรารับสมัคร</h6>
           <div className="space-y-2 mt-1">
-            {positions.map(({ name, amount }) => (
+            {positions?.map(({ name, amount }) => (
               <div key={name} className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                   <BriefcaseBusiness size="1rem" />
